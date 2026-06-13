@@ -14,6 +14,7 @@ from __future__ import annotations
 from ._config import API_KEY_ENV_VAR, DEFAULT_BASE_URL, ClientConfig
 from ._core import RateLimit
 from ._version import __version__
+from .async_client import AsyncClient, AsyncNewsResource, AsyncSymbolsResource
 from .client import Client, NewsResource, SymbolsResource
 from .errors import (
     AlphaAIError,
@@ -57,8 +58,11 @@ __all__ = [
     "__version__",
     # clients
     "Client",
+    "AsyncClient",
     "NewsResource",
     "SymbolsResource",
+    "AsyncNewsResource",
+    "AsyncSymbolsResource",
     # config / misc
     "ClientConfig",
     "RateLimit",
