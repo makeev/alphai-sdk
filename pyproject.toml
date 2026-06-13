@@ -67,6 +67,8 @@ ignore = ["B008"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101"]
+# Grouped, commented __all__ in package __init__ files reads better than a flat sort.
+"**/__init__.py" = ["RUF022"]
 
 [tool.mypy]
 python_version = "3.10"
