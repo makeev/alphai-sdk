@@ -1,0 +1,64 @@
+{
+  "original": {
+    "id": 223344,
+    "uid": "a1b2c3d4e5f60718",
+    "title": "NVDA — Insider sale: Jensen Huang sold $24.0M of NVIDIA Corp (10b5-1)",
+    "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=0001045810",
+    "time_published": "2026-05-23T20:11:00+00:00",
+    "authors": [],
+    "summary": "On 2026-05-22, an insider (CEO) sold 150,000 shares of NVDA at a volume-weighted average price of $160.00, total value $24,000,000, under a pre-arranged 10b5-1 plan.",
+    "banner_image": null,
+    "source": "SEC EDGAR",
+    "source_domain": "sec.gov",
+    "topics": [],
+    "tickers_sentiment": [],
+    "created_at": "2026-05-23T20:12:00+00:00",
+    "updated_at": "2026-05-23T20:12:00+00:00"
+  },
+  "enrichment": {
+    "category": "insider",
+    "tickers": ["NVDA"],
+    "relevance_score": 7,
+    "ai_trading_insights": {
+      "ticker_analysis": [
+        {
+          "ticker": "NVDA",
+          "relevance_context": "Form 4 ownership change",
+          "impact_analysis": {
+            "summary": "Routine 10b5-1 sale",
+            "sentiment": "neutral",
+            "price_impact_prediction": "Minimal",
+            "confidence": "medium",
+            "reasoning": "Pre-arranged plan reduces signaling value"
+          }
+        }
+      ],
+      "news_trading_value": {
+        "actionability_score": "low",
+        "information_novelty": 4,
+        "timing_relevance": "Filed shortly after the transaction",
+        "market_sentiment_alignment": "Neutral",
+        "estimated_read_time": "1 min"
+      },
+      "indirect_market_effects": {
+        "sector_implications": "",
+        "regional_market_impact": "",
+        "global_market_relevance": ""
+      },
+      "alternative_perspectives": {
+        "contrarian_view": "",
+        "overlooked_factors": ""
+      }
+    },
+    "news_context_enhancement": {
+      "background_context": "",
+      "impact_analysis": "",
+      "key_entities": [],
+      "market_relevance_summary": "",
+      "estimated_read_time_minutes": 1
+    }
+  },
+  "story_id": null,
+  "sources_count": null,
+  "sources": null
+}

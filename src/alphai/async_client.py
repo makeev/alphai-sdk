@@ -90,9 +90,7 @@ class AsyncClient:
         self.news = AsyncNewsResource(self)
         self.symbols = AsyncSymbolsResource(self)
 
-    async def request(
-        self, method: str, path: str, params: dict[str, Any] | None = None
-    ) -> Any:
+    async def request(self, method: str, path: str, params: dict[str, Any] | None = None) -> Any:
         """Issue a request with retries and return the parsed JSON body."""
         cleaned = clean_params(params or {})
         attempts = self._config.max_retries + 1

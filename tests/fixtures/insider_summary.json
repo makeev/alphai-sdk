@@ -1,0 +1,14 @@
+{
+  "ticker": "NVDA",
+  "days": 30,
+  "total_transactions": 18,
+  "buy_count": 2,
+  "sell_count": 16,
+  "buy_value_usd": "1240000.00",
+  "sell_value_usd": "224580213.05",
+  "pct_10b5_1": 78,
+  "top_insiders": [
+    {"name": "HUANG JEN HSUN", "title": "CEO", "transaction_count": 9, "net_value": "-221102600.00"},
+    {"name": "STEVENS MARK A", "title": "", "transaction_count": 2, "net_value": "1240000.00"}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "symbol": "NVDA",
+  "name": "NVIDIA Corporation",
+  "asset_type": "Stock",
+  "exchange": "NASDAQ",
+  "sector": "Technology",
+  "industry": "Semiconductors",
+  "description": "NVIDIA Corporation designs graphics processing units and AI accelerators.",
+  "website": "https://www.nvidia.com"
+}
