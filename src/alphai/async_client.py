@@ -18,13 +18,16 @@ from ._config import (
     DEFAULT_BACKOFF_FACTOR,
     DEFAULT_BASE_URL,
     DEFAULT_MAX_RETRIES,
+    DEFAULT_MAX_RETRY_AFTER,
     DEFAULT_TIMEOUT,
+    USER_AGENT,
     ClientConfig,
     resolve_api_key,
 )
 from ._core import (
     RateLimit,
     build_headers,
+    build_url,
     clean_params,
     compute_backoff,
     error_from_response,
@@ -33,7 +36,7 @@ from ._core import (
     should_retry,
 )
 from ._requests import CategoryArg
-from .errors import APIConnectionError
+from .errors import APIConnectionError, InvalidResponseError
 from .models import (
     NewsPagination,
     RichNewsArticle,
@@ -56,6 +59,10 @@ class AsyncClient:
 
         async with AsyncClient() as client:
             page = await client.news.list(symbol="NVDA")
+
+    A custom ``http_client`` is supported (advanced); the SDK still applies its
+    auth header and base URL on every request, so the key and host always take
+    effect. ``max_retries`` is clamped to ``>= 0``.
     """
 
     def __init__(
@@ -66,24 +73,24 @@ class AsyncClient:
         timeout: float = DEFAULT_TIMEOUT,
         max_retries: int = DEFAULT_MAX_RETRIES,
         backoff_factor: float = DEFAULT_BACKOFF_FACTOR,
+        max_retry_after: float = DEFAULT_MAX_RETRY_AFTER,
+        user_agent: str = USER_AGENT,
         http_client: httpx.AsyncClient | None = None,
     ) -> None:
         self._config = ClientConfig(
             api_key=resolve_api_key(api_key),
             base_url=base_url,
             timeout=timeout,
-            max_retries=max_retries,
+            max_retries=max(0, max_retries),
             backoff_factor=backoff_factor,
+            max_retry_after=max_retry_after,
+            user_agent=user_agent,
         )
         if http_client is not None:
             self._http = http_client
             self._owns_http = False
         else:
-            self._http = httpx.AsyncClient(
-                base_url=base_url,
-                timeout=timeout,
-                headers=build_headers(self._config),
-            )
+            self._http = httpx.AsyncClient(timeout=timeout)
             self._owns_http = True
 
         self.last_rate_limit: RateLimit | None = None
@@ -91,15 +98,23 @@ class AsyncClient:
         self.symbols = AsyncSymbolsResource(self)
 
     async def request(self, method: str, path: str, params: dict[str, Any] | None = None) -> Any:
-        """Issue a request with retries and return the parsed JSON body."""
+        """Issue a request with retries and return the parsed JSON body.
+
+        Auth header and base URL are applied here, so they take effect even when
+        a custom ``http_client`` was supplied.
+        """
         cleaned = clean_params(params or {})
+        url = build_url(self._config.base_url, path)
+        headers = build_headers(self._config)
+        backoff = self._config.backoff_factor
+        max_retry_after = self._config.max_retry_after
         attempts = self._config.max_retries + 1
         for attempt in range(attempts):
             try:
-                response = await self._http.request(method, path, params=cleaned)
+                response = await self._http.request(method, url, params=cleaned, headers=headers)
             except httpx.HTTPError as exc:
                 if attempt + 1 < attempts:
-                    await asyncio.sleep(compute_backoff(attempt, self._config.backoff_factor))
+                    await asyncio.sleep(compute_backoff(attempt, backoff))
                     continue
                 raise APIConnectionError(str(exc), cause=exc) from exc
 
@@ -108,12 +123,16 @@ class AsyncClient:
                 self.last_rate_limit = rate
 
             if response.status_code < 400:
-                return parse_json(response)
+                data = parse_json(response)
+                if data is None:
+                    raise InvalidResponseError(
+                        f"Expected a JSON body from {method} {path} "
+                        f"(status {response.status_code}), got none"
+                    )
+                return data
             if should_retry(response.status_code) and attempt + 1 < attempts:
                 retry_after = parse_retry_after(response.headers)
-                await asyncio.sleep(
-                    compute_backoff(attempt, self._config.backoff_factor, retry_after)
-                )
+                await asyncio.sleep(compute_backoff(attempt, backoff, retry_after, max_retry_after))
                 continue
             raise error_from_response(response)
 

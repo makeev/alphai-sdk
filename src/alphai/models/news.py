@@ -147,8 +147,12 @@ class NewsPagination(_Base):
 
     @property
     def has_more(self) -> bool:
-        """True when another (older) page is available."""
-        return self.next_cursor is not None
+        """True when another (older) page is available.
+
+        Uses ``bool(...)`` so an empty-string cursor counts as "no more",
+        matching how the paginator terminates.
+        """
+        return bool(self.next_cursor)
 
 
 __all__ = [

@@ -131,9 +131,12 @@ with Client() as client:
 | 429 | `RateLimitError` (`.retry_after`, `.limit`, `.remaining`, `.reset`) |
 | 5xx | `ServerError` |
 | network/timeout | `APIConnectionError` |
+| 2xx, unparseable body | `InvalidResponseError` |
 
 GET requests are automatically retried on 429 / 5xx / connection errors
-(`max_retries`, default 2) with jittered backoff that honors `Retry-After`.
+(`max_retries`, default 2) with jittered backoff that honors `Retry-After` (capped
+at `max_retry_after`, default 60s, so a bad value can't freeze your process). A
+2xx with a non-JSON / empty body raises `InvalidResponseError`.
 
 ## Rate-limit budget
 
@@ -155,11 +158,18 @@ Client(
     api_key=None,                       # else $ALPHAI_API_KEY
     base_url="https://api.alphai.io",   # API host
     timeout=30.0,
-    max_retries=2,
+    max_retries=2,                      # clamped to >= 0
     backoff_factor=0.5,
+    max_retry_after=60.0,               # cap on honored Retry-After (seconds)
+    user_agent="alphai-sdk-python/<version>",
     http_client=None,                   # bring your own httpx.Client (advanced)
 )
 ```
+
+The same keyword arguments apply to `AsyncClient`. When you pass a custom
+`http_client`, the SDK **still applies its `Authorization` header and base URL on
+every request** — your client just supplies the transport (proxies, custom
+timeout, mounts). You own its lifecycle (the SDK won't close a client you passed in).
 
 ## Development
 

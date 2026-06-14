@@ -36,7 +36,9 @@ def iterate_pages(
         pages += 1
         if max_pages is not None and pages >= max_pages:
             return
-        if not page.next_cursor:
+        # Stop on end-of-feed, and guard against a server that returns the same
+        # cursor forever (would otherwise loop indefinitely).
+        if not page.next_cursor or page.next_cursor == cursor:
             return
         cursor = page.next_cursor
 
@@ -61,7 +63,9 @@ async def aiterate_pages(
         pages += 1
         if max_pages is not None and pages >= max_pages:
             return
-        if not page.next_cursor:
+        # Stop on end-of-feed, and guard against a server that returns the same
+        # cursor forever (would otherwise loop indefinitely).
+        if not page.next_cursor or page.next_cursor == cursor:
             return
         cursor = page.next_cursor
 

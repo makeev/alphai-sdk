@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ._version import __version__
 from .errors import MissingAPIKeyError
@@ -13,18 +13,23 @@ API_KEY_ENV_VAR = "ALPHAI_API_KEY"
 DEFAULT_TIMEOUT = 30.0
 DEFAULT_MAX_RETRIES = 2
 DEFAULT_BACKOFF_FACTOR = 0.5
-USER_AGENT = f"alphai-python/{__version__}"
+# Upper bound on how long a server-supplied Retry-After is honored, in seconds.
+# Stops a hostile/misconfigured Retry-After from freezing the caller for minutes.
+DEFAULT_MAX_RETRY_AFTER = 60.0
+USER_AGENT = f"alphai-sdk-python/{__version__}"
 
 
 @dataclass(frozen=True)
 class ClientConfig:
     """Resolved, immutable configuration for a client instance."""
 
-    api_key: str
+    # repr=False: never leak the secret via repr()/logging/traceback locals.
+    api_key: str = field(repr=False)
     base_url: str = DEFAULT_BASE_URL
     timeout: float = DEFAULT_TIMEOUT
     max_retries: int = DEFAULT_MAX_RETRIES
     backoff_factor: float = DEFAULT_BACKOFF_FACTOR
+    max_retry_after: float = DEFAULT_MAX_RETRY_AFTER
     user_agent: str = USER_AGENT
 
 
@@ -45,6 +50,7 @@ __all__ = [
     "DEFAULT_BACKOFF_FACTOR",
     "DEFAULT_BASE_URL",
     "DEFAULT_MAX_RETRIES",
+    "DEFAULT_MAX_RETRY_AFTER",
     "DEFAULT_TIMEOUT",
     "USER_AGENT",
     "ClientConfig",

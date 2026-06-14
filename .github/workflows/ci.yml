@@ -40,6 +40,22 @@ jobs:
       - name: Pytest (offline)
         run: pytest -q
 
+  min-versions:
+    name: minimum dependency versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.10"
+      - name: Install with floor versions of httpx + pydantic
+        run: |
+          uv pip install --system -e ".[dev]"
+          uv pip install --system "httpx==0.27.0" "pydantic==2.7.0"
+      - name: Pytest (offline)
+        run: pytest -q
+
   integration:
     name: live integration (optional)
     runs-on: ubuntu-latest

@@ -22,6 +22,7 @@ from .errors import (
     APIStatusError,
     AuthenticationError,
     BadRequestError,
+    InvalidResponseError,
     MissingAPIKeyError,
     NotFoundError,
     PermissionDeniedError,
@@ -71,6 +72,7 @@ __all__ = [
     # errors
     "AlphaAIError",
     "MissingAPIKeyError",
+    "InvalidResponseError",
     "APIConnectionError",
     "APIStatusError",
     "BadRequestError",

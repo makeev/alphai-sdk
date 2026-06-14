@@ -6,9 +6,11 @@ JSON→model parsing live in exactly one place. Nothing here does I/O.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Iterable
 from typing import Any
 
+from .errors import InvalidResponseError
 from .models import (
     NewsCategory,
     NewsPagination,
@@ -24,28 +26,39 @@ NEWS = "/api/news/"
 NEWS_TRENDING = "/api/news/trending/"
 NEWS_INSIDER = "/api/news/insider/"
 
+# Reject path-breaking characters fail-fast, so a malformed uid/ticker yields a
+# clear client-side error instead of a confusing server 400/404 (and can't
+# inject extra path segments or query into the request).
+_UNSAFE_SEGMENT = re.compile(r"[/?#%\s]")
+
+
+def _path_segment(value: str, name: str) -> str:
+    if not value or _UNSAFE_SEGMENT.search(value):
+        raise ValueError(f"Invalid {name}: {value!r}")
+    return value
+
 
 def news_detail_path(uid: str) -> str:
-    return f"/api/news/{uid}/"
+    return f"/api/news/{_path_segment(uid, 'uid')}/"
 
 
 def news_related_path(uid: str) -> str:
-    return f"/api/news/{uid}/related/"
+    return f"/api/news/{_path_segment(uid, 'uid')}/related/"
 
 
 SYMBOLS = "/api/symbols/"
 
 
 def symbol_detail_path(ticker: str) -> str:
-    return f"/api/symbols/{ticker}/"
+    return f"/api/symbols/{_path_segment(ticker, 'ticker')}/"
 
 
 def symbol_sentiment_path(ticker: str) -> str:
-    return f"/api/symbols/{ticker}/sentiment-summary/"
+    return f"/api/symbols/{_path_segment(ticker, 'ticker')}/sentiment-summary/"
 
 
 def symbol_insider_path(ticker: str) -> str:
-    return f"/api/symbols/{ticker}/insider-summary/"
+    return f"/api/symbols/{_path_segment(ticker, 'ticker')}/insider-summary/"
 
 
 # --- param types & helpers -------------------------------------------------
@@ -113,6 +126,8 @@ def parse_article(data: Any) -> RichNewsArticle:
 
 def parse_article_list(data: Any) -> list[RichNewsArticle]:
     """Parse a bare array of articles (trending)."""
+    if not isinstance(data, list):
+        raise InvalidResponseError(f"Expected a JSON array, got {type(data).__name__}")
     return [RichNewsArticle.model_validate(item) for item in data]
 
 
@@ -127,6 +142,8 @@ def parse_symbol(data: Any) -> Symbol:
 
 
 def parse_symbol_list(data: Any) -> list[Symbol]:
+    if not isinstance(data, list):
+        raise InvalidResponseError(f"Expected a JSON array, got {type(data).__name__}")
     return [Symbol.model_validate(item) for item in data]
 
 

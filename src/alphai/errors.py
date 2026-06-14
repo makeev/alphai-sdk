@@ -18,6 +18,10 @@ class MissingAPIKeyError(AlphaAIError):
     """No API key was passed and ``ALPHAI_API_KEY`` is not set."""
 
 
+class InvalidResponseError(AlphaAIError):
+    """A 2xx response could not be parsed (non-JSON / empty / wrong shape)."""
+
+
 class APIConnectionError(AlphaAIError):
     """The request never produced an HTTP response (DNS, TLS, timeout, reset)."""
 
@@ -111,6 +115,7 @@ __all__ = [
     "AlphaAIError",
     "AuthenticationError",
     "BadRequestError",
+    "InvalidResponseError",
     "MissingAPIKeyError",
     "NotFoundError",
     "PermissionDeniedError",

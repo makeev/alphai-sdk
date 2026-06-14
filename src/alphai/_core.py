@@ -92,19 +92,29 @@ def parse_retry_after(headers: httpx.Headers) -> int | None:
     return _int(headers.get("retry-after"))
 
 
+def build_url(base_url: str, path: str) -> str:
+    """Join the configured base URL with an endpoint path."""
+    return f"{base_url.rstrip('/')}{path}"
+
+
 def compute_backoff(
     attempt: int,
     backoff_factor: float,
     retry_after: int | None = None,
+    max_retry_after: float | None = None,
 ) -> float:
     """Seconds to sleep before the next attempt.
 
-    Honors ``Retry-After`` when the server provided it; otherwise uses
-    exponential backoff with full jitter (``random(0, factor * 2**attempt)``).
-    ``attempt`` is 0 for the first retry.
+    Honors ``Retry-After`` when the server provided it (capped at
+    ``max_retry_after`` so a hostile/misconfigured value can't freeze the caller);
+    otherwise uses exponential backoff with full jitter
+    (``random(0, factor * 2**attempt)``). ``attempt`` is 0 for the first retry.
     """
     if retry_after is not None and retry_after >= 0:
-        return float(retry_after)
+        wait = float(retry_after)
+        if max_retry_after is not None:
+            wait = min(wait, max_retry_after)
+        return wait
     ceiling = backoff_factor * (2**attempt)
     return random.uniform(0.0, ceiling)
 
@@ -159,6 +169,7 @@ def _int(value: str | None) -> int | None:
 __all__ = [
     "RateLimit",
     "build_headers",
+    "build_url",
     "clean_params",
     "compute_backoff",
     "error_from_response",
