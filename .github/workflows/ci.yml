@@ -29,6 +29,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
 
       - name: Install package + dev deps
         run: uv pip install --system -e ".[dev]"
@@ -56,6 +58,8 @@ jobs:
           python-version: "3.10"
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
       - name: Install with floor versions of httpx + pydantic
         run: |
           uv pip install --system -e ".[dev]"
@@ -78,6 +82,8 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
 
       - name: Install package + dev deps
         run: uv pip install --system -e ".[dev]"
