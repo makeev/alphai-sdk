@@ -104,6 +104,12 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
+## Example projects
+
+- [**alphai-news-to-email**](https://github.com/makeev/alphai-news-to-email) —
+  a small, deployable app that emails you a deduplicated digest of high-relevance
+  news for your watchlist. Built entirely on this SDK.
+
 ## Errors
 
 All errors derive from `AlphaAIError`:
