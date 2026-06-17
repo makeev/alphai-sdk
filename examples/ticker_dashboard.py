@@ -13,8 +13,14 @@ from alphai import Client
 def dashboard(ticker: str) -> None:
     with Client() as client:
         sym = client.symbols.get(ticker)
-        print(f"== {sym.symbol} — {sym.name} ({sym.exchange}) ==")
-        print(f"   {sym.sector} / {sym.industry}\n")
+        # Market line carries multi-market metadata: exchange + asset_type, plus
+        # country/currency for foreign & crypto listings (empty for US).
+        market = " · ".join(filter(None, [sym.exchange, sym.asset_type, sym.country, sym.currency]))
+        print(f"== {sym.symbol} — {sym.name} ({market}) ==")
+        print(f"   {sym.sector} / {sym.industry}")
+        if not sym.supports_insider:
+            print("   (crypto/foreign listing — no SEC Form 4 insider data)")
+        print()
 
         sent = client.symbols.sentiment_summary(ticker)
         print(

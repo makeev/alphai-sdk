@@ -17,7 +17,23 @@ class _Base(BaseModel):
 
 
 class Symbol(_Base):
-    """An active equity symbol. List responses omit description/website."""
+    """An active symbol — a US equity/ETF, a cryptocurrency, or a foreign listing.
+
+    List responses omit ``description``/``website``; both list and detail carry
+    the multi-market fields below.
+
+    Multi-market metadata:
+
+    - ``asset_type`` is ``"Stock"``, ``"ETF"``, or ``"Crypto"``.
+    - ``country`` (ISO alpha-2) and ``currency`` are populated for foreign and
+      crypto listings, and empty for US equities.
+    - ``supports_insider`` is ``True`` only for US SEC names that can have Form 4
+      insider data; ``False`` for cryptocurrencies and foreign listings.
+    - ``tv_symbol`` is an optional TradingView-symbol override (usually empty).
+
+    Crypto tickers carry a ``-USD`` quote suffix (e.g. ``BTC-USD``); foreign
+    listings use the Yahoo-suffix form (e.g. ``VOD.L``).
+    """
 
     symbol: str
     name: str = ""
@@ -25,6 +41,10 @@ class Symbol(_Base):
     exchange: str = ""
     sector: str = ""
     industry: str = ""
+    country: str = ""
+    currency: str = ""
+    supports_insider: bool = True
+    tv_symbol: str = ""
     description: str = ""
     website: str | None = None
 

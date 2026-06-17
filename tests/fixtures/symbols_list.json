@@ -1,5 +1,7 @@
 [
-  {"symbol": "AAPL", "name": "Apple Inc.", "asset_type": "Stock", "exchange": "NASDAQ", "sector": "Technology", "industry": "Consumer Electronics"},
-  {"symbol": "NVDA", "name": "NVIDIA Corporation", "asset_type": "Stock", "exchange": "NASDAQ", "sector": "Technology", "industry": "Semiconductors"},
-  {"symbol": "SPY", "name": "SPDR S&P 500 ETF Trust", "asset_type": "ETF", "exchange": "AMEX", "sector": "", "industry": ""}
+  {"symbol": "AAPL", "name": "Apple Inc.", "asset_type": "Stock", "exchange": "NASDAQ", "sector": "Technology", "industry": "Consumer Electronics", "country": "", "currency": "", "supports_insider": true, "tv_symbol": ""},
+  {"symbol": "NVDA", "name": "NVIDIA Corporation", "asset_type": "Stock", "exchange": "NASDAQ", "sector": "Technology", "industry": "Semiconductors", "country": "", "currency": "", "supports_insider": true, "tv_symbol": ""},
+  {"symbol": "SPY", "name": "SPDR S&P 500 ETF Trust", "asset_type": "ETF", "exchange": "AMEX", "sector": "", "industry": "", "country": "", "currency": "", "supports_insider": true, "tv_symbol": ""},
+  {"symbol": "BTC-USD", "name": "Bitcoin", "asset_type": "Crypto", "exchange": "CRYPTO", "sector": "", "industry": "", "country": "", "currency": "USD", "supports_insider": false, "tv_symbol": ""},
+  {"symbol": "VOD.L", "name": "Vodafone Group Plc", "asset_type": "Stock", "exchange": "LSE", "sector": "Communication Services", "industry": "Telecom Services", "country": "GB", "currency": "GBP", "supports_insider": false, "tv_symbol": ""}
 ]

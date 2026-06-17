@@ -6,6 +6,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-06-17
+
+### Added
+- `Symbol` now carries the multi-market fields `country`, `currency`,
+  `supports_insider`, and `tv_symbol`, mirroring the API's crypto + foreign
+  equity support. `country` (ISO alpha-2) and `currency` are populated for
+  foreign/crypto listings (empty for US); `supports_insider` is `True` only for
+  US SEC names with Form 4 data. Crypto tickers use a `-USD` quote suffix
+  (e.g. `BTC-USD`); foreign listings use the Yahoo-suffix form (e.g. `VOD.L`).
+
+### Fixed
+- `RateLimitError` docstring corrected to the two-layer model (per-minute burst
+  + per-day volume) — the previous "hourly quota" wording was stale.
+
 ## [0.1.0] - 2026-06-14
 
 ### Added

@@ -83,6 +83,10 @@ from decimal import Decimal
 with Client() as client:
     client.symbols.list(limit=100)               # active tickers (bare list)
     nvda = client.symbols.get("NVDA")            # detail (404 if unknown)
+    btc = client.symbols.get("BTC-USD")          # crypto + foreign listings too
+    # Multi-market: .asset_type ("Stock"/"ETF"/"Crypto"), .country, .currency,
+    # .supports_insider (US SEC names only). Crypto is "<SYM>-USD"; foreign uses
+    # the Yahoo suffix (e.g. "VOD.L").
     sent = client.symbols.sentiment_summary("NVDA")   # 7-day AI sentiment
     ins = client.symbols.insider_summary("NVDA")      # 30-day Form 4 rollup
     assert isinstance(ins.buy_value_usd, Decimal | None)   # money is Decimal

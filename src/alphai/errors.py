@@ -79,7 +79,7 @@ class NotFoundError(APIStatusError):
 
 
 class RateLimitError(APIStatusError):
-    """429 — the account's hourly quota was exceeded.
+    """429 — a rate limit was exceeded (per-minute burst or per-day volume).
 
     Attributes:
         retry_after: Seconds to wait before retrying (from ``Retry-After``).

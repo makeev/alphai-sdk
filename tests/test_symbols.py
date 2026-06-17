@@ -18,10 +18,22 @@ def test_symbols_list(client: Client) -> None:
         return_value=httpx.Response(200, json=load("symbols_list"))
     )
     symbols = client.symbols.list(limit=3, offset=0)
-    assert [s.symbol for s in symbols] == ["AAPL", "NVDA", "SPY"]
+    assert [s.symbol for s in symbols] == ["AAPL", "NVDA", "SPY", "BTC-USD", "VOD.L"]
     assert symbols[2].asset_type == "ETF"
     sent = str(route.calls[0].request.url)
     assert "limit=3" in sent and "offset=0" in sent
+
+    # Multi-market metadata: US equities support Form 4 insider data and carry
+    # no country/currency; crypto and foreign listings do the opposite.
+    aapl = symbols[0]
+    assert aapl.supports_insider is True
+    assert aapl.country == "" and aapl.currency == ""
+    btc = symbols[3]
+    assert btc.asset_type == "Crypto"
+    assert btc.currency == "USD" and btc.supports_insider is False
+    vod = symbols[4]
+    assert vod.country == "GB" and vod.currency == "GBP"
+    assert vod.supports_insider is False
 
 
 @respx.mock
@@ -42,6 +54,8 @@ def test_symbol_get(client: Client) -> None:
     assert sym.symbol == "NVDA"
     assert sym.exchange == "NASDAQ"
     assert sym.website == "https://www.nvidia.com"
+    assert sym.supports_insider is True
+    assert sym.country == "" and sym.tv_symbol == ""
 
 
 @respx.mock
