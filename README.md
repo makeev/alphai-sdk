@@ -35,7 +35,11 @@ with Client(api_key="ak_live_…") as client:
         print(article.title, "→", article.relevance_score)
 ```
 
-Rate limits are per account, per hour: **Free 100 · Basic 1,000 · Pro 10,000**.
+Rate limits are per account and two-layer — a per-minute burst plus a per-day
+volume cap: **Free 20/min · 100/day · Basic 60/min · 10,000/day · Pro 150/min ·
+100,000/day**. News-archive depth is tiered too: Free keys page the feeds back
+30 days, Basic 90, Pro the full archive (paging past your horizon returns a
+`403` with an upgrade hint).
 
 ## Quickstart
 
