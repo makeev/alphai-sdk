@@ -65,3 +65,24 @@ def test_min_relevance_and_symbol(client: Client) -> None:
 def test_none_values_dropped(client: Client) -> None:
     params = _capture(client)
     assert params == httpx.QueryParams("")
+
+
+@respx.mock
+def test_page_size_passed_through(client: Client) -> None:
+    params = _capture(client, page_size=50)
+    assert params["page_size"] == "50"
+
+
+@respx.mock
+def test_page_size_omitted_by_default(client: Client) -> None:
+    params = _capture(client)
+    assert "page_size" not in params
+
+
+@respx.mock
+def test_insider_page_size_passed_through(client: Client) -> None:
+    route = respx.get(f"{BASE_URL}/api/news/insider/").mock(
+        return_value=httpx.Response(200, json=page([], None))
+    )
+    client.news.insider(page_size=50)
+    assert route.calls[0].request.url.params["page_size"] == "50"

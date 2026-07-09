@@ -54,6 +54,7 @@ with Client() as client:
         category=[NewsCategory.EARNINGS, "insider"],   # enum or str; OR-matched
         min_relevance=7,
         collapse_stories=True,                          # dedupe syndicated reprints
+        page_size=50,                                   # 10 default; 50 needs a Pro key
     )
     print(page.next_cursor)        # opaque cursor for the next (older) page
     print(page.has_more)

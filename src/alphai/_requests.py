@@ -86,6 +86,7 @@ def build_news_list_params(
     min_relevance: int | None = None,
     collapse_stories: bool = False,
     cursor: str | None = None,
+    page_size: int | None = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
@@ -94,6 +95,7 @@ def build_news_list_params(
         "min_relevance": min_relevance,
         "collapse": "story" if collapse_stories else None,
         "cursor": cursor,
+        "page_size": page_size,
     }
 
 
@@ -101,8 +103,9 @@ def build_news_insider_params(
     *,
     symbol: str | None = None,
     cursor: str | None = None,
+    page_size: int | None = None,
 ) -> dict[str, Any]:
-    return {"symbol": symbol, "cursor": cursor}
+    return {"symbol": symbol, "cursor": cursor, "page_size": page_size}
 
 
 def build_symbols_list_params(

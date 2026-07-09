@@ -6,6 +6,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-09
+
+### Added
+- `page_size` on `news.list`, `news.iter`, `news.insider`, and
+  `news.insider_iter` (sync and async). The API accepts 10 (the default) or
+  50; 50 requires a Pro key. Previously the SDK had no way to request the
+  larger page, so Pro callers paid 5x the requests for deep pagination.
+
 ## [0.1.1] - 2026-06-17
 
 ### Added

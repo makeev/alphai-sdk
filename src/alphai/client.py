@@ -178,8 +178,10 @@ class NewsResource:
         min_relevance: int | None = None,
         collapse_stories: bool = False,
         cursor: str | None = None,
+        page_size: int | None = None,
     ) -> NewsPagination:
-        """One page of the main feed (newest first)."""
+        """One page of the main feed (newest first). ``page_size`` accepts
+        10 (the default) or 50 (Pro keys only); other values are a 400."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -187,6 +189,7 @@ class NewsResource:
             min_relevance=min_relevance,
             collapse_stories=collapse_stories,
             cursor=cursor,
+            page_size=page_size,
         )
         return rq.parse_news_page(self._client.request("GET", rq.NEWS, params))
 
@@ -198,6 +201,7 @@ class NewsResource:
         exclude_categories: CategoryArg = None,
         min_relevance: int | None = None,
         collapse_stories: bool = False,
+        page_size: int | None = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
@@ -211,6 +215,7 @@ class NewsResource:
                 min_relevance=min_relevance,
                 collapse_stories=collapse_stories,
                 cursor=cursor,
+                page_size=page_size,
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)
@@ -224,22 +229,25 @@ class NewsResource:
         *,
         symbol: str | None = None,
         cursor: str | None = None,
+        page_size: int | None = None,
     ) -> NewsPagination:
-        """One page of the insider (SEC Form 4) feed."""
-        params = rq.build_news_insider_params(symbol=symbol, cursor=cursor)
+        """One page of the insider (SEC Form 4) feed. ``page_size`` accepts
+        10 (the default) or 50 (Pro keys only)."""
+        params = rq.build_news_insider_params(symbol=symbol, cursor=cursor, page_size=page_size)
         return rq.parse_news_page(self._client.request("GET", rq.NEWS_INSIDER, params))
 
     def insider_iter(
         self,
         *,
         symbol: str | None = None,
+        page_size: int | None = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
         """Auto-paginate the insider feed."""
 
         def fetch(cursor: str | None) -> NewsPagination:
-            return self.insider(symbol=symbol, cursor=cursor)
+            return self.insider(symbol=symbol, cursor=cursor, page_size=page_size)
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)
 
