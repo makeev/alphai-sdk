@@ -86,3 +86,13 @@ def test_insider_page_size_passed_through(client: Client) -> None:
     )
     client.news.insider(page_size=50)
     assert route.calls[0].request.url.params["page_size"] == "50"
+
+
+def test_insider_params_include_min_relevance():
+    from alphai import _requests as rq
+
+    params = rq.build_news_insider_params(
+        symbol="NVDA", min_relevance=7, cursor=None, page_size=None
+    )
+    assert params["min_relevance"] == 7
+    assert params["symbol"] == "NVDA"

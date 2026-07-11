@@ -6,6 +6,22 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-11
+
+### Added
+- Structured `insider` block on insider-feed items (`news.insider` /
+  `news.insider_iter`): `InsiderEvent` with `side` (`buy`/`sell`/`other`),
+  raw `transaction_code`, group-summed `shares` and `total_value_usd`,
+  value-weighted `avg_price_usd`, `is_10b5_1`, the reporting owner
+  (`insider_name`/`insider_title`/`is_officer`/`is_director`/
+  `is_ten_percent_owner`) and `transaction_date`. `None` outside the insider
+  feed and on rows without paired transaction data - no more deriving the
+  trade side from the headline.
+- `min_relevance` (1-10) on `news.insider` / `news.insider_iter` (sync and
+  async), same semantics as the main feed's parameter. Insider rows score
+  deterministically from the event's summed dollar value, so this acts as an
+  "only large trades" filter.
+
 ## [0.2.0] - 2026-07-09
 
 ### Added

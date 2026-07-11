@@ -228,18 +228,26 @@ class NewsResource:
         self,
         *,
         symbol: str | None = None,
+        min_relevance: int | None = None,
         cursor: str | None = None,
         page_size: int | None = None,
     ) -> NewsPagination:
         """One page of the insider (SEC Form 4) feed. ``page_size`` accepts
-        10 (the default) or 50 (Pro keys only)."""
-        params = rq.build_news_insider_params(symbol=symbol, cursor=cursor, page_size=page_size)
+        10 (the default) or 50 (Pro keys only). ``min_relevance`` (1-10)
+        overrides the default relevance floor — insider rows score
+        deterministically from the event's summed value, so this is the
+        "only large trades" dial. Items carry a structured ``insider`` block
+        (side / shares / avg price / value / who)."""
+        params = rq.build_news_insider_params(
+            symbol=symbol, min_relevance=min_relevance, cursor=cursor, page_size=page_size
+        )
         return rq.parse_news_page(self._client.request("GET", rq.NEWS_INSIDER, params))
 
     def insider_iter(
         self,
         *,
         symbol: str | None = None,
+        min_relevance: int | None = None,
         page_size: int | None = None,
         max_items: int | None = None,
         max_pages: int | None = None,
@@ -247,7 +255,9 @@ class NewsResource:
         """Auto-paginate the insider feed."""
 
         def fetch(cursor: str | None) -> NewsPagination:
-            return self.insider(symbol=symbol, cursor=cursor, page_size=page_size)
+            return self.insider(
+                symbol=symbol, min_relevance=min_relevance, cursor=cursor, page_size=page_size
+            )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)
 

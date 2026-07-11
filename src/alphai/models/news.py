@@ -6,7 +6,8 @@ breaks parsing. ``raw_text`` is intentionally absent — the API never returns i
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import date, datetime
+from decimal import Decimal
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict
@@ -115,11 +116,39 @@ class EnrichedArticle(_Base):
     news_context_enhancement: NewsContextEnhancement | None = None
 
 
+class InsiderEvent(_Base):
+    """Structured SEC Form 4 event block (insider-feed items only).
+
+    Aggregate of the row's whole transaction group: ``shares``/``total_value_usd``
+    are group sums (a 10b5-1 ladder is one event), ``avg_price_usd`` is the
+    value-weighted average over priced tranches (``None`` when the filing prices
+    no tranche). ``side`` is ``"buy"`` (P) / ``"sell"`` (S) / ``"other"`` (incl.
+    D, sale to issuer); the raw ``transaction_code`` rides along. The API sends
+    money fields as decimal strings; pydantic parses them to ``Decimal``.
+    """
+
+    side: str = "other"
+    transaction_code: str = ""
+    shares: Decimal | None = None
+    avg_price_usd: Decimal | None = None
+    total_value_usd: Decimal | None = None
+    is_10b5_1: bool = False
+    insider_name: str = ""
+    insider_title: str = ""
+    is_officer: bool = False
+    is_director: bool = False
+    is_ten_percent_owner: bool = False
+    transaction_date: date | None = None
+
+
 class RichNewsArticle(_Base):
     """A single enriched article: ``original`` + ``enrichment`` (+ story fields)."""
 
     original: OriginalArticle
     enrichment: EnrichedArticle
+    # Structured Form 4 event block — populated on insider-feed items only
+    # (GET /api/news/insider/); None on every other endpoint.
+    insider: InsiderEvent | None = None
     # Populated only when listing with collapse_stories=True.
     story_id: str | None = None
     sources_count: int | None = None

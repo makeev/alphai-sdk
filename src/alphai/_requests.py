@@ -102,10 +102,16 @@ def build_news_list_params(
 def build_news_insider_params(
     *,
     symbol: str | None = None,
+    min_relevance: int | None = None,
     cursor: str | None = None,
     page_size: int | None = None,
 ) -> dict[str, Any]:
-    return {"symbol": symbol, "cursor": cursor, "page_size": page_size}
+    return {
+        "symbol": symbol,
+        "min_relevance": min_relevance,
+        "cursor": cursor,
+        "page_size": page_size,
+    }
 
 
 def build_symbols_list_params(

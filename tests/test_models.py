@@ -86,3 +86,42 @@ def test_insider_summary_null_money_stays_none() -> None:
         {"ticker": "ZZZZ", "days": 30, "buy_value_usd": None, "top_insiders": []}
     )
     assert summ.buy_value_usd is None
+
+
+def test_insider_event_block_parses():
+    from datetime import date
+    from decimal import Decimal
+
+    from alphai.models import InsiderEvent, RichNewsArticle
+
+    payload = {
+        "original": {"uid": "f4abc12345678901", "title": "Insider sale"},
+        "enrichment": {"category": "insider", "tickers": ["CRWV"], "relevance_score": 6},
+        "insider": {
+            "side": "sell",
+            "transaction_code": "S",
+            "shares": "4000",
+            "avg_price_usd": "175",
+            "total_value_usd": "700000",
+            "is_10b5_1": True,
+            "insider_name": "STEVENS MARK A",
+            "insider_title": "Director",
+            "is_officer": False,
+            "is_director": True,
+            "is_ten_percent_owner": False,
+            "transaction_date": "2026-07-09",
+        },
+    }
+    article = RichNewsArticle.model_validate(payload)
+    assert isinstance(article.insider, InsiderEvent)
+    assert article.insider.side == "sell"
+    assert article.insider.shares == Decimal("4000")
+    assert article.insider.avg_price_usd == Decimal("175")
+    assert article.insider.transaction_date == date(2026, 7, 9)
+
+
+def test_insider_block_absent_is_none():
+    from alphai.models import RichNewsArticle
+
+    article = RichNewsArticle.model_validate({"original": {"uid": "a" * 16}, "enrichment": {}})
+    assert article.insider is None
