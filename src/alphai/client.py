@@ -31,7 +31,7 @@ from ._core import (
     parse_retry_after,
     should_retry,
 )
-from ._requests import CategoryArg
+from ._requests import CategoryArg, SortArg
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
     NewsPagination,
@@ -179,9 +179,18 @@ class NewsResource:
         collapse_stories: bool = False,
         cursor: str | None = None,
         page_size: int | None = None,
+        sort: SortArg = None,
     ) -> NewsPagination:
-        """One page of the main feed (newest first). ``page_size`` accepts
-        10 (the default) or 50 (Pro keys only); other values are a 400."""
+        """One page of the main feed. ``page_size`` accepts 10 (the default)
+        or 50 (Pro keys only); other values are a 400.
+
+        ``sort="ingested"`` switches to delta polling: rows in the order they
+        became available (ascending), so a poller cannot miss an article that
+        reached the feed after its publish time. In that mode ``next_cursor``
+        is ALWAYS set and an empty ``results`` means "caught up" - store the
+        cursor and call again later. Each mode mints its own cursor family, so
+        pass the same ``sort`` on every call of a run; replaying a cursor into
+        the other mode is a 400."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -190,6 +199,7 @@ class NewsResource:
             collapse_stories=collapse_stories,
             cursor=cursor,
             page_size=page_size,
+            sort=sort,
         )
         return rq.parse_news_page(self._client.request("GET", rq.NEWS, params))
 
@@ -202,10 +212,16 @@ class NewsResource:
         min_relevance: int | None = None,
         collapse_stories: bool = False,
         page_size: int | None = None,
+        sort: SortArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
-        """Auto-paginate the main feed, yielding articles across pages."""
+        """Auto-paginate the main feed, yielding articles across pages.
+
+        With ``sort="ingested"`` this drains what is currently new and stops
+        once caught up (the position stops advancing), rather than walking
+        back through history. To keep a long-lived poller, store
+        ``next_cursor`` from :meth:`list` yourself instead."""
 
         def fetch(cursor: str | None) -> NewsPagination:
             return self.list(
@@ -216,6 +232,7 @@ class NewsResource:
                 collapse_stories=collapse_stories,
                 cursor=cursor,
                 page_size=page_size,
+                sort=sort,
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)

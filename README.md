@@ -60,6 +60,32 @@ with Client() as client:
     print(page.has_more)
 ```
 
+### Poll for what is new (`sort="ingested"`)
+
+Articles reach the feed after their publish time, so a poller that tracks
+`time_published` silently skips late arrivals. `sort="ingested"` orders the feed
+by arrival instead, and its cursor is a polling position rather than an
+end-of-feed marker:
+
+```python
+cursor = load_cursor()          # None on the first run
+
+with Client() as client:
+    page = client.news.list(sort="ingested", cursor=cursor, symbol="NVDA")
+    for article in page.results:
+        handle(article)         # article.original.created_at = when we received it
+    save_cursor(page.next_cursor)   # always set; empty results = caught up
+```
+
+Pass the same `sort` on every call of a run. Each mode mints its own cursor
+family, so replaying an ingested cursor into the default mode is a `400`, not a
+silent restart. Cursors are opaque: hand one back unchanged, never build one.
+
+On Free and Basic the archive horizon applies to where a poll *resumes*, so a
+cursor left unused for longer than your window comes back `403`
+(`extra.reason = "archive_horizon"`). Poll on your plan's cadence and you will
+not see it; Pro has no window.
+
 ### Auto-paginate
 
 `iter()` follows the cursor for you and flattens articles across pages:

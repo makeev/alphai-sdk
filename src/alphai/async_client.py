@@ -35,7 +35,7 @@ from ._core import (
     parse_retry_after,
     should_retry,
 )
-from ._requests import CategoryArg
+from ._requests import CategoryArg, SortArg
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
     NewsPagination,
@@ -171,9 +171,13 @@ class AsyncNewsResource:
         collapse_stories: bool = False,
         cursor: str | None = None,
         page_size: int | None = None,
+        sort: SortArg = None,
     ) -> NewsPagination:
-        """One page of the main feed (newest first). ``page_size`` accepts
-        10 (the default) or 50 (Pro keys only); other values are a 400."""
+        """One page of the main feed. ``page_size`` accepts 10 (the default)
+        or 50 (Pro keys only); other values are a 400.
+
+        ``sort="ingested"`` switches to delta polling - see
+        :meth:`alphai.client.NewsResource.list`."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -182,6 +186,7 @@ class AsyncNewsResource:
             collapse_stories=collapse_stories,
             cursor=cursor,
             page_size=page_size,
+            sort=sort,
         )
         return rq.parse_news_page(await self._client.request("GET", rq.NEWS, params))
 
@@ -194,10 +199,15 @@ class AsyncNewsResource:
         min_relevance: int | None = None,
         collapse_stories: bool = False,
         page_size: int | None = None,
+        sort: SortArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
-        """Auto-paginate the main feed (``async for article in ...``)."""
+        """Auto-paginate the main feed (``async for article in ...``).
+
+        With ``sort="ingested"`` this drains what is currently new and stops
+        once caught up; keep a long-lived poller by storing ``next_cursor``
+        from :meth:`list` yourself."""
 
         async def fetch(cursor: str | None) -> NewsPagination:
             return await self.list(
@@ -208,6 +218,7 @@ class AsyncNewsResource:
                 collapse_stories=collapse_stories,
                 cursor=cursor,
                 page_size=page_size,
+                sort=sort,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)

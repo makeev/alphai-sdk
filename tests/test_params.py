@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import httpx
 import respx
 
@@ -96,3 +98,36 @@ def test_insider_params_include_min_relevance():
     )
     assert params["min_relevance"] == 7
     assert params["symbol"] == "NVDA"
+
+
+@respx.mock
+def test_sort_passed_through(client: Client) -> None:
+    params = _capture(client, sort="ingested")
+    assert params["sort"] == "ingested"
+
+
+@respx.mock
+def test_sort_omitted_by_default(client: Client) -> None:
+    # The server default is `published`; sending it explicitly would only make
+    # cached URLs differ for no reason.
+    params = _capture(client)
+    assert "sort" not in params
+
+
+@respx.mock
+def test_iter_threads_sort_onto_every_page(client: Client, article: Any) -> None:
+    # Cursors are mode-specific: a run that dropped `sort` after page one would
+    # replay an ingested cursor into published mode and get a 400. The second
+    # response also pins the delta stop condition - in ingested mode a caught-up
+    # poll returns an empty page with the SAME cursor, and the paginator's
+    # repeated-cursor guard is what ends the loop (there is no null cursor).
+    route = respx.get(f"{BASE_URL}/api/news/").mock(
+        side_effect=[
+            httpx.Response(200, json=page([article], "cur1")),
+            httpx.Response(200, json=page([], "cur1")),
+        ]
+    )
+    assert len(list(client.news.iter(sort="ingested"))) == 1
+    assert len(route.calls) == 2
+    for call in route.calls:
+        assert call.request.url.params["sort"] == "ingested"

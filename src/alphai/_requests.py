@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable
-from typing import Any
+from typing import Any, Literal
 
 from .errors import InvalidResponseError
 from .models import (
@@ -65,6 +65,13 @@ def symbol_insider_path(ticker: str) -> str:
 
 CategoryArg = str | NewsCategory | Iterable[str | NewsCategory] | None
 
+#: Feed ordering. ``published`` (the default) is the reverse-chronological feed
+#: and pages into older history. ``ingested`` is delta polling: rows in the
+#: order they became available, ascending, so a poller cannot miss a late
+#: arrival. The two mint SEPARATE cursor families — replaying a cursor into the
+#: other mode is a 400, so pass the same ``sort`` on every call of a run.
+SortArg = Literal["published", "ingested"] | None
+
 
 def _as_str_list(value: CategoryArg) -> list[str] | None:
     """Normalize a category arg (single / enum / iterable) to a list of strings."""
@@ -87,6 +94,7 @@ def build_news_list_params(
     collapse_stories: bool = False,
     cursor: str | None = None,
     page_size: int | None = None,
+    sort: SortArg = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
@@ -96,6 +104,7 @@ def build_news_list_params(
         "collapse": "story" if collapse_stories else None,
         "cursor": cursor,
         "page_size": page_size,
+        "sort": sort,
     }
 
 

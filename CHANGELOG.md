@@ -6,6 +6,26 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-25
+
+### Added
+- `sort` on `news.list` / `news.iter` (sync and async). `sort="ingested"` is
+  delta polling: the feed ordered by arrival rather than publish time, so a
+  poller cannot miss an article that reached the feed late (most do - general
+  news lands a median of ~33 minutes after publication). In that mode
+  `next_cursor` is always set and an empty `results` means "caught up": store
+  the cursor and call again later. `article.original.created_at` carries the
+  moment AlphaAI received the article.
+
+### Notes
+- Cursors are mode-specific. Pass the same `sort` on every call of a run -
+  replaying a cursor into the other mode returns a `400` (`BadRequestError`),
+  and a corrupted cursor does too, rather than silently restarting at the head
+  of the feed.
+- On Free and Basic the news-archive horizon applies to where a poll resumes,
+  so a cursor left unused for longer than your window returns `403`
+  (`extra.reason = "archive_horizon"`). Pro has no window.
+
 ## [0.3.0] - 2026-07-11
 
 ### Added
