@@ -43,7 +43,11 @@ dev = [
     "pytest>=8",
     "pytest-asyncio>=0.23",
     "respx>=0.21",
-    "ruff>=0.6",
+    # Capped on purpose: CI runs `ruff format --check .`, and a ruff minor can
+    # widen what "formatted" means. 0.16 started formatting Python blocks inside
+    # Markdown, which reddened main on an unrelated commit. Bump deliberately,
+    # reformat in the same commit.
+    "ruff>=0.6,<0.17",
     "mypy>=1.10",
 ]
 

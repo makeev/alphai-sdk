@@ -51,12 +51,12 @@ from alphai import Client, NewsCategory
 with Client() as client:
     page = client.news.list(
         symbol="NVDA",
-        category=[NewsCategory.EARNINGS, "insider"],   # enum or str; OR-matched
+        category=[NewsCategory.EARNINGS, "insider"],  # enum or str; OR-matched
         min_relevance=7,
-        collapse_stories=True,                          # dedupe syndicated reprints
-        page_size=50,                                   # 10 default; 50 needs a Pro key
+        collapse_stories=True,  # dedupe syndicated reprints
+        page_size=50,  # 10 default; 50 needs a Pro key
     )
-    print(page.next_cursor)        # opaque cursor for the next (older) page
+    print(page.next_cursor)  # opaque cursor for the next (older) page
     print(page.has_more)
 ```
 
@@ -68,13 +68,13 @@ by arrival instead, and its cursor is a polling position rather than an
 end-of-feed marker:
 
 ```python
-cursor = load_cursor()          # None on the first run
+cursor = load_cursor()  # None on the first run
 
 with Client() as client:
     page = client.news.list(sort="ingested", cursor=cursor, symbol="NVDA")
     for article in page.results:
-        handle(article)         # article.original.created_at = when we received it
-    save_cursor(page.next_cursor)   # always set; empty results = caught up
+        handle(article)  # article.original.created_at = when we received it
+    save_cursor(page.next_cursor)  # always set; empty results = caught up
 ```
 
 Pass the same `sort` on every call of a run. Each mode mints its own cursor
@@ -100,10 +100,10 @@ with Client() as client:
 
 ```python
 with Client() as client:
-    client.news.trending()                 # top ≤10 from the last 48h
+    client.news.trending()  # top ≤10 from the last 48h
     art = client.news.get("788e477c66f3849b")
-    client.news.related(art.uid)           # up to 6 related articles
-    client.news.insider(symbol="NVDA")     # SEC Form 4 feed (or .insider_iter())
+    client.news.related(art.uid)  # up to 6 related articles
+    client.news.insider(symbol="NVDA")  # SEC Form 4 feed (or .insider_iter())
 ```
 
 ### Symbols & rollups
@@ -112,15 +112,15 @@ with Client() as client:
 from decimal import Decimal
 
 with Client() as client:
-    client.symbols.list(limit=100)               # active tickers (bare list)
-    nvda = client.symbols.get("NVDA")            # detail (404 if unknown)
-    btc = client.symbols.get("BTC-USD")          # crypto + foreign listings too
+    client.symbols.list(limit=100)  # active tickers (bare list)
+    nvda = client.symbols.get("NVDA")  # detail (404 if unknown)
+    btc = client.symbols.get("BTC-USD")  # crypto + foreign listings too
     # Multi-market: .asset_type ("Stock"/"ETF"/"Crypto"), .country, .currency,
     # .supports_insider (US SEC names only). Crypto is "<SYM>-USD"; foreign uses
     # the Yahoo suffix (e.g. "VOD.L").
-    sent = client.symbols.sentiment_summary("NVDA")   # 7-day AI sentiment
-    ins = client.symbols.insider_summary("NVDA")      # 30-day Form 4 rollup
-    assert isinstance(ins.buy_value_usd, Decimal | None)   # money is Decimal
+    sent = client.symbols.sentiment_summary("NVDA")  # 7-day AI sentiment
+    ins = client.symbols.insider_summary("NVDA")  # 30-day Form 4 rollup
+    assert isinstance(ins.buy_value_usd, Decimal | None)  # money is Decimal
 ```
 
 ### Async
@@ -131,10 +131,12 @@ Every method mirrors the sync client with `await`; `iter()` is an async generato
 import asyncio
 from alphai import AsyncClient
 
+
 async def main() -> None:
     async with AsyncClient() as client:
         async for article in client.news.iter(symbol="NVDA", max_items=20):
             print(article.title)
+
 
 asyncio.run(main())
 ```
@@ -196,14 +198,14 @@ with Client() as client:
 
 ```python
 Client(
-    api_key=None,                       # else $ALPHAI_API_KEY
-    base_url="https://api.alphai.io",   # API host
+    api_key=None,  # else $ALPHAI_API_KEY
+    base_url="https://api.alphai.io",  # API host
     timeout=30.0,
-    max_retries=2,                      # clamped to >= 0
+    max_retries=2,  # clamped to >= 0
     backoff_factor=0.5,
-    max_retry_after=60.0,               # cap on honored Retry-After (seconds)
+    max_retry_after=60.0,  # cap on honored Retry-After (seconds)
     user_agent="alphai-sdk-python/<version>",
-    http_client=None,                   # bring your own httpx.Client (advanced)
+    http_client=None,  # bring your own httpx.Client (advanced)
 )
 ```
 
