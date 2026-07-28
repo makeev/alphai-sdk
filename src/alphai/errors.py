@@ -57,13 +57,53 @@ class APIStatusError(AlphaAIError):
 
 
 class BadRequestError(APIStatusError):
-    """400 — invalid params, malformed ticker, bad/expired cursor."""
+    """400 — invalid params, malformed ticker, or a malformed cursor.
+
+    (A cursor is never rejected for age: the tokens carry no expiry. An
+    unreadable one means it was constructed or truncated rather than taken
+    from a previous response's ``next_cursor``.)
+    """
 
     @property
     def fields(self) -> dict[str, Any]:
-        """Per-field validation messages, when the 400 was a validation error."""
+        """Per-field validation messages, when the 400 was a validation error.
+
+        The API sends ``extra.fields`` in two shapes and both are normalised
+        here to ``{param: [messages]}``:
+
+        - a **list** of validator entries (``{"loc": ["skip"], "msg": …}``) —
+          what an unknown or ill-typed *query parameter* produces, i.e. the
+          common case;
+        - a **dict** of ``{field: messages}`` — what a field rejected inside a
+          view produces (a malformed ``cursor``, for one).
+
+        Earlier releases only understood the dict, so the list shape silently
+        came back as ``{}``.
+        """
         fields = self.extra.get("fields")
-        return fields if isinstance(fields, dict) else {}
+        if isinstance(fields, dict):
+            return fields
+        if not isinstance(fields, list):
+            return {}
+        normalised: dict[str, Any] = {}
+        for entry in fields:
+            if not isinstance(entry, dict):
+                continue
+            loc = entry.get("loc") or ["_"]
+            key = ".".join(str(part) for part in loc) if isinstance(loc, list) else str(loc)
+            normalised.setdefault(key, []).append(entry.get("msg", ""))
+        return normalised
+
+    @property
+    def allowed_params(self) -> list[str]:
+        """Every query parameter the endpoint accepts, when the API said so.
+
+        Sent on a 400 caused by an unknown query parameter, so a caller (or an
+        agent) can correct itself without going to the docs. Empty when the 400
+        came from somewhere other than query-parameter validation.
+        """
+        allowed = self.extra.get("allowed_params")
+        return [str(p) for p in allowed] if isinstance(allowed, list) else []
 
 
 class AuthenticationError(APIStatusError):
