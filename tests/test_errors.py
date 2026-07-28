@@ -61,6 +61,57 @@ def test_400_validation_fields(client: Client) -> None:
 
 
 @respx.mock
+def test_400_validation_fields_list_shape(client: Client) -> None:
+    """An unknown query parameter comes back as a LIST of validator entries, not
+    a dict — the common shape, and the one earlier releases dropped on the floor
+    (``fields`` returned ``{}``)."""
+    respx.get(f"{BASE_URL}/api/news/").mock(
+        return_value=httpx.Response(
+            400,
+            json={
+                "message": "Validation error",
+                "extra": {
+                    "fields": [
+                        {
+                            "type": "extra_forbidden",
+                            "loc": ["skip"],
+                            "msg": "Extra inputs are not permitted. Did you mean 'cursor'?",
+                        }
+                    ],
+                    "allowed_params": ["cursor", "page_size", "symbol"],
+                    "docs": "https://alphai.io/developers",
+                },
+            },
+        )
+    )
+    with pytest.raises(BadRequestError) as exc:
+        client.news.list()
+    assert exc.value.fields == {"skip": ["Extra inputs are not permitted. Did you mean 'cursor'?"]}
+    assert exc.value.allowed_params == ["cursor", "page_size", "symbol"]
+
+
+@respx.mock
+def test_400_without_allowed_params(client: Client) -> None:
+    """Not every 400 is query-param validation — the accessor must stay empty
+    rather than invent a vocabulary."""
+    respx.get(f"{BASE_URL}/api/news/").mock(
+        return_value=httpx.Response(
+            400,
+            json={
+                "message": "Validation error",
+                "extra": {
+                    "fields": {"cursor": ["Cursor is an opaque token — pass back 'next_cursor'."]},
+                },
+            },
+        )
+    )
+    with pytest.raises(BadRequestError) as exc:
+        client.news.list()
+    assert exc.value.allowed_params == []
+    assert "next_cursor" in exc.value.fields["cursor"][0]
+
+
+@respx.mock
 def test_403(client: Client) -> None:
     respx.get(f"{BASE_URL}/api/news/").mock(
         return_value=httpx.Response(403, json={"message": "Insufficient permissions."})
