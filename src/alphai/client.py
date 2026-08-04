@@ -181,16 +181,23 @@ class NewsResource:
         page_size: int | None = None,
         sort: SortArg = None,
     ) -> NewsPagination:
-        """One page of the main feed. ``page_size`` accepts 10 (the default)
-        or 50 (Pro keys only); other values are a 400.
+        """One page of the main feed. ``page_size`` is 1-20 on any key and
+        defaults to 10; 21-50 needs a Pro key, and anything outside 1-50 is a
+        400.
 
         ``sort="ingested"`` switches to delta polling: rows in the order they
         became available (ascending), so a poller cannot miss an article that
         reached the feed after its publish time. In that mode ``next_cursor``
         is ALWAYS set and an empty ``results`` means "caught up" - store the
-        cursor and call again later. Each mode mints its own cursor family, so
-        pass the same ``sort`` on every call of a run; replaying a cursor into
-        the other mode is a 400."""
+        cursor and call again later. Read that from :attr:`caught_up`, never
+        from the cursor. Each mode mints its own cursor family, so pass the
+        same ``sort`` on every call of a run; replaying a cursor into the other
+        mode is a 400.
+
+        A poller that reads a page at a time falls behind whenever the feed
+        publishes faster than it drains, and the timestamps then look stale
+        rather than wrong. Raise ``page_size`` and narrow with
+        ``min_relevance`` to keep up."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -201,7 +208,7 @@ class NewsResource:
             page_size=page_size,
             sort=sort,
         )
-        return rq.parse_news_page(self._client.request("GET", rq.NEWS, params))
+        return rq.parse_news_page(self._client.request("GET", rq.NEWS, params), sort)
 
     def iter(
         self,
@@ -248,17 +255,25 @@ class NewsResource:
         min_relevance: int | None = None,
         cursor: str | None = None,
         page_size: int | None = None,
+        sort: SortArg = None,
     ) -> NewsPagination:
-        """One page of the insider (SEC Form 4) feed. ``page_size`` accepts
-        10 (the default) or 50 (Pro keys only). ``min_relevance`` (1-10)
+        """One page of the insider (SEC Form 4) feed. ``page_size`` is 1-20 on
+        any key (default 10), 21-50 needs Pro. ``min_relevance`` (1-10)
         overrides the default relevance floor — insider rows score
         deterministically from the event's summed value, so this is the
         "only large trades" dial. Items carry a structured ``insider`` block
-        (side / shares / avg price / value / who)."""
+        (side / shares / avg price / value / who).
+
+        ``sort="ingested"`` delta-polls this feed under the same contract as
+        :meth:`list`, with its own cursor family."""
         params = rq.build_news_insider_params(
-            symbol=symbol, min_relevance=min_relevance, cursor=cursor, page_size=page_size
+            symbol=symbol,
+            min_relevance=min_relevance,
+            cursor=cursor,
+            page_size=page_size,
+            sort=sort,
         )
-        return rq.parse_news_page(self._client.request("GET", rq.NEWS_INSIDER, params))
+        return rq.parse_news_page(self._client.request("GET", rq.NEWS_INSIDER, params), sort)
 
     def insider_iter(
         self,
@@ -266,6 +281,7 @@ class NewsResource:
         symbol: str | None = None,
         min_relevance: int | None = None,
         page_size: int | None = None,
+        sort: SortArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
@@ -273,7 +289,11 @@ class NewsResource:
 
         def fetch(cursor: str | None) -> NewsPagination:
             return self.insider(
-                symbol=symbol, min_relevance=min_relevance, cursor=cursor, page_size=page_size
+                symbol=symbol,
+                min_relevance=min_relevance,
+                cursor=cursor,
+                page_size=page_size,
+                sort=sort,
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)

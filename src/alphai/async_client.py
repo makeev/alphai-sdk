@@ -173,8 +173,8 @@ class AsyncNewsResource:
         page_size: int | None = None,
         sort: SortArg = None,
     ) -> NewsPagination:
-        """One page of the main feed. ``page_size`` accepts 10 (the default)
-        or 50 (Pro keys only); other values are a 400.
+        """One page of the main feed. ``page_size`` is 1-20 on any key
+        (default 10), 21-50 needs a Pro key.
 
         ``sort="ingested"`` switches to delta polling - see
         :meth:`alphai.client.NewsResource.list`."""
@@ -188,7 +188,7 @@ class AsyncNewsResource:
             page_size=page_size,
             sort=sort,
         )
-        return rq.parse_news_page(await self._client.request("GET", rq.NEWS, params))
+        return rq.parse_news_page(await self._client.request("GET", rq.NEWS, params), sort)
 
     def iter(
         self,
@@ -234,17 +234,25 @@ class AsyncNewsResource:
         min_relevance: int | None = None,
         cursor: str | None = None,
         page_size: int | None = None,
+        sort: SortArg = None,
     ) -> NewsPagination:
-        """One page of the insider (SEC Form 4) feed. ``page_size`` accepts
-        10 (the default) or 50 (Pro keys only). ``min_relevance`` (1-10)
+        """One page of the insider (SEC Form 4) feed. ``page_size`` is 1-20 on
+        any key (default 10), 21-50 needs Pro. ``min_relevance`` (1-10)
         overrides the default relevance floor — insider rows score
         deterministically from the event's summed value, so this is the
         "only large trades" dial. Items carry a structured ``insider`` block
-        (side / shares / avg price / value / who)."""
+        (side / shares / avg price / value / who).
+
+        ``sort="ingested"`` delta-polls this feed under the same contract as
+        :meth:`list`, with its own cursor family."""
         params = rq.build_news_insider_params(
-            symbol=symbol, min_relevance=min_relevance, cursor=cursor, page_size=page_size
+            symbol=symbol,
+            min_relevance=min_relevance,
+            cursor=cursor,
+            page_size=page_size,
+            sort=sort,
         )
-        return rq.parse_news_page(await self._client.request("GET", rq.NEWS_INSIDER, params))
+        return rq.parse_news_page(await self._client.request("GET", rq.NEWS_INSIDER, params), sort)
 
     def insider_iter(
         self,
@@ -252,6 +260,7 @@ class AsyncNewsResource:
         symbol: str | None = None,
         min_relevance: int | None = None,
         page_size: int | None = None,
+        sort: SortArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
@@ -259,7 +268,11 @@ class AsyncNewsResource:
 
         async def fetch(cursor: str | None) -> NewsPagination:
             return await self.insider(
-                symbol=symbol, min_relevance=min_relevance, cursor=cursor, page_size=page_size
+                symbol=symbol,
+                min_relevance=min_relevance,
+                cursor=cursor,
+                page_size=page_size,
+                sort=sort,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)

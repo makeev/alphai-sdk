@@ -6,6 +6,38 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-08-04
+
+### Fixed
+- `NewsPagination.has_more` was `True` on every page in `sort="ingested"` mode,
+  including a caught-up poll that returned nothing. It was derived from
+  `next_cursor`, which in that mode is a polling position and is *never* null —
+  so it carried no termination signal. `has_more` is now mode-aware: end-of-feed
+  in `published` mode, "this poll returned rows" in `ingested` mode. A
+  `while page.has_more:` loop no longer spins forever.
+- `news.iter(sort="ingested")` could keep fetching after it was caught up. The
+  paginator stopped on `next_cursor == cursor`, but a caught-up ingested poll
+  parks the position at the **global** feed head, which advances whenever any
+  row is ingested — not just one matching the caller's filter. A filtered drain
+  (`symbol=…`) therefore kept requesting empty pages whenever a row landed
+  between two calls, burning rate-limit budget on a race. It now stops on the
+  page's own `caught_up`.
+
+### Added
+- `NewsPagination.caught_up` — the explicit, mode-aware "nothing more right
+  now" signal, and the one to branch on in a polling loop.
+- `sort` on `news.insider()` / `news.insider_iter()` (both clients). The insider
+  feed has supported delta polling all along; the SDK simply could not ask for
+  it.
+
+### Changed
+- `page_size` documentation was stale in both clients and the README: it said
+  "10 or 50 (Pro only); other values are a 400". The API accepts any size in
+  1-20 on any key and 21-50 on Pro. The wrong text hid the setting that keeps a
+  poller current.
+- README: a delta-polling section on falling behind — why a slow poller sees
+  hours-old timestamps, and which dials fix it.
+
 ## [0.4.1] - 2026-07-28
 
 ### Added
