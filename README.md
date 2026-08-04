@@ -54,7 +54,7 @@ with Client() as client:
         category=[NewsCategory.EARNINGS, "insider"],  # enum or str; OR-matched
         min_relevance=7,
         collapse_stories=True,  # dedupe syndicated reprints
-        page_size=50,  # 10 default; 50 needs a Pro key
+        page_size=20,  # 10 default; 1-20 on any key, 21-50 needs Pro
     )
     print(page.next_cursor)  # opaque cursor for the next (older) page
     print(page.has_more)
@@ -71,15 +71,29 @@ end-of-feed marker:
 cursor = load_cursor()  # None on the first run
 
 with Client() as client:
-    page = client.news.list(sort="ingested", cursor=cursor, symbol="NVDA")
+    page = client.news.list(
+        sort="ingested", cursor=cursor, symbol="NVDA", page_size=20, min_relevance=7
+    )
     for article in page.results:
         handle(article)  # article.original.created_at = when we received it
     save_cursor(page.next_cursor)  # always set; empty results = caught up
+
+    # Ask the page, never the cursor: in this mode next_cursor is never null,
+    # so `caught_up` (and its inverse `has_more`) is the only honest signal.
+    if page.caught_up:
+        sleep_until_next_poll()
 ```
 
 Pass the same `sort` on every call of a run. Each mode mints its own cursor
 family, so replaying an ingested cursor into the default mode is a `400`, not a
 silent restart. Cursors are opaque: hand one back unchanged, never build one.
+
+**Keep up with the feed.** A delta poll returns one page, so a poller that
+drains slower than the feed publishes drifts backwards and its articles read as
+hours old — the data is current, the position is not. Raise `page_size` and
+narrow the stream (`min_relevance`, `symbol`, `category`) until one poll covers
+one interval, and remember the per-day call cap bounds how much of the feed a
+plan can drain at all.
 
 On Free and Basic the archive horizon applies to where a poll *resumes*, so a
 cursor left unused for longer than your window comes back `403`

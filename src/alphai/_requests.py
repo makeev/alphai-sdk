@@ -114,12 +114,14 @@ def build_news_insider_params(
     min_relevance: int | None = None,
     cursor: str | None = None,
     page_size: int | None = None,
+    sort: SortArg = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
         "min_relevance": min_relevance,
         "cursor": cursor,
         "page_size": page_size,
+        "sort": sort,
     }
 
 
@@ -134,8 +136,16 @@ def build_symbols_list_params(
 # --- response parsers ------------------------------------------------------
 
 
-def parse_news_page(data: Any) -> NewsPagination:
-    return NewsPagination.model_validate(data)
+def parse_news_page(data: Any, sort: SortArg = None) -> NewsPagination:
+    """Parse a feed page, stamping it with the sort mode that produced it.
+
+    The mode is not in the response body, but ``has_more`` / ``caught_up``
+    resolve differently per mode — so the request layer, which is the only
+    place that knows what was asked for, hands it to the model.
+    """
+    page = NewsPagination.model_validate(data)
+    page._sort = sort or "published"
+    return page
 
 
 def parse_article(data: Any) -> RichNewsArticle:

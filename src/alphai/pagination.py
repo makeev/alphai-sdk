@@ -36,9 +36,16 @@ def iterate_pages(
         pages += 1
         if max_pages is not None and pages >= max_pages:
             return
-        # Stop on end-of-feed, and guard against a server that returns the same
-        # cursor forever (would otherwise loop indefinitely).
-        if not page.next_cursor or page.next_cursor == cursor:
+        # Stop when the page itself says it is done. A cursor comparison alone
+        # is NOT enough in ingested mode: there `next_cursor` is always set and
+        # a caught-up poll parks the position at the GLOBAL feed head, which
+        # advances whenever any row is ingested — not just one matching the
+        # caller's filter. So an `iter(symbol=…, sort="ingested")` drain that
+        # is already caught up kept fetching empty pages whenever a row landed
+        # between two calls, burning rate-limit budget on a race. `caught_up`
+        # is the mode-aware signal; the cursor check stays as a backstop
+        # against a server that repeats a token forever.
+        if page.caught_up or page.next_cursor == cursor:
             return
         cursor = page.next_cursor
 
@@ -63,9 +70,16 @@ async def aiterate_pages(
         pages += 1
         if max_pages is not None and pages >= max_pages:
             return
-        # Stop on end-of-feed, and guard against a server that returns the same
-        # cursor forever (would otherwise loop indefinitely).
-        if not page.next_cursor or page.next_cursor == cursor:
+        # Stop when the page itself says it is done. A cursor comparison alone
+        # is NOT enough in ingested mode: there `next_cursor` is always set and
+        # a caught-up poll parks the position at the GLOBAL feed head, which
+        # advances whenever any row is ingested — not just one matching the
+        # caller's filter. So an `iter(symbol=…, sort="ingested")` drain that
+        # is already caught up kept fetching empty pages whenever a row landed
+        # between two calls, burning rate-limit budget on a race. `caught_up`
+        # is the mode-aware signal; the cursor check stays as a backstop
+        # against a server that repeats a token forever.
+        if page.caught_up or page.next_cursor == cursor:
             return
         cursor = page.next_cursor
 

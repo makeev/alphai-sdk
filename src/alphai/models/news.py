@@ -10,7 +10,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, PrivateAttr
 
 from .enums import (
     ActionabilityLike,
@@ -174,14 +174,38 @@ class NewsPagination(_Base):
     results: list[RichNewsArticle] = []
     next_cursor: str | None = None
 
+    #: Sort mode that produced this page. NOT part of the response body — the
+    #: request layer stamps it (see ``_requests.parse_news_page``) because
+    #: "is there more?" has a different answer per mode and the body alone
+    #: cannot tell them apart.
+    _sort: str = PrivateAttr(default="published")
+
+    @property
+    def caught_up(self) -> bool:
+        """True when this page exhausted what the mode was asked for.
+
+        ``published``: the feed ended — no ``next_cursor``.
+
+        ``ingested``: nothing arrived since the last poll — empty ``results``.
+        In this mode ``next_cursor`` is ALWAYS set (it is a polling position,
+        not an end-of-feed marker), so it carries no termination signal at all
+        and must not be used as one.
+        """
+        if self._sort == "ingested":
+            return not self.results
+        # Empty-string cursor counts as "no more", matching the paginator.
+        return not self.next_cursor
+
     @property
     def has_more(self) -> bool:
-        """True when another (older) page is available.
+        """True when another page is worth fetching — the inverse of
+        :attr:`caught_up`.
 
-        Uses ``bool(...)`` so an empty-string cursor counts as "no more",
-        matching how the paginator terminates.
+        In ``published`` mode that means an older page exists. In ``ingested``
+        mode it means this poll returned rows, so there may be more waiting;
+        a caught-up poll reports ``False``.
         """
-        return bool(self.next_cursor)
+        return not self.caught_up
 
 
 __all__ = [
