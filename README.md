@@ -38,8 +38,8 @@ with Client(api_key="ak_live_…") as client:
 Rate limits are per account and two-layer — a per-minute burst plus a per-day
 volume cap: **Free 20/min · 100/day · Basic 60/min · 10,000/day · Pro 150/min ·
 100,000/day**. News-archive depth is tiered too: Free keys page the feeds back
-30 days, Basic 90, Pro the full archive (paging past your horizon returns a
-`403` with an upgrade hint).
+30 days, Basic 90, Pro 180 (paging past your horizon returns a `403` with an
+upgrade hint).
 
 ## Quickstart
 
@@ -59,6 +59,30 @@ with Client() as client:
     print(page.next_cursor)  # opaque cursor for the next (older) page
     print(page.has_more)
 ```
+
+### Pull a date window
+
+`from_date` / `to_date` bound the feed to a publication window (inclusive), the
+same names the MCP tools use. A `datetime.date` or a bare `YYYY-MM-DD` string
+means the whole day, so equal bounds return that day, not an empty page; a
+`datetime` is an exact instant (naive is read as UTC):
+
+```python
+from datetime import date
+
+with Client() as client:
+    july = client.news.list(
+        symbol="NVDA",
+        from_date=date(2026, 7, 1),
+        to_date=date(2026, 7, 31),  # through July 31 23:59:59.999999 UTC
+    )
+```
+
+The window respects your plan's archive depth (past the horizon is a `403` on
+the first page) and applies to the default `sort="published"` mode only — delta
+polling never walks back into history, so combining a window with
+`sort="ingested"` is a `400`. On `news.insider` the window bounds when the
+filing reached the feed, not the trade date inside the `insider` block.
 
 ### Poll for what is new (`sort="ingested"`)
 
