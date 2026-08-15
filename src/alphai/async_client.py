@@ -35,7 +35,7 @@ from ._core import (
     parse_retry_after,
     should_retry,
 )
-from ._requests import CategoryArg, SortArg
+from ._requests import CategoryArg, DateArg, SortArg
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
     NewsPagination,
@@ -172,12 +172,15 @@ class AsyncNewsResource:
         cursor: str | None = None,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
     ) -> NewsPagination:
         """One page of the main feed. ``page_size`` is 1-20 on any key
         (default 10), 21-50 needs a Pro key.
 
-        ``sort="ingested"`` switches to delta polling - see
-        :meth:`alphai.client.NewsResource.list`."""
+        ``sort="ingested"`` switches to delta polling, and ``from_date`` /
+        ``to_date`` bound the publication window (inclusive; a bare date is
+        the whole day) - see :meth:`alphai.client.NewsResource.list`."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -187,6 +190,8 @@ class AsyncNewsResource:
             cursor=cursor,
             page_size=page_size,
             sort=sort,
+            from_date=from_date,
+            to_date=to_date,
         )
         return rq.parse_news_page(await self._client.request("GET", rq.NEWS, params), sort)
 
@@ -200,6 +205,8 @@ class AsyncNewsResource:
         collapse_stories: bool = False,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
@@ -219,6 +226,8 @@ class AsyncNewsResource:
                 cursor=cursor,
                 page_size=page_size,
                 sort=sort,
+                from_date=from_date,
+                to_date=to_date,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)
@@ -235,6 +244,8 @@ class AsyncNewsResource:
         cursor: str | None = None,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
     ) -> NewsPagination:
         """One page of the insider (SEC Form 4) feed. ``page_size`` is 1-20 on
         any key (default 10), 21-50 needs Pro. ``min_relevance`` (1-10)
@@ -244,13 +255,20 @@ class AsyncNewsResource:
         (side / shares / avg price / value / who).
 
         ``sort="ingested"`` delta-polls this feed under the same contract as
-        :meth:`list`, with its own cursor family."""
+        :meth:`list`, with its own cursor family.
+
+        ``from_date`` / ``to_date`` take the same window as :meth:`list`, and
+        note which clock they bound: when the filing reached the feed
+        (``time_published``), not the trade date the ``insider`` block
+        reports — a Form 4 is filed days after the trade."""
         params = rq.build_news_insider_params(
             symbol=symbol,
             min_relevance=min_relevance,
             cursor=cursor,
             page_size=page_size,
             sort=sort,
+            from_date=from_date,
+            to_date=to_date,
         )
         return rq.parse_news_page(await self._client.request("GET", rq.NEWS_INSIDER, params), sort)
 
@@ -261,6 +279,8 @@ class AsyncNewsResource:
         min_relevance: int | None = None,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
@@ -273,6 +293,8 @@ class AsyncNewsResource:
                 cursor=cursor,
                 page_size=page_size,
                 sort=sort,
+                from_date=from_date,
+                to_date=to_date,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)

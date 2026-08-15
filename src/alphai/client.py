@@ -31,7 +31,7 @@ from ._core import (
     parse_retry_after,
     should_retry,
 )
-from ._requests import CategoryArg, SortArg
+from ._requests import CategoryArg, DateArg, SortArg
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
     NewsPagination,
@@ -180,6 +180,8 @@ class NewsResource:
         cursor: str | None = None,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
     ) -> NewsPagination:
         """One page of the main feed. ``page_size`` is 1-20 on any key and
         defaults to 10; 21-50 needs a Pro key, and anything outside 1-50 is a
@@ -197,7 +199,15 @@ class NewsResource:
         A poller that reads a page at a time falls behind whenever the feed
         publishes faster than it drains, and the timestamps then look stale
         rather than wrong. Raise ``page_size`` and narrow with
-        ``min_relevance`` to keep up."""
+        ``min_relevance`` to keep up.
+
+        ``from_date`` / ``to_date`` bound ``time_published``, inclusive on both
+        ends. A ``date`` (or a bare ``YYYY-MM-DD`` string) means the WHOLE day
+        — the server reads a bare ``to_date`` as that day's end, so
+        ``from_date=to_date=<day>`` returns the day. A ``datetime`` is the
+        exact instant (naive = UTC). A window reaching past the key's archive
+        horizon is a 403 on the first page, and a window cannot be combined
+        with ``sort="ingested"`` (400)."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -207,6 +217,8 @@ class NewsResource:
             cursor=cursor,
             page_size=page_size,
             sort=sort,
+            from_date=from_date,
+            to_date=to_date,
         )
         return rq.parse_news_page(self._client.request("GET", rq.NEWS, params), sort)
 
@@ -220,6 +232,8 @@ class NewsResource:
         collapse_stories: bool = False,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
@@ -240,6 +254,8 @@ class NewsResource:
                 cursor=cursor,
                 page_size=page_size,
                 sort=sort,
+                from_date=from_date,
+                to_date=to_date,
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)
@@ -256,6 +272,8 @@ class NewsResource:
         cursor: str | None = None,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
     ) -> NewsPagination:
         """One page of the insider (SEC Form 4) feed. ``page_size`` is 1-20 on
         any key (default 10), 21-50 needs Pro. ``min_relevance`` (1-10)
@@ -265,13 +283,20 @@ class NewsResource:
         (side / shares / avg price / value / who).
 
         ``sort="ingested"`` delta-polls this feed under the same contract as
-        :meth:`list`, with its own cursor family."""
+        :meth:`list`, with its own cursor family.
+
+        ``from_date`` / ``to_date`` take the same window as :meth:`list`, and
+        note which clock they bound: when the filing reached the feed
+        (``time_published``), not the trade date the ``insider`` block
+        reports — a Form 4 is filed days after the trade."""
         params = rq.build_news_insider_params(
             symbol=symbol,
             min_relevance=min_relevance,
             cursor=cursor,
             page_size=page_size,
             sort=sort,
+            from_date=from_date,
+            to_date=to_date,
         )
         return rq.parse_news_page(self._client.request("GET", rq.NEWS_INSIDER, params), sort)
 
@@ -282,6 +307,8 @@ class NewsResource:
         min_relevance: int | None = None,
         page_size: int | None = None,
         sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
@@ -294,6 +321,8 @@ class NewsResource:
                 cursor=cursor,
                 page_size=page_size,
                 sort=sort,
+                from_date=from_date,
+                to_date=to_date,
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)

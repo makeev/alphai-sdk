@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 from collections.abc import Iterable
+from datetime import date, datetime
 from typing import Any, Literal
 
 from .errors import InvalidResponseError
@@ -72,6 +73,26 @@ CategoryArg = str | NewsCategory | Iterable[str | NewsCategory] | None
 #: other mode is a 400, so pass the same ``sort`` on every call of a run.
 SortArg = Literal["published", "ingested"] | None
 
+#: A publication-window bound (``from_date`` / ``to_date``). A ``date`` (or a
+#: bare ``YYYY-MM-DD`` string) means the WHOLE day — the server reads a bare
+#: ``to_date`` as that day's end, so ``from_date=to_date=<day>`` returns the
+#: day rather than an empty page. A ``datetime`` is the exact instant (naive is
+#: read as UTC). Strings pass through untouched, so any server-accepted ISO
+#: form works verbatim.
+DateArg = str | date | datetime | None
+
+
+def _as_date_param(value: DateArg) -> str | None:
+    """Serialize a window bound, keeping the bare-date form bare.
+
+    ``isoformat()`` does the right thing for both types: ``date`` yields
+    ``YYYY-MM-DD`` (the whole-day form) and ``datetime`` yields the exact
+    instant, offset included when the value is aware.
+    """
+    if value is None or isinstance(value, str):
+        return value
+    return value.isoformat()
+
 
 def _as_str_list(value: CategoryArg) -> list[str] | None:
     """Normalize a category arg (single / enum / iterable) to a list of strings."""
@@ -95,6 +116,8 @@ def build_news_list_params(
     cursor: str | None = None,
     page_size: int | None = None,
     sort: SortArg = None,
+    from_date: DateArg = None,
+    to_date: DateArg = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
@@ -105,6 +128,8 @@ def build_news_list_params(
         "cursor": cursor,
         "page_size": page_size,
         "sort": sort,
+        "from_date": _as_date_param(from_date),
+        "to_date": _as_date_param(to_date),
     }
 
 
@@ -115,6 +140,8 @@ def build_news_insider_params(
     cursor: str | None = None,
     page_size: int | None = None,
     sort: SortArg = None,
+    from_date: DateArg = None,
+    to_date: DateArg = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
@@ -122,6 +149,8 @@ def build_news_insider_params(
         "cursor": cursor,
         "page_size": page_size,
         "sort": sort,
+        "from_date": _as_date_param(from_date),
+        "to_date": _as_date_param(to_date),
     }
 
 

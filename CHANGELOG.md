@@ -6,6 +6,19 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-08-15
+
+### Added
+- `from_date=` / `to_date=` on `news.list`, `news.iter`, `news.insider` and
+  `news.insider_iter` (sync and async) — the publication window the REST API
+  gained today, same names as the MCP tools. Bounds are inclusive; pass a
+  `datetime.date` (or a bare `YYYY-MM-DD` string) to mean the whole day — the
+  server reads a bare `to_date` as that day's end, so `from_date=to_date=<day>`
+  returns the day. A `datetime` is the exact instant (naive is read as UTC).
+  The SDK serializes and passes through; the server enforces the rest (window
+  past your plan's archive horizon = 403 on the first page, window combined
+  with `sort="ingested"` = 400).
+
 ## [0.4.2] - 2026-08-04
 
 ### Fixed
