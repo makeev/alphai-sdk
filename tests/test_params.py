@@ -157,12 +157,12 @@ def test_date_object_serializes_bare(client: Client) -> None:
 
 @respx.mock
 def test_datetime_is_the_exact_instant(client: Client) -> None:
-    from datetime import UTC, datetime
+    from datetime import datetime, timezone
 
     params = _capture(
         client,
         from_date=datetime(2026, 7, 1, 9, 30),
-        to_date=datetime(2026, 7, 1, 16, 0, tzinfo=UTC),
+        to_date=datetime(2026, 7, 1, 16, 0, tzinfo=timezone.utc),
     )
     assert params["from_date"] == "2026-07-01T09:30:00"
     assert params["to_date"] == "2026-07-01T16:00:00+00:00"
