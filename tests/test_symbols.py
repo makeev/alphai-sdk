@@ -56,6 +56,7 @@ def test_symbol_get(client: Client) -> None:
     assert sym.website == "https://www.nvidia.com"
     assert sym.supports_insider is True
     assert sym.country == "" and sym.tv_symbol == ""
+    assert sym.next_report_date.isoformat() == "2026-11-17"
 
 
 @respx.mock
@@ -80,3 +81,56 @@ def test_insider_summary(client: Client) -> None:
     assert summ.buy_value_usd == Decimal("1240000.00")
     assert summ.top_insiders[0].name == "HUANG JEN HSUN"
     assert summ.top_insiders[0].net_value == Decimal("-221102600.00")
+
+
+@respx.mock
+def test_earnings(client: Client) -> None:
+    route = respx.get(f"{BASE_URL}/api/symbols/NVDA/earnings/").mock(
+        return_value=httpx.Response(200, json=load("earnings"))
+    )
+    hist = client.symbols.earnings("NVDA")
+    assert hist.ticker == "NVDA"
+    assert len(hist.reports) == 1
+    assert hist.next_report_date.isoformat() == "2026-11-17"
+
+    read = hist.reports[0]
+    assert read.uid == "352613cc3f6089cc"
+    assert read.source_type == "sec_form8k"
+    assert read.fiscal_period == "Second Quarter Fiscal 2027"
+
+    analysis = read.analysis
+    assert analysis is not None
+    assert analysis.verdict == "strong"
+    assert analysis.key_metrics[0].name == "Revenue"
+    assert analysis.key_metrics[0].value == "$96.2 billion"
+    assert analysis.segments[0].name == "Data Center"
+    assert analysis.guidance is not None and analysis.guidance.period == "Third Quarter Fiscal 2027"
+    assert analysis.vs_prior_guidance[0].verdict == "above"
+    assert analysis.quotes[0].speaker == "Jensen Huang"
+    assert analysis.numbers_verified_from_document is True
+    assert route.calls[0].request.url.path.endswith("/api/symbols/NVDA/earnings/")
+
+
+@respx.mock
+def test_earnings_empty_reports_is_normal(client: Client) -> None:
+    respx.get(f"{BASE_URL}/api/symbols/NVDA/earnings/").mock(
+        return_value=httpx.Response(
+            200,
+            json={"ticker": "NVDA", "reports": [], "next_report_date": None},
+        )
+    )
+    hist = client.symbols.earnings("NVDA")
+    assert hist.reports == []
+    assert hist.next_report_date is None
+
+
+@respx.mock
+def test_earnings_latest(client: Client) -> None:
+    route = respx.get(f"{BASE_URL}/api/symbols/NVDA/earnings/latest/").mock(
+        return_value=httpx.Response(200, json=load("earnings_latest"))
+    )
+    ptr = client.symbols.earnings_latest("NVDA")
+    assert ptr.uid == "352613cc3f6089cc"
+    assert ptr.verdict == "strong"
+    assert ptr.fiscal_period == "Second Quarter Fiscal 2027"
+    assert route.calls[0].request.url.path.endswith("/api/symbols/NVDA/earnings/latest/")

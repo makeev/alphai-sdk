@@ -34,9 +34,11 @@ from ._core import (
 from ._requests import CategoryArg, DateArg, SortArg
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
+    LatestEarningsPointer,
     NewsPagination,
     RichNewsArticle,
     Symbol,
+    TickerEarningsHistory,
     TickerInsiderSummary,
     TickerSentimentSummary,
 )
@@ -365,6 +367,26 @@ class SymbolsResource:
         """30-day insider-transaction rollup (zeros for an unknown ticker)."""
         data = self._client.request("GET", rq.symbol_insider_path(ticker))
         return rq.parse_insider_summary(data)
+
+    def earnings(self, ticker: str) -> TickerEarningsHistory:
+        """A ticker's published earnings reads (newest first, capped at 20) plus
+        its company-confirmed next report date.
+
+        Every read is AlphaAI's own structured analysis of the company's SEC
+        filing — 8-K item 2.02 or 6-K earnings release — with each figure
+        checked against the filing text. An empty ``reports`` list is a normal
+        answer, not an error. Share classes bridge, so ``ticker`` may be a
+        class you did not ask for. ``next_report_date`` is ``None`` when no
+        confirmed date is held — never an estimate."""
+        data = self._client.request("GET", rq.symbol_earnings_path(ticker))
+        return rq.parse_earnings(data)
+
+    def earnings_latest(self, ticker: str) -> LatestEarningsPointer:
+        """Pointer to a ticker's most recent earnings read (for the article link).
+
+        Resolve the full read via :meth:`NewsResource.get` with the ``uid``."""
+        data = self._client.request("GET", rq.symbol_earnings_latest_path(ticker))
+        return rq.parse_latest_earnings(data)
 
 
 __all__ = ["Client", "NewsResource", "SymbolsResource"]

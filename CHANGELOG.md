@@ -6,6 +6,20 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-08-29
+
+### Added
+- `symbols.earnings(ticker)` and `symbols.earnings_latest(ticker)` (sync and
+  async), mirroring `GET /api/symbols/{ticker}/earnings/` and
+  `…/earnings/latest/`. Returns typed models — `TickerEarningsHistory`
+  (a ticker's published reads, newest first, capped at 20, plus
+  `next_report_date`) and `LatestEarningsPointer` — with `EarningsReport`
+  modelling AlphaAI's structured, filing-verified read (`key_metrics`,
+  `segments`, `guidance`, `vs_prior_guidance`, `quotes`, …). An empty
+  `reports` list is a normal answer, not an error.
+- `Symbol.next_report_date` — the company-confirmed date of the next earnings
+  report (`date | None`; `None` means no confirmed date, never an estimate).
+
 ## [0.5.0] - 2026-08-15
 
 ### Added

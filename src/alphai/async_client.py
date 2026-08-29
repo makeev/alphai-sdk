@@ -38,9 +38,11 @@ from ._core import (
 from ._requests import CategoryArg, DateArg, SortArg
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
+    LatestEarningsPointer,
     NewsPagination,
     RichNewsArticle,
     Symbol,
+    TickerEarningsHistory,
     TickerInsiderSummary,
     TickerSentimentSummary,
 )
@@ -337,6 +339,18 @@ class AsyncSymbolsResource:
         """30-day insider-transaction rollup (zeros for an unknown ticker)."""
         data = await self._client.request("GET", rq.symbol_insider_path(ticker))
         return rq.parse_insider_summary(data)
+
+    async def earnings(self, ticker: str) -> TickerEarningsHistory:
+        """A ticker's published earnings reads (newest first, capped at 20) plus
+        its company-confirmed next report date — see
+        :meth:`alphai.client.SymbolsResource.earnings`."""
+        data = await self._client.request("GET", rq.symbol_earnings_path(ticker))
+        return rq.parse_earnings(data)
+
+    async def earnings_latest(self, ticker: str) -> LatestEarningsPointer:
+        """Pointer to a ticker's most recent earnings read (for the article link)."""
+        data = await self._client.request("GET", rq.symbol_earnings_latest_path(ticker))
+        return rq.parse_latest_earnings(data)
 
 
 __all__ = ["AsyncClient", "AsyncNewsResource", "AsyncSymbolsResource"]
