@@ -7,7 +7,7 @@ agents and trading bots.
 - **Sync and async** clients (`Client` / `AsyncClient`) over `httpx`
 - **Pydantic v2** response models — autocomplete, validation, `Decimal` money
 - **Cursor auto-pagination**, automatic retry on 429/5xx, rate-limit inspection
-- **Typed errors** and full coverage of the 9 public endpoints
+- **Typed errors** and full coverage of the 11 public endpoints
 
 API reference: <https://api.alphai.io/api/schema/> · Developer guide:
 <https://alphai.io/developers>
@@ -160,6 +160,28 @@ with Client() as client:
     ins = client.symbols.insider_summary("NVDA")  # 30-day Form 4 rollup
     assert isinstance(ins.buy_value_usd, Decimal | None)  # money is Decimal
 ```
+
+### Earnings reads
+
+AlphaAI's own structured read of a company's earnings filings, with every figure
+checked against the filing text (8-K item 2.02 for US filers, a 6-K earnings
+release for foreign private issuers):
+
+```python
+with Client() as client:
+    hist = client.symbols.earnings("NVDA")
+    print(hist.next_report_date)  # company-confirmed (date | None; never an estimate)
+    for read in hist.reports:  # newest first, capped at 20; empty = normal
+        a = read.analysis
+        print(read.fiscal_period, a.verdict, a.key_metrics[0].value)
+
+    latest = client.symbols.earnings_latest("NVDA")  # pointer for the article link
+    article = client.news.get(latest.uid)  # full enrichment
+```
+
+`EarningsRead.source_type` distinguishes the filing kind (`sec_form8k` /
+`sec_form6k`), and `next_report_date` is `None` whenever AlphaAI holds no
+confirmed date — the SDK deliberately does not substitute an estimate.
 
 ### Async
 

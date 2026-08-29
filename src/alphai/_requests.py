@@ -13,10 +13,12 @@ from typing import Any, Literal
 
 from .errors import InvalidResponseError
 from .models import (
+    LatestEarningsPointer,
     NewsCategory,
     NewsPagination,
     RichNewsArticle,
     Symbol,
+    TickerEarningsHistory,
     TickerInsiderSummary,
     TickerSentimentSummary,
 )
@@ -60,6 +62,14 @@ def symbol_sentiment_path(ticker: str) -> str:
 
 def symbol_insider_path(ticker: str) -> str:
     return f"/api/symbols/{_path_segment(ticker, 'ticker')}/insider-summary/"
+
+
+def symbol_earnings_path(ticker: str) -> str:
+    return f"/api/symbols/{_path_segment(ticker, 'ticker')}/earnings/"
+
+
+def symbol_earnings_latest_path(ticker: str) -> str:
+    return f"/api/symbols/{_path_segment(ticker, 'ticker')}/earnings/latest/"
 
 
 # --- param types & helpers -------------------------------------------------
@@ -210,3 +220,11 @@ def parse_sentiment_summary(data: Any) -> TickerSentimentSummary:
 
 def parse_insider_summary(data: Any) -> TickerInsiderSummary:
     return TickerInsiderSummary.model_validate(data)
+
+
+def parse_earnings(data: Any) -> TickerEarningsHistory:
+    return TickerEarningsHistory.model_validate(data)
+
+
+def parse_latest_earnings(data: Any) -> LatestEarningsPointer:
+    return LatestEarningsPointer.model_validate(data)

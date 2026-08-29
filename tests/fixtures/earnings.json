@@ -1,0 +1,78 @@
+{
+  "ticker": "NVDA",
+  "reports": [
+    {
+      "uid": "352613cc3f6089cc",
+      "time_published": "2026-08-27T20:14:00Z",
+      "title": "NVIDIA Announces Financial Results for Second Quarter Fiscal 2027",
+      "source_type": "sec_form8k",
+      "ticker": "NVDA",
+      "fiscal_period": "Second Quarter Fiscal 2027",
+      "analysis": {
+        "company": "NVIDIA Corporation",
+        "ticker": "NVDA",
+        "fiscal_period": "Second Quarter Fiscal 2027",
+        "period_end": "2026-07-26",
+        "headline": "Data-center demand keeps compounding; gaming softens sequentially.",
+        "verdict": "strong",
+        "verdict_reason": "Revenue and EPS beat the company's own outlook and both segments grew year over year.",
+        "key_metrics": [
+          {
+            "name": "Revenue",
+            "value": "$96.2 billion",
+            "basis": "GAAP",
+            "prior_year": "$39.3 billion",
+            "prior_quarter": "$80.3 billion",
+            "yoy_change": "+145%",
+            "qoq_change": "+20%"
+          }
+        ],
+        "segments": [
+          {
+            "name": "Data Center",
+            "revenue": "$88.0 billion",
+            "yoy_change": "+183%",
+            "qoq_change": "+23%",
+            "driver": "Hopper and Blackwell ramp"
+          },
+          {
+            "name": "Gaming and AI PC",
+            "revenue": "$7.6 billion",
+            "yoy_change": "+4%",
+            "qoq_change": "-6%",
+            "driver": "Seasonal consumer demand"
+          }
+        ],
+        "guidance": {
+          "period": "Third Quarter Fiscal 2027",
+          "revenue": "$102.0 billion ± 2%",
+          "gross_margin": "73.9%"
+        },
+        "vs_prior_guidance": [
+          {
+            "metric": "Revenue",
+            "prior_guidance": "$89.5 billion ± 2%",
+            "actual": "$96.2 billion",
+            "verdict": "above"
+          }
+        ],
+        "capital_returns": ["$52 billion in share repurchases during the quarter"],
+        "balance_sheet_cash_flow": ["Cash, equivalents and marketable securities of $92.5 billion"],
+        "drivers": ["Accelerated Blackwell production", "Record data-center shipments"],
+        "concerns": ["Gaming segment declined sequentially", "Supply remains constrained"],
+        "what_to_watch": ["Blackwell demand into Q3", "China export environment"],
+        "quotes": [
+          {
+            "speaker": "Jensen Huang",
+            "role": "Founder and CEO",
+            "text": "Demand for Blackwell is extraordinary."
+          }
+        ],
+        "analysis": "Second-quarter results continued the run driven by data-center compute.",
+        "missing_items": ["No explicit gross-margin guidance for the full year"],
+        "numbers_verified_from_document": true
+      }
+    }
+  ],
+  "next_report_date": "2026-11-17"
+}
