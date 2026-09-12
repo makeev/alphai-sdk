@@ -181,3 +181,16 @@ def test_symbol_delisted_fields_are_typed(client: Client) -> None:
     assert sym.renamed_to == "ECHO"
     assert sym.crypto_counterpart == "BTC-USD"
     assert sym.crypto_counterpart_name == "Bitcoin"
+
+
+@respx.mock
+def test_key_metric_companions_are_typed(client: Client) -> None:
+    respx.get(f"{BASE_URL}/api/symbols/NVDA/earnings/").mock(
+        return_value=httpx.Response(200, json=load("earnings"))
+    )
+    read = client.symbols.earnings("NVDA").reports[0]
+    assert read.analysis is not None
+    first = read.analysis.key_metrics[0]
+    assert (first.numeric, first.unit, first.scale) == (96221.0, "USD", "millions")
+    # A metric without the companions (a blob from before 2026-09-12) reads as None.
+    assert read.analysis.key_metrics[-1].scale is None

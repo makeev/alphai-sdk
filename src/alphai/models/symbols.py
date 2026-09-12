@@ -115,6 +115,14 @@ class KeyMetric(_Base):
     prior_quarter: str | None = None
     yoy_change: str | None = None
     qoq_change: str | None = None
+    # Machine-readable companions of ``value`` (API 1.34.0, 2026-09-12): the
+    # figure as a number at its printed scale with the sign applied, an
+    # ISO-style currency code / ``pct`` / ``bp`` (``None`` for a plain count),
+    # and the multiplier (``ones`` … ``billions``). ``scale`` is ``None`` when
+    # the filing did not say — treat it as unknown, never assume millions.
+    numeric: float | None = None
+    unit: str | None = None
+    scale: str | None = None
 
 
 class Segment(_Base):

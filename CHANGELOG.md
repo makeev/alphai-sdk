@@ -6,6 +6,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.2] - 2026-09-12
+
+### Added
+- `KeyMetric.numeric` / `.unit` / `.scale` — the machine-readable companions
+  the API attaches to every earnings metric from spec 1.34.0 (the printed
+  `value` is unchanged). `scale` is `None` when the filing did not name one.
+
 ## [0.6.1] - 2026-09-12
 
 ### Fixed

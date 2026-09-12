@@ -188,6 +188,11 @@ with Client() as client:
 `sec_form6k`), and `next_report_date` is `None` whenever AlphaAI holds no
 confirmed date — the SDK deliberately does not substitute an estimate.
 
+Each `KeyMetric` keeps `value` exactly as the filing printed it and adds
+`numeric`, `unit` and `scale` next to it (`"$19,345"` → `19345.0`, `"USD"`,
+`"millions"` when the filing's table header says so). `scale` is `None` when
+nothing in the filing said it; don't assume millions.
+
 ### Async
 
 Every method mirrors the sync client with `await`; `iter()` is an async generator:
