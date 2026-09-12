@@ -134,3 +134,50 @@ def test_earnings_latest(client: Client) -> None:
     assert ptr.verdict == "strong"
     assert ptr.fiscal_period == "Second Quarter Fiscal 2027"
     assert route.calls[0].request.url.path.endswith("/api/symbols/NVDA/earnings/latest/")
+
+
+@respx.mock
+def test_earnings_latest_204_is_none(client: Client) -> None:
+    # /earnings/latest/ answers 204 with no body when no read exists yet.
+    respx.get(f"{BASE_URL}/api/symbols/MU/earnings/latest/").mock(return_value=httpx.Response(204))
+    assert client.symbols.earnings_latest("MU") is None
+
+
+@respx.mock
+def test_symbols_list_search_param(client: Client) -> None:
+    route = respx.get(f"{BASE_URL}/api/symbols/").mock(
+        return_value=httpx.Response(200, json=load("symbols_list"))
+    )
+    client.symbols.list(search="bitcoin")
+    assert "search=bitcoin" in str(route.calls[0].request.url)
+
+
+@respx.mock
+def test_symbol_status_fields_default_to_active(client: Client) -> None:
+    respx.get(f"{BASE_URL}/api/symbols/NVDA/").mock(
+        return_value=httpx.Response(200, json=load("symbol"))
+    )
+    sym = client.symbols.get("NVDA")
+    assert sym.status == "active"
+    assert sym.delisted_at is None
+    assert sym.renamed_to == ""
+    assert sym.crypto_counterpart is None
+
+
+@respx.mock
+def test_symbol_delisted_fields_are_typed(client: Client) -> None:
+    body = {
+        **load("symbol"),
+        "status": "delisted",
+        "delisted_at": "2026-09-04T04:10:00Z",
+        "renamed_to": "ECHO",
+        "crypto_counterpart": "BTC-USD",
+        "crypto_counterpart_name": "Bitcoin",
+    }
+    respx.get(f"{BASE_URL}/api/symbols/SATS/").mock(return_value=httpx.Response(200, json=body))
+    sym = client.symbols.get("SATS")
+    assert sym.status == "delisted"
+    assert sym.delisted_at is not None and sym.delisted_at.year == 2026
+    assert sym.renamed_to == "ECHO"
+    assert sym.crypto_counterpart == "BTC-USD"
+    assert sym.crypto_counterpart_name == "Bitcoin"

@@ -51,6 +51,18 @@ class Symbol(_Base):
     next_report_date: date | None = None
     description: str = ""
     website: str | None = None
+    # Lowercase names the issuer is known by when they differ from ``name``
+    # (list responses only).
+    brand_aliases: list[str] = []
+    # The coin's ticker when this symbol's bare string also names an active
+    # cryptocurrency (``BTC`` the Grayscale ETF -> ``BTC-USD``); detail responses only.
+    crypto_counterpart: str | None = None
+    crypto_counterpart_name: str = ""
+    # ``active`` or ``delisted``; delisted symbols stay resolvable so their
+    # history is reachable. ``renamed_to`` names the successor ticker, if any.
+    status: str = "active"
+    delisted_at: datetime | None = None
+    renamed_to: str = ""
 
 
 class DailySentimentBucket(_Base):

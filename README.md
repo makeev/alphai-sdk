@@ -7,7 +7,8 @@ agents and trading bots.
 - **Sync and async** clients (`Client` / `AsyncClient`) over `httpx`
 - **Pydantic v2** response models — autocomplete, validation, `Decimal` money
 - **Cursor auto-pagination**, automatic retry on 429/5xx, rate-limit inspection
-- **Typed errors** and full coverage of the 11 public endpoints
+- **Typed errors**; covers the news and symbol endpoints (11 of the 17 in the
+  spec — calendar, macro and insider-trades are one `httpx` call away)
 
 API reference: <https://api.alphai.io/api/schema/> · Developer guide:
 <https://alphai.io/developers>
@@ -151,6 +152,7 @@ from decimal import Decimal
 
 with Client() as client:
     client.symbols.list(limit=100)  # active tickers (bare list)
+    client.symbols.list(search="bitcoin")  # name / brand / prefix lookup → BTC-USD
     nvda = client.symbols.get("NVDA")  # detail (404 if unknown)
     btc = client.symbols.get("BTC-USD")  # crypto + foreign listings too
     # Multi-market: .asset_type ("Stock"/"ETF"/"Crypto"), .country, .currency,
@@ -172,11 +174,14 @@ with Client() as client:
     hist = client.symbols.earnings("NVDA")
     print(hist.next_report_date)  # company-confirmed (date | None; never an estimate)
     for read in hist.reports:  # newest first, capped at 20; empty = normal
-        a = read.analysis
-        print(read.fiscal_period, a.verdict, a.key_metrics[0].value)
+        a = read.analysis  # EarningsReport | None
+        if a is None or not a.key_metrics:
+            continue  # a read can publish without metrics; don't index blindly
+        print(read.fiscal_period, a.verdict, a.key_metrics[0].name, a.key_metrics[0].value)
 
-    latest = client.symbols.earnings_latest("NVDA")  # pointer for the article link
-    article = client.news.get(latest.uid)  # full enrichment
+    latest = client.symbols.earnings_latest("NVDA")  # None when no read exists yet (HTTP 204)
+    if latest is not None:
+        article = client.news.get(latest.uid)  # full enrichment
 ```
 
 `EarningsRead.source_type` distinguishes the filing kind (`sec_form8k` /
@@ -206,6 +211,10 @@ asyncio.run(main())
 - [**alphai-news-to-email**](https://github.com/makeev/alphai-news-to-email) —
   a small, deployable app that emails you a deduplicated digest of high-relevance
   news for your watchlist. Built entirely on this SDK.
+- [**alphai-earnings-week**](https://github.com/makeev/alphai-earnings-week) —
+  one markdown card per week for a watchlist: confirmed next report dates, the
+  latest filing-verified read per name, and the week's macro calendar, in 26
+  calls on the Free tier.
 
 ## Errors
 
@@ -227,7 +236,7 @@ with Client() as client:
 
 | Status | Exception |
 |--------|-----------|
-| 400 | `BadRequestError` (`.fields` for validation errors) |
+| 400 | `BadRequestError` (`.fields` for validation errors; `.allowed_params` lists the endpoint's real parameter names when you sent an unknown one) |
 | 401 | `AuthenticationError` |
 | 403 | `PermissionDeniedError` |
 | 404 | `NotFoundError` |

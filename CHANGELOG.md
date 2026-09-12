@@ -6,6 +6,25 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.1] - 2026-09-12
+
+### Fixed
+- `symbols.earnings_latest(ticker)` (sync and async) returns `None` when the API
+  answers **204** — the documented "no read published yet" response — instead of
+  raising `InvalidResponseError`. Any 204 now yields `None` from `Client.request`.
+
+### Added
+- `symbols.list(search=…)` — the name / brand / ticker-prefix lookup the API
+  points you to on a 404 `unknown_symbol` (`search="bitcoin"` → `BTC-USD`,
+  `search="spacex"` → `SPCX`).
+- Typed `Symbol` fields that the API already sent: `status` (`active` /
+  `delisted`), `delisted_at`, `renamed_to`, `brand_aliases`,
+  `crypto_counterpart`, `crypto_counterpart_name`.
+
+### Docs
+- README: guard `read.analysis` and an empty `key_metrics` before indexing;
+  `.allowed_params` on `BadRequestError`; honest endpoint count (11 of 17).
+
 ## [0.6.0] - 2026-08-29
 
 ### Added

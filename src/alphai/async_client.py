@@ -125,6 +125,8 @@ class AsyncClient:
                 self.last_rate_limit = rate
 
             if response.status_code < 400:
+                if response.status_code == 204:
+                    return None  # documented "nothing here yet" (e.g. /earnings/latest/)
                 data = parse_json(response)
                 if data is None:
                     raise InvalidResponseError(
@@ -321,9 +323,11 @@ class AsyncSymbolsResource:
         *,
         limit: int | None = None,
         offset: int | None = None,
+        search: str | None = None,
     ) -> _SymbolList:
-        """All active tickers (alphabetical); slice with limit/offset."""
-        params = rq.build_symbols_list_params(limit=limit, offset=offset)
+        """All active tickers (alphabetical); slice with limit/offset, or resolve a
+        name / brand / ticker prefix with ``search`` (``"bitcoin"`` → ``BTC-USD``)."""
+        params = rq.build_symbols_list_params(limit=limit, offset=offset, search=search)
         return rq.parse_symbol_list(await self._client.request("GET", rq.SYMBOLS, params))
 
     async def get(self, ticker: str) -> Symbol:
@@ -347,8 +351,9 @@ class AsyncSymbolsResource:
         data = await self._client.request("GET", rq.symbol_earnings_path(ticker))
         return rq.parse_earnings(data)
 
-    async def earnings_latest(self, ticker: str) -> LatestEarningsPointer:
-        """Pointer to a ticker's most recent earnings read (for the article link)."""
+    async def earnings_latest(self, ticker: str) -> LatestEarningsPointer | None:
+        """Pointer to a ticker's most recent earnings read (for the article link);
+        ``None`` when no read has been published yet (the API answers 204)."""
         data = await self._client.request("GET", rq.symbol_earnings_latest_path(ticker))
         return rq.parse_latest_earnings(data)
 

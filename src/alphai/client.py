@@ -133,6 +133,8 @@ class Client:
                 self.last_rate_limit = rate
 
             if response.status_code < 400:
+                if response.status_code == 204:
+                    return None  # documented "nothing here yet" (e.g. /earnings/latest/)
                 data = parse_json(response)
                 if data is None:
                     raise InvalidResponseError(
@@ -349,9 +351,14 @@ class SymbolsResource:
         *,
         limit: int | None = None,
         offset: int | None = None,
+        search: str | None = None,
     ) -> _SymbolList:
-        """All active tickers (alphabetical); slice with limit/offset."""
-        params = rq.build_symbols_list_params(limit=limit, offset=offset)
+        """All active tickers (alphabetical); slice with limit/offset.
+
+        ``search`` resolves a name, brand or ticker prefix to its canonical
+        symbol (``search="bitcoin"`` → ``BTC-USD``, ``search="spacex"`` →
+        ``SPCX``) — the lookup a 404 ``unknown_symbol`` error points you to."""
+        params = rq.build_symbols_list_params(limit=limit, offset=offset, search=search)
         return rq.parse_symbol_list(self._client.request("GET", rq.SYMBOLS, params))
 
     def get(self, ticker: str) -> Symbol:
@@ -381,10 +388,12 @@ class SymbolsResource:
         data = self._client.request("GET", rq.symbol_earnings_path(ticker))
         return rq.parse_earnings(data)
 
-    def earnings_latest(self, ticker: str) -> LatestEarningsPointer:
+    def earnings_latest(self, ticker: str) -> LatestEarningsPointer | None:
         """Pointer to a ticker's most recent earnings read (for the article link).
 
-        Resolve the full read via :meth:`NewsResource.get` with the ``uid``."""
+        ``None`` when no read has been published for the ticker yet (the API
+        answers 204). Resolve the full read via :meth:`NewsResource.get` with
+        the ``uid``."""
         data = self._client.request("GET", rq.symbol_earnings_latest_path(ticker))
         return rq.parse_latest_earnings(data)
 

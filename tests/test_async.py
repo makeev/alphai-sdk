@@ -80,3 +80,10 @@ async def test_async_error_mapping() -> None:
     async with AsyncClient(api_key="ak_live_test", base_url=BASE_URL) as client:
         with pytest.raises(NotFoundError):
             await client.symbols.get("ZZZZ")
+
+
+@respx.mock
+async def test_async_earnings_latest_204_is_none() -> None:
+    respx.get(f"{BASE_URL}/api/symbols/MU/earnings/latest/").mock(return_value=httpx.Response(204))
+    async with AsyncClient(api_key="ak_live_test", base_url=BASE_URL) as client:
+        assert await client.symbols.earnings_latest("MU") is None

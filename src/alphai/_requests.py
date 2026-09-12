@@ -168,8 +168,9 @@ def build_symbols_list_params(
     *,
     limit: int | None = None,
     offset: int | None = None,
+    search: str | None = None,
 ) -> dict[str, Any]:
-    return {"limit": limit, "offset": offset}
+    return {"limit": limit, "offset": offset, "search": search}
 
 
 # --- response parsers ------------------------------------------------------
@@ -226,5 +227,8 @@ def parse_earnings(data: Any) -> TickerEarningsHistory:
     return TickerEarningsHistory.model_validate(data)
 
 
-def parse_latest_earnings(data: Any) -> LatestEarningsPointer:
+def parse_latest_earnings(data: Any) -> LatestEarningsPointer | None:
+    """``None`` when the API answered 204: no read has been published for the ticker yet."""
+    if data is None:
+        return None
     return LatestEarningsPointer.model_validate(data)
