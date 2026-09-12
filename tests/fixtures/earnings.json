@@ -28,6 +28,15 @@
             "numeric": 96221.0,
             "unit": "USD",
             "scale": "millions"
+          },
+          {
+            "name": "Diluted EPS",
+            "value": "$1.05",
+            "basis": "GAAP",
+            "prior_year": "$0.68",
+            "prior_quarter": null,
+            "yoy_change": "54%",
+            "qoq_change": null
           }
         ],
         "segments": [
@@ -93,4 +102,4 @@
     }
   ],
   "next_report_date": "2026-11-17"
-}\n
+}
