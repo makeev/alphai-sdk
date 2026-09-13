@@ -1,6 +1,6 @@
 # alphai-sdk
 
-Typed Python client for the [AlphaAI](https://alphai.io) financial-news REST API
+Typed Python client for the [AlphAI](https://alphai.io) financial-news REST API
 — relevance-scored, ticker-linked news and SEC Form 4 insider data, built for AI
 agents and trading bots.
 
@@ -165,7 +165,7 @@ with Client() as client:
 
 ### Earnings reads
 
-AlphaAI's own structured read of a company's earnings filings, with every figure
+AlphAI's own structured read of a company's earnings filings, with every figure
 checked against the filing text (8-K item 2.02 for US filers, a 6-K earnings
 release for foreign private issuers):
 
@@ -185,7 +185,7 @@ with Client() as client:
 ```
 
 `EarningsRead.source_type` distinguishes the filing kind (`sec_form8k` /
-`sec_form6k`), and `next_report_date` is `None` whenever AlphaAI holds no
+`sec_form6k`), and `next_report_date` is `None` whenever AlphAI holds no
 confirmed date — the SDK deliberately does not substitute an estimate.
 
 Each `KeyMetric` keeps `value` exactly as the filing printed it and adds

@@ -1,4 +1,4 @@
-"""Exception hierarchy for the AlphaAI SDK.
+"""Exception hierarchy for the AlphAI SDK.
 
 All errors derive from :class:`AlphaAIError`. Network/timeout problems raise
 :class:`APIConnectionError`; any non-2xx HTTP response raises an

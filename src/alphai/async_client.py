@@ -1,4 +1,4 @@
-"""Asynchronous client for the AlphaAI REST API.
+"""Asynchronous client for the AlphAI REST API.
 
 Mirrors :mod:`alphai.client` method-for-method, reusing the same request
 builders, parsers, and core helpers; only the transport and sleeps are async.
@@ -55,7 +55,7 @@ _SymbolList = list[Symbol]
 
 
 class AsyncClient:
-    """An asynchronous AlphaAI API client.
+    """An asynchronous AlphAI API client.
 
     Use as an async context manager to close the connection pool::
 

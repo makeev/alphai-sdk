@@ -31,7 +31,7 @@ class Symbol(_Base):
       insider data; ``False`` for cryptocurrencies and foreign listings.
     - ``tv_symbol`` is an optional TradingView-symbol override (usually empty).
     - ``next_report_date`` is the company-confirmed date of the next earnings
-      report (America/New_York), or ``None`` when AlphaAI holds no confirmed
+      report (America/New_York), or ``None`` when AlphAI holds no confirmed
       date — never an estimate; detail responses only.
 
     Crypto tickers carry a ``-USD`` quote suffix (e.g. ``BTC-USD``); foreign
@@ -164,7 +164,7 @@ class Quote(_Base):
 
 
 class EarningsReport(_Base):
-    """AlphaAI's structured read of an earnings release (the ``analysis`` object).
+    """AlphAI's structured read of an earnings release (the ``analysis`` object).
 
     Produced from the company's own SEC filing — an 8-K item 2.02 for US
     filers, a 6-K earnings release for foreign private issuers — with every

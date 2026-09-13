@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "alphai-sdk"
 dynamic = ["version"]
-description = "Python SDK for the AlphaAI financial-news REST API (api.alphai.io)."
+description = "Python SDK for the AlphAI financial-news REST API (api.alphai.io)."
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [{ name = "AlphaAI", email = "support@alphai.io" }]
+authors = [{ name = "AlphAI", email = "support@alphai.io" }]
 keywords = ["alphai", "financial-news", "stocks", "sec", "insider", "trading", "api", "sdk"]
 classifiers = [
     "Development Status :: 4 - Beta",

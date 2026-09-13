@@ -1,4 +1,4 @@
-"""Pydantic v2 response models for the AlphaAI API."""
+"""Pydantic v2 response models for the AlphAI API."""
 
 from __future__ import annotations
 

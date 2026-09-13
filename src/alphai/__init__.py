@@ -1,4 +1,4 @@
-"""alphai — Python SDK for the AlphaAI financial-news REST API.
+"""alphai — Python SDK for the AlphAI financial-news REST API.
 
 Quickstart::
 

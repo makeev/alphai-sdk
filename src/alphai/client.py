@@ -1,4 +1,4 @@
-"""Synchronous client for the AlphaAI REST API."""
+"""Synchronous client for the AlphAI REST API."""
 
 from __future__ import annotations
 
@@ -51,7 +51,7 @@ _SymbolList = list[Symbol]
 
 
 class Client:
-    """A synchronous AlphaAI API client.
+    """A synchronous AlphAI API client.
 
     Args:
         api_key: Your ``ak_live_…`` key. Falls back to ``$ALPHAI_API_KEY``.
@@ -379,7 +379,7 @@ class SymbolsResource:
         """A ticker's published earnings reads (newest first, capped at 20) plus
         its company-confirmed next report date.
 
-        Every read is AlphaAI's own structured analysis of the company's SEC
+        Every read is AlphAI's own structured analysis of the company's SEC
         filing — 8-K item 2.02 or 6-K earnings release — with each figure
         checked against the filing text. An empty ``reports`` list is a normal
         answer, not an error. Share classes bridge, so ``ticker`` may be a
