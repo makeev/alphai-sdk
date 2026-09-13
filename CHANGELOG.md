@@ -6,6 +6,13 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.6.3] - 2026-09-13
+
+### Changed
+- Brand spelling in the package metadata and docs is now `AlphAI` (the form on
+  the logo). No API change: class names, the `alphai` module and every field
+  stay exactly as they were.
+
 ## [0.6.2] - 2026-09-12
 
 ### Added
