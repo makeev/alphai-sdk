@@ -219,7 +219,8 @@ asyncio.run(main())
 - [**alphai-earnings-week**](https://github.com/makeev/alphai-earnings-week) —
   one markdown card per week for a watchlist: confirmed next report dates, the
   latest filing-verified read per name, and the week's macro calendar, in 26
-  calls on the Free tier.
+  calls on the Free tier. Write-up with every response of the run:
+  [Earnings week from the filings, not the headlines](https://dev.to/makeev/earnings-week-from-the-filings-not-the-headlines-one-script-on-a-free-api-key-l5d).
 
 ## Errors
 
