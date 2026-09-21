@@ -20,7 +20,8 @@ jobs:
           enable-cache: false
       - name: Verify tag and run checks on the release commit
         run: |
-          uv venv
+          # setup-uv with python-version may have already created .venv.
+          if [ ! -x .venv/bin/python ]; then uv venv; fi
           uv pip install -e ".[dev]"
           PACKAGE_VERSION="v$(.venv/bin/python -c 'from alphai import __version__; print(__version__)')"
           test "$PACKAGE_VERSION" = "$GITHUB_REF_NAME"
