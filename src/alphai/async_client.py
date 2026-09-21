@@ -36,9 +36,11 @@ from ._core import (
     should_retry,
 )
 from ._requests import CategoryArg, DateArg, SortArg
+from ._snapshot_params import TickersArg, build_brief_params
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
     LatestEarningsPointer,
+    NewsBrief,
     NewsPagination,
     RichNewsArticle,
     Symbol,
@@ -47,6 +49,7 @@ from .models import (
     TickerSentimentSummary,
 )
 from .pagination import aiterate_pages
+from .radar import AsyncRadarResource
 
 # Module-scope aliases so `-> list[...]` return types don't resolve to the
 # `list` *method* defined on the resource classes below.
@@ -96,6 +99,7 @@ class AsyncClient:
             self._owns_http = True
 
         self.last_rate_limit: RateLimit | None = None
+        self.radar = AsyncRadarResource(self)
         self.news = AsyncNewsResource(self)
         self.symbols = AsyncSymbolsResource(self)
 
@@ -235,6 +239,20 @@ class AsyncNewsResource:
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)
+
+    async def brief(
+        self, *, tickers: TickersArg, hours: int | None = None, limit: int | None = None
+    ) -> NewsBrief:
+        """Grouped news, filings and confirmed earnings dates for 1-100 explicit tickers.
+
+        This is a ranked publication snapshot, not a delta stream or the saved
+        account watchlist. hours defaults to 24 (1-168); limit defaults to 20
+        (1-20) per section. Inspect both truncation flags and unknown_tickers.
+        """
+        params = build_brief_params(tickers=tickers, hours=hours, limit=limit)
+        return NewsBrief.model_validate(
+            await self._client.request("GET", "/api/news/brief/", params)
+        )
 
     async def trending(self) -> _ArticleList:
         """Top ≤10 stories from the last 48h."""

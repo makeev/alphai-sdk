@@ -7,7 +7,7 @@ agents and trading bots.
 - **Sync and async** clients (`Client` / `AsyncClient`) over `httpx`
 - **Pydantic v2** response models — autocomplete, validation, `Decimal` money
 - **Cursor auto-pagination**, automatic retry on 429/5xx, rate-limit inspection
-- **Typed errors**; covers the news and symbol endpoints (11 of the 17 in the
+- **Typed errors**; covers the news, symbol and Radar endpoints (13 of the 19 in the
   spec — calendar, macro and insider-trades are one `httpx` call away)
 
 API reference: <https://api.alphai.io/api/schema/> · Developer guide:
@@ -193,6 +193,75 @@ Each `KeyMetric` keeps `value` exactly as the filing printed it and adds
 `"millions"` when the filing's table header says so). `scale` is `None` when
 nothing in the filing said it; don't assume millions.
 
+### Multi-ticker Brief
+
+```python
+from alphai import Client
+
+with Client() as client:
+    brief = client.news.brief(tickers=["NVDA", "AMD", "BTC-USD"], hours=24, limit=10)
+    for event in [*brief.events, *brief.filings]:
+        print(event.matched_tickers, event.title)
+    for earnings in brief.upcoming_earnings:
+        print(earnings.ticker, earnings.report_date)
+    print("Unknown:", brief.unknown_tickers)
+    print("More coverage:", brief.events_truncated, brief.filings_truncated)
+```
+
+One call covers **1–100 explicit tickers on every tier**. This REST method does
+not read your saved account watchlist. `hours` is a publication window (1–168,
+default 24); `limit` caps each section independently (1–20, default 20). Events
+shared by requested symbols appear once with `matched_tickers`. A missing
+confirmed earnings date is left missing.
+
+Brief is a ranked snapshot, with no cursor. Check **both truncation flags**;
+narrow the window or use the paginated feed for more coverage. For a complete
+incremental alert stream, use `news.list(sort="ingested", ...)` and persist its
+cursor. Repeated Brief calls are not a lossless replacement.
+
+### Radar snapshots
+
+```python
+from alphai import Client, ConflictError
+
+with Client() as client:
+    snapshot = client.radar.snapshot(window="24h", market="us_equity", limit=10)
+    print(snapshot.snapshot_id, snapshot.as_of, snapshot.freshness)
+    for reading in snapshot.results:
+        print(reading.ticker, reading.news_z, reading.sent.value)
+
+    # scope="watchlist" reads the API key owner's existing saved symbols.
+    saved = client.radar.snapshot(scope="watchlist")
+    print(saved.watchlist_coverage)
+
+    try:
+        for reading in client.radar.iter(window="4h", max_items=100):
+            print(reading.ticker, reading.stories)
+    except ConflictError:
+        print("Snapshot expired or context changed. Start a new scan without a cursor.")
+```
+
+Filters: `window` (`4h` / `24h`), `scope`, `market`, exact `ticker` or `tickers`,
+`search`, `sort`, `order`, `sentiment`, `min_z`, `limit`, `offset`, `cursor`.
+Ticker filters do not expand aliases. `limit` is page size (1–100, default 50),
+not a tier ticker cap; an explicitly empty ticker list is rejected.
+
+The server delays the **whole snapshot**: Free 60 minutes, Basic 15, Pro no added
+delay. Check `as_of`, `access` and `freshness`; processing adds latency. Scores and
+sentiment may be `None`; keep them missing. Radar describes news activity and is
+not a confirmed trading signal or a point-in-time backtest.
+
+For manual pagination, pass `next_cursor` as `cursor` with the **same filters and
+limit**. Cursors pin immutable snapshots, retained for three hours. HTTP 409 raises
+`ConflictError` when the snapshot/context expires or changes; start a new scan
+without a cursor. Iteration never silently restarts. HTTP 503 raises `ServerError`
+after bounded retries when no eligible snapshot is available. An empty saved
+watchlist returns an empty result.
+
+Runnable examples: [watchlist brief](examples/watchlist_brief.py) and
+[Radar](examples/radar.py). Both methods also work with `AsyncClient`; the Radar
+iterator is an async generator.
+
 ### Async
 
 Every method mirrors the sync client with `await`; `iter()` is an async generator:
@@ -246,6 +315,7 @@ with Client() as client:
 | 401 | `AuthenticationError` |
 | 403 | `PermissionDeniedError` |
 | 404 | `NotFoundError` |
+| 409 | `ConflictError` (restart a new Radar scan without a cursor) |
 | 429 | `RateLimitError` (`.retry_after`, `.limit`, `.remaining`, `.reset`) |
 | 5xx | `ServerError` |
 | network/timeout | `APIConnectionError` |

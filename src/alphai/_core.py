@@ -19,6 +19,7 @@ from .errors import (
     APIStatusError,
     AuthenticationError,
     BadRequestError,
+    ConflictError,
     NotFoundError,
     PermissionDeniedError,
     RateLimitError,
@@ -140,6 +141,8 @@ def error_from_response(response: httpx.Response) -> APIStatusError:
         return PermissionDeniedError(message, status=status, body=body, extra=extra)
     if status == 404:
         return NotFoundError(message, status=status, body=body, extra=extra)
+    if status == 409:
+        return ConflictError(message, status=status, body=body, extra=extra)
     if status == 429:
         rate = RateLimit.from_headers(response.headers)
         return RateLimitError(

@@ -118,6 +118,10 @@ class NotFoundError(APIStatusError):
     """404 — no item with that identifier."""
 
 
+class ConflictError(APIStatusError):
+    """409 — cursor context changed or its snapshot expired; start a new scan."""
+
+
 class RateLimitError(APIStatusError):
     """429 — a rate limit was exceeded (per-minute burst or per-day volume).
 
@@ -155,6 +159,7 @@ __all__ = [
     "AlphaAIError",
     "AuthenticationError",
     "BadRequestError",
+    "ConflictError",
     "InvalidResponseError",
     "MissingAPIKeyError",
     "NotFoundError",

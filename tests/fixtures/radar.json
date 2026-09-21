@@ -1,0 +1,207 @@
+{
+  "snapshot_id": "4f296915dc77b670235624fd780e3d5c12eb2f74772b8da2cae9b9488a26ebfa",
+  "methodology_version": "news-spike-0.2",
+  "research_only": true,
+  "point_in_time": false,
+  "as_of": "2026-09-21T05:11:03Z",
+  "preview_reference_at": null,
+  "freshness": {
+    "mode": "live",
+    "effective_delay_seconds": 3632,
+    "generated_at": "2026-09-21T05:11:04Z",
+    "source_watermark": "2026-09-21T05:08:48Z",
+    "source_checked_at": "2026-09-21T05:11:03Z",
+    "unavailable_reason": null
+  },
+  "access": {
+    "tier": "free",
+    "delay_seconds": 3600,
+    "scope": "market",
+    "watchlist_count": null,
+    "watchlist_limit": 10
+  },
+  "window": "24h",
+  "parameters": {
+    "effective_at": 1789967463,
+    "window_seconds": 86400,
+    "baseline_seconds": 2592000,
+    "half_life_seconds": 86400,
+    "min_relevance": 4,
+    "max_story_tickers": 5,
+    "prior_stories": 2.0,
+    "min_baseline_stories": 5,
+    "min_baseline_days": 3,
+    "min_sentiment_stories": 2,
+    "min_sentiment_coverage": 0.5,
+    "spike_tail": 0.001
+  },
+  "limitations": [
+    "current_values_not_historical_versions",
+    "pooled_ingest_channels",
+    "scores_describe_observed_flow_candidates_require_verified_collection",
+    "unassigned_macro_excluded_from_market_exposure",
+    "collection_observations_require_independent_evidence",
+    "uncalibrated_thresholds",
+    "current_symbol_dictionary",
+    "exact_ticker_matching_no_alias_expansion",
+    "deleted_story_roots_use_earliest_exported_member",
+    "news_only_no_insider_or_filings_aggregates"
+  ],
+  "input_hashes": {},
+  "universe": 4129,
+  "summary": {
+    "active_tickers": 372,
+    "scored_tickers": 327,
+    "elevated_tickers": 7,
+    "verified_candidates": 0,
+    "collection_unverified": 372
+  },
+  "watchlist_coverage": null,
+  "total": 372,
+  "offset": 0,
+  "next_offset": 2,
+  "next_cursor": "fixture-page-2",
+  "previous_cursor": null,
+  "results": [
+    {
+      "ticker": "BYD",
+      "sector": "Consumer Cyclical",
+      "market": "us_equity",
+      "market_exposure_baseline": 38825,
+      "market_exposure_current": 582,
+      "collection": {
+        "status": "unverified",
+        "reasons": [
+          "collection_policy_unavailable",
+          "ingest_channel_unavailable"
+        ],
+        "required_channels": []
+      },
+      "stories": 11,
+      "articles": 11,
+      "outlets": 11,
+      "model_stories": 11,
+      "model_outlets": 11,
+      "baseline_stories": 112,
+      "baseline_active_days": 26,
+      "stories_per_window_unadjusted": 3.7333333333333334,
+      "stories_expected": 1.5215282446551726,
+      "tail_probability": 8.930980654421716e-07,
+      "news_z": 4.7762215309382645,
+      "anomaly_reason": null,
+      "candidate_news_spike": false,
+      "sent": {
+        "value": 0.3185485261993456,
+        "usable_stories": 11,
+        "coverage": 1.0,
+        "reason": null
+      },
+      "sent_prev": {
+        "value": null,
+        "usable_stories": 0,
+        "coverage": null,
+        "reason": "no_stories"
+      },
+      "sent_delta": null,
+      "evidence_uids": [
+        "50668c0d5b962264",
+        "bf3e057b6fb010ae",
+        "f789e1cd5c09ddf5"
+      ],
+      "name": "BOYD GAMING CORP",
+      "evidence": [
+        {
+          "uid": "50668c0d5b962264",
+          "title": "Example supporting news",
+          "url": "https://example.com/news/50668c0d5b962264",
+          "source_domain": "example.com",
+          "time_published": "2026-09-20T06:00:00Z"
+        },
+        {
+          "uid": "bf3e057b6fb010ae",
+          "title": "Example supporting news",
+          "url": "https://example.com/news/bf3e057b6fb010ae",
+          "source_domain": "example.com",
+          "time_published": "2026-09-20T15:35:32Z"
+        },
+        {
+          "uid": "f789e1cd5c09ddf5",
+          "title": "Example supporting news",
+          "url": "https://example.com/news/f789e1cd5c09ddf5",
+          "source_domain": "example.com",
+          "time_published": "2026-09-20T19:05:21Z"
+        }
+      ]
+    },
+    {
+      "ticker": "META",
+      "sector": "Communication Services",
+      "market": "us_equity",
+      "market_exposure_baseline": 38825,
+      "market_exposure_current": 582,
+      "collection": {
+        "status": "unverified",
+        "reasons": [
+          "collection_policy_unavailable",
+          "ingest_channel_unavailable"
+        ],
+        "required_channels": []
+      },
+      "stories": 25,
+      "articles": 30,
+      "outlets": 26,
+      "model_stories": 24,
+      "model_outlets": 25,
+      "baseline_stories": 681,
+      "baseline_active_days": 31,
+      "stories_per_window_unadjusted": 22.7,
+      "stories_expected": 9.260389695110462,
+      "tail_probability": 4.4247726785118706e-05,
+      "news_z": 3.9201456905151697,
+      "anomaly_reason": null,
+      "candidate_news_spike": false,
+      "sent": {
+        "value": -0.04597176066209755,
+        "usable_stories": 25,
+        "coverage": 1.0,
+        "reason": null
+      },
+      "sent_prev": {
+        "value": 0.05480228850439629,
+        "usable_stories": 16,
+        "coverage": 0.9411764705882353,
+        "reason": null
+      },
+      "sent_delta": -0.10077404916649385,
+      "evidence_uids": [
+        "16b428013db588c0",
+        "7aa2fd949a8be737",
+        "35b6de2a6c7d09cf"
+      ],
+      "name": "Meta Platforms, Inc.",
+      "evidence": [
+        {
+          "uid": "16b428013db588c0",
+          "title": "Example supporting news",
+          "url": "https://example.com/news/16b428013db588c0",
+          "source_domain": "example.com",
+          "time_published": "2026-09-20T12:01:37Z"
+        },
+        {
+          "uid": "7aa2fd949a8be737",
+          "title": "Example supporting news",
+          "url": "https://example.com/news/7aa2fd949a8be737",
+          "source_domain": "example.com",
+          "time_published": "2026-09-20T13:14:32Z"
+        },
+        {
+          "uid": "35b6de2a6c7d09cf",
+          "title": "Example supporting news",
+          "url": "https://example.com/news/35b6de2a6c7d09cf",
+          "source_domain": "example.com",
+          "time_published": "2026-09-21T01:45:00Z"
+        }
+      ]
+    }
+  ]
+}

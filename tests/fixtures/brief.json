@@ -1,0 +1,122 @@
+{
+  "generated_at": "2026-09-21T06:11:35.088394Z",
+  "window_start": "2026-09-14T06:11:35.088394Z",
+  "window_end": "2026-09-21T06:11:35.088394Z",
+  "hours": 168,
+  "tickers": [
+    "AMD",
+    "BTC-USD",
+    "NVDA",
+    "SDK-UNKNOWN"
+  ],
+  "unknown_tickers": [
+    "SDK-UNKNOWN"
+  ],
+  "events": [
+    {
+      "uid": "44474a9621fe5d80",
+      "story_id": "44474a9621fe5d80",
+      "title": "Example grouped story",
+      "summary": "Example summary.",
+      "url": "https://example.com/news/44474a9621fe5d80",
+      "article_url": "https://alphai.io/news/article/09-20/44474a9621fe5d80/nscale-files-30b-nyse-ipo-with-1b-nvidia-note-and-45b-anthropic-deal",
+      "source_domain": "example.com",
+      "source_type": "gdelt",
+      "time_published": "2026-09-20T18:30:00Z",
+      "matched_tickers": [
+        "NVDA"
+      ],
+      "category": "ipo",
+      "relevance_score": 9,
+      "information_novelty": 9,
+      "actionability": "medium",
+      "signals": [],
+      "earnings_available": false
+    },
+    {
+      "uid": "24d6fb4013bab51e",
+      "story_id": "24d6fb4013bab51e",
+      "title": "Example grouped story",
+      "summary": "Example summary.",
+      "url": "https://example.com/news/24d6fb4013bab51e",
+      "article_url": "https://alphai.io/news/article/09-20/24d6fb4013bab51e/ifm-aip-boost-advisory-line-up-for-stacks-28b-plus-data-centres",
+      "source_domain": "example.com",
+      "source_type": "gdelt",
+      "time_published": "2026-09-20T09:45:00Z",
+      "matched_tickers": [
+        "NVDA"
+      ],
+      "category": "mergers_acquisitions",
+      "relevance_score": 9,
+      "information_novelty": 9,
+      "actionability": "high",
+      "signals": [
+        {
+          "ticker": "NVDA",
+          "sentiment": "positive"
+        }
+      ],
+      "earnings_available": false
+    }
+  ],
+  "filings": [
+    {
+      "uid": "bd17d6eceeb24d7a",
+      "story_id": "bd17d6eceeb24d7a",
+      "title": "Example grouped story",
+      "summary": "Example summary.",
+      "url": "https://example.com/news/bd17d6eceeb24d7a",
+      "article_url": "https://alphai.io/news/article/09-14/bd17d6eceeb24d7a/su-lisa-t-sold-127m-of-amd-indirect-holdings",
+      "source_domain": "example.com",
+      "source_type": "sec_form4",
+      "time_published": "2026-09-14T20:19:52Z",
+      "matched_tickers": [
+        "AMD"
+      ],
+      "category": "insider",
+      "relevance_score": 6,
+      "information_novelty": 7,
+      "actionability": "low",
+      "signals": [
+        {
+          "ticker": "AMD",
+          "sentiment": "negative"
+        }
+      ],
+      "earnings_available": false
+    },
+    {
+      "uid": "fe28a4623cbb70f1",
+      "story_id": "fe28a4623cbb70f1",
+      "title": "Example grouped story",
+      "summary": "Example summary.",
+      "url": "https://example.com/news/fe28a4623cbb70f1",
+      "article_url": "https://alphai.io/news/article/09-14/fe28a4623cbb70f1/su-lisa-t-sold-355m-of-amd",
+      "source_domain": "example.com",
+      "source_type": "sec_form4",
+      "time_published": "2026-09-14T20:19:52Z",
+      "matched_tickers": [
+        "AMD"
+      ],
+      "category": "insider",
+      "relevance_score": 6,
+      "information_novelty": 7,
+      "actionability": "medium",
+      "signals": [
+        {
+          "ticker": "AMD",
+          "sentiment": "negative"
+        }
+      ],
+      "earnings_available": false
+    }
+  ],
+  "upcoming_earnings": [
+    {
+      "ticker": "NVDA",
+      "report_date": "2026-11-17"
+    }
+  ],
+  "events_truncated": true,
+  "filings_truncated": true
+}
