@@ -6,6 +6,8 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-09-21
+
 ### Added
 - `news.brief`: grouped news, SEC filings and confirmed earnings dates for up to
   100 explicit tickers, with unknown-symbol and truncation information.
