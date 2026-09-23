@@ -7,8 +7,8 @@ agents and trading bots.
 - **Sync and async** clients (`Client` / `AsyncClient`) over `httpx`
 - **Pydantic v2** response models — autocomplete, validation, `Decimal` money
 - **Cursor auto-pagination**, automatic retry on 429/5xx, rate-limit inspection
-- **Typed errors**; covers the news, symbol and Radar endpoints (13 of the 19 in the
-  spec — calendar, macro and insider-trades are one `httpx` call away)
+- **Typed errors**; covers news search, feeds, symbols, Brief and Radar.
+  Calendar, macro and insider-trades are one `Client.request()` call away.
 
 API reference: <https://api.alphai.io/api/schema/> · Developer guide:
 <https://alphai.io/developers>
@@ -358,6 +358,54 @@ The same keyword arguments apply to `AsyncClient`. When you pass a custom
 `http_client`, the SDK **still applies its `Authorization` header and base URL on
 every request** — your client just supplies the transport (proxies, custom
 timeout, mounts). You own its lifecycle (the SDK won't close a client you passed in).
+
+## Search by name or phrase
+
+```python
+from datetime import datetime, timedelta, timezone
+
+from alphai import Client
+
+until = datetime.now(timezone.utc)
+since = until - timedelta(days=29)  # inside the Free archive window
+
+with Client() as client:
+    page = client.news.search(query="Jane Street", from_date=since, to_date=until, page_size=20)
+    print(page.query.mode, page.query.note, page.matched)
+    for article in page.results:
+        print(article.title, article.enrichment.tickers)
+        if article.search_match:
+            print(article.search_match.context)
+
+    if page.next_cursor:
+        next_page = client.news.search(
+            query="Jane Street",
+            from_date=since,
+            to_date=until,
+            page_size=20,
+            cursor=page.next_cursor,
+        )
+```
+
+`news.search()` is also available on `AsyncClient` with `await`. It returns a
+`NewsSearchPage`, including typed `query` interpretation and per-article
+`search_match` details. Quoted phrases such as `query='"going concern"'`,
+`-word` exclusions and `OR` are passed through unchanged. Add `symbol`,
+`category`, `source_type`, `item`, `min_relevance` or `collapse_stories` to narrow
+results. `item="5.02"` limits search to 8-Ks carrying that item. Dates accept ISO
+strings, `date` or `datetime`, with the same semantics as the news feed.
+
+Inspect `query.mode` and `query.note`: `broadened` can match only some words;
+`no_match` and `no_terms` are empty answers within the searched coverage, not
+proof an event did not happen. `matched` counts visible candidates among the best
+200, not all articles in the archive. `count` is the current page size. Context
+can be `None` for matches in titles/entity names; scores compare only within a
+response. To continue, reuse the query, filters and window with `next_cursor`.
+Invalid cursors raise `BadRequestError`; search downtime raises `ServerError`
+(after the configured retries), never a successful empty page.
+
+Runnable example: [news search](examples/news_search.py). Try the same queries
+in [AlphAI Search](https://alphai.io/search).
 
 ## Development
 

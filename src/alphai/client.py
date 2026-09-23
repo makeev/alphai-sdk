@@ -31,13 +31,14 @@ from ._core import (
     parse_retry_after,
     should_retry,
 )
-from ._requests import CategoryArg, DateArg, SortArg
+from ._requests import CategoryArg, DateArg, SortArg, SourceTypeArg
 from ._snapshot_params import TickersArg, build_brief_params
 from .errors import APIConnectionError, InvalidResponseError
 from .models import (
     LatestEarningsPointer,
     NewsBrief,
     NewsPagination,
+    NewsSearchPage,
     RichNewsArticle,
     Symbol,
     TickerEarningsHistory,
@@ -176,6 +177,53 @@ class NewsResource:
 
     def __init__(self, client: Client) -> None:
         self._client = client
+
+    def search(
+        self,
+        query: str,
+        *,
+        symbol: str | None = None,
+        category: CategoryArg = None,
+        source_type: SourceTypeArg = None,
+        item: str | None = None,
+        min_relevance: int | None = None,
+        collapse_stories: bool = False,
+        cursor: str | None = None,
+        page_size: int | None = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
+    ) -> NewsSearchPage:
+        """Search article text without resolving the query to a ticker.
+
+        ``query`` (2-200 characters) supports quoted phrases, ``-word`` and
+        ``OR``. ``symbol`` and the other filters narrow the text matches.
+        ``source_type`` accepts press (``gdelt``), ``sec_form4``,
+        ``sec_form8k`` or ``sec_form6k``; ``item`` implies 8-K filings.
+        Dates use the same inclusive window semantics as :meth:`list`.
+        ``page_size`` is 1-20 on any key; 21-50 requires Pro.
+
+        Inspect ``page.query.mode`` / ``note`` before using the results:
+        a broadened match may contain only some query words; no match is
+        limited to the searched window and coverage. ``matched`` counts
+        the bounded candidate set (at most 200), not the entire archive.
+        Pass ``next_cursor`` with the same query, filters and window for
+        the next page. Invalid cursors raise ``BadRequestError``; an
+        unavailable search raises ``ServerError``, never an empty page.
+        """
+        params = rq.build_news_search_params(
+            query,
+            symbol=symbol,
+            category=category,
+            source_type=source_type,
+            item=item,
+            min_relevance=min_relevance,
+            collapse_stories=collapse_stories,
+            cursor=cursor,
+            page_size=page_size,
+            from_date=from_date,
+            to_date=to_date,
+        )
+        return rq.parse_news_search_page(self._client.request("GET", rq.NEWS_SEARCH, params))
 
     def list(
         self,

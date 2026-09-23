@@ -6,6 +6,16 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-09-23
+
+### Added
+- `news.search(query=...)` on `Client` and `AsyncClient`: text search with quoted
+  phrases, exclusions, ticker/category/source/8-K-item filters and date windows.
+- `NewsSearchPage`, `NewsSearchQueryInfo` and `SearchMatch` models expose search
+  interpretation, bounded match counts, result context and cursor pagination.
+- Runnable search example and guidance for partial matches, empty results and
+  continuing a search with the same query and filters.
+
 ## [0.7.0] - 2026-09-21
 
 ### Added

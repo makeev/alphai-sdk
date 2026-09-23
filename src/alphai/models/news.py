@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, PrivateAttr
 
@@ -141,11 +141,33 @@ class InsiderEvent(_Base):
     transaction_date: date | None = None
 
 
+class SearchMatch(_Base):
+    """Why a search result matched. Scores are comparable within one response only."""
+
+    score: float
+    terms_matched: int | None = None
+    context: str | None = None
+
+
+class NewsSearchQueryInfo(_Base):
+    """The server's interpretation of the text and the effective archive window."""
+
+    mode: Literal["strict", "broadened", "no_match", "no_terms"]
+    sort: Literal["relevance", "published"]
+    terms: list[str]
+    required_terms: list[str] = []
+    optional_terms: list[str] = []
+    window_from: datetime | None = None
+    note: str = ""
+
+
 class RichNewsArticle(_Base):
     """A single enriched article: ``original`` + ``enrichment`` (+ story fields)."""
 
     original: OriginalArticle
     enrichment: EnrichedArticle
+    # Search endpoint only; context can be absent for title/entity-only matches.
+    search_match: SearchMatch | None = None
     # Structured Form 4 event block — populated on insider-feed items only
     # (GET /api/news/insider/); None on every other endpoint.
     insider: InsiderEvent | None = None
@@ -208,6 +230,18 @@ class NewsPagination(_Base):
         return not self.caught_up
 
 
+class NewsSearchPage(NewsPagination):
+    """Ranked search page. ``matched`` is bounded to the best 200, not a corpus total.
+
+    Inspect ``query`` before treating an empty or broadened result as evidence.
+    Continue with ``next_cursor`` and the same query, filters and window.
+    """
+
+    count: int
+    matched: int
+    query: NewsSearchQueryInfo
+
+
 __all__ = [
     "AITradingInsights",
     "AlternativePerspectives",
@@ -217,9 +251,12 @@ __all__ = [
     "KeyEntity",
     "NewsContextEnhancement",
     "NewsPagination",
+    "NewsSearchPage",
+    "NewsSearchQueryInfo",
     "NewsTradingValue",
     "OriginalArticle",
     "RichNewsArticle",
+    "SearchMatch",
     "TickerAnalysis",
     "Topic",
 ]

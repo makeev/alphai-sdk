@@ -16,6 +16,7 @@ from .models import (
     LatestEarningsPointer,
     NewsCategory,
     NewsPagination,
+    NewsSearchPage,
     RichNewsArticle,
     Symbol,
     TickerEarningsHistory,
@@ -26,6 +27,7 @@ from .models import (
 # --- URL paths -------------------------------------------------------------
 
 NEWS = "/api/news/"
+NEWS_SEARCH = "/api/news/search/"
 NEWS_TRENDING = "/api/news/trending/"
 NEWS_INSIDER = "/api/news/insider/"
 
@@ -75,6 +77,7 @@ def symbol_earnings_latest_path(ticker: str) -> str:
 # --- param types & helpers -------------------------------------------------
 
 CategoryArg = str | NewsCategory | Iterable[str | NewsCategory] | None
+SourceTypeArg = str | Iterable[str] | None
 
 #: Feed ordering. ``published`` (the default) is the reverse-chronological feed
 #: and pages into older history. ``ingested`` is delta polling: rows in the
@@ -143,6 +146,35 @@ def build_news_list_params(
     }
 
 
+def build_news_search_params(
+    query: str,
+    *,
+    symbol: str | None = None,
+    category: CategoryArg = None,
+    source_type: SourceTypeArg = None,
+    item: str | None = None,
+    min_relevance: int | None = None,
+    collapse_stories: bool = False,
+    cursor: str | None = None,
+    page_size: int | None = None,
+    from_date: DateArg = None,
+    to_date: DateArg = None,
+) -> dict[str, Any]:
+    return {
+        "q": query,
+        "symbol": symbol,
+        "category": _as_str_list(category),
+        "source_type": _as_str_list(source_type),
+        "item": item,
+        "min_relevance": min_relevance,
+        "collapse": "story" if collapse_stories else None,
+        "cursor": cursor,
+        "page_size": page_size,
+        "from_date": _as_date_param(from_date),
+        "to_date": _as_date_param(to_date),
+    }
+
+
 def build_news_insider_params(
     *,
     symbol: str | None = None,
@@ -186,6 +218,10 @@ def parse_news_page(data: Any, sort: SortArg = None) -> NewsPagination:
     page = NewsPagination.model_validate(data)
     page._sort = sort or "published"
     return page
+
+
+def parse_news_search_page(data: Any) -> NewsSearchPage:
+    return NewsSearchPage.model_validate(data)
 
 
 def parse_article(data: Any) -> RichNewsArticle:
