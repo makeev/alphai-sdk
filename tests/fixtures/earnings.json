@@ -53,17 +53,27 @@
             "yoy_change": "+4%",
             "qoq_change": "-6%",
             "driver": "Seasonal consumer demand"
+          },
+          {
+            "name": "Automotive",
+            "revenue": "$586",
+            "yoy_change": null,
+            "qoq_change": null,
+            "driver": "",
+            "numeric": 586.0,
+            "unit": "USD",
+            "scale": "millions"
           }
         ],
         "guidance": {
           "period": "Third Quarter Fiscal 2027",
-          "revenue": "$102.0 billion \u00b1 2%",
+          "revenue": "$102.0 billion ± 2%",
           "gross_margin": "73.9%"
         },
         "vs_prior_guidance": [
           {
             "metric": "Revenue",
-            "prior_guidance": "$89.5 billion \u00b1 2%",
+            "prior_guidance": "$89.5 billion ± 2%",
             "actual": "$96.2 billion",
             "verdict": "above"
           }
@@ -97,7 +107,8 @@
         "missing_items": [
           "No explicit gross-margin guidance for the full year"
         ],
-        "numbers_verified_from_document": true
+        "numbers_verified_from_document": true,
+        "table_scale": "millions"
       }
     }
   ],

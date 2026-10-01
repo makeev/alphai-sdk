@@ -191,7 +191,11 @@ confirmed date — the SDK deliberately does not substitute an estimate.
 Each `KeyMetric` keeps `value` exactly as the filing printed it and adds
 `numeric`, `unit` and `scale` next to it (`"$19,345"` → `19345.0`, `"USD"`,
 `"millions"` when the filing's table header says so). `scale` is `None` when
-nothing in the filing said it; don't assume millions.
+nothing in the filing said it; don't assume millions. Each `Segment` carries
+the same three fields for `revenue`, and `EarningsReport.table_scale` names
+the unit of the filing's own tables: the notes and `analysis` quote table
+figures as printed, so under `"millions"` a bare `$36,197` there is $36,197
+million.
 
 ### Multi-ticker Brief
 

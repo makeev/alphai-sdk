@@ -194,3 +194,18 @@ def test_key_metric_companions_are_typed(client: Client) -> None:
     assert (first.numeric, first.unit, first.scale) == (96221.0, "USD", "millions")
     # A metric without the companions (a blob from before 2026-09-12) reads as None.
     assert read.analysis.key_metrics[-1].scale is None
+
+
+@respx.mock
+def test_segment_companions_and_table_scale_are_typed(client: Client) -> None:
+    respx.get(f"{BASE_URL}/api/symbols/NVDA/earnings/").mock(
+        return_value=httpx.Response(200, json=load("earnings"))
+    )
+    analysis = client.symbols.earnings("NVDA").reports[0].analysis
+    assert analysis is not None
+    assert analysis.table_scale == "millions"
+    bare = analysis.segments[-1]
+    assert bare.revenue == "$586"
+    assert (bare.numeric, bare.unit, bare.scale) == (586.0, "USD", "millions")
+    # A segment served without the companions reads as None, never as a guess.
+    assert analysis.segments[0].scale is None

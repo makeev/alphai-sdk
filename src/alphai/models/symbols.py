@@ -133,6 +133,13 @@ class Segment(_Base):
     yoy_change: str | None = None
     qoq_change: str | None = None
     driver: str = ""
+    # The same companions a ``KeyMetric`` carries, for ``revenue`` (API 1.46.0,
+    # 2026-10-01). A segment table usually names its unit in the header, so
+    # ``"$18,002"`` is computable only through these. ``scale`` is ``None`` when
+    # nothing in the filing named the unit.
+    numeric: float | None = None
+    unit: str | None = None
+    scale: str | None = None
 
 
 class Guidance(_Base):
@@ -192,6 +199,11 @@ class EarningsReport(_Base):
     analysis: str = ""
     missing_items: list[str] = []
     numbers_verified_from_document: bool = False
+    # The unit the filing's own table headers name (``"thousands"`` |
+    # ``"millions"`` | ``"billions"``), or ``None`` (API 1.46.0). The notes and
+    # ``analysis`` quote table figures as printed, so under ``"millions"`` a
+    # bare ``$36,197`` there is $36,197 million; per-share figures are as printed.
+    table_scale: str | None = None
 
 
 class EarningsRead(_Base):
