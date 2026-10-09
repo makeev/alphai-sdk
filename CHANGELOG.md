@@ -6,6 +6,25 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.9.0] - 2026-10-09
+
+### Added
+- `client.stories` (sync and async): `top()` (the last 48 hours ranked, up to
+  50), `list()` / `iter()` (every story newest-first, cursor-paginated,
+  `page_size` 1-50), `get(story_id)` (a `StoryLookup`: `found` with the
+  `Story`, `merged` with `redirect_to`, `not_a_story` with the `article`),
+  `get_story()` (follows merges, `None` for a single-publisher id),
+  `materials()` / `iter_materials()` (the articles behind a story, oldest
+  first). Models: `TopStories`, `StoriesPage`, `StoryCard`, `Story`,
+  `StoryKeyFact`, `StoryTickerTake`, `StoryLookup`, `StoryArticleRef`,
+  `StoryMaterial`, `StoryMaterialsPage`.
+
+### Changed
+- `RichNewsArticle.story_id` is now filled on every row of the feed, search,
+  trending and the single-article endpoint (API 1.49.0), not only with
+  `collapse_stories=True`, and it no longer changes when the story's root
+  moves or two stories merge. `sources_count` / `sources` stay collapse-only.
+
 ## [0.8.2] - 2026-10-09
 
 ### Added

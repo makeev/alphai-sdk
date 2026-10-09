@@ -1,0 +1,33 @@
+{
+  "story_id": "e58bf00bbc0d44ca",
+  "results": [
+    {
+      "uid": "e58bf00bbc0d44ca",
+      "title": "Devon Energy Announces Agreement to Exit the Eagle Ford for $4.2 Billion",
+      "publisher": "globenewswire.com",
+      "time_published": "2026-10-08T11:10:00Z",
+      "url": "https://www.globenewswire.com/news-release/2026/10/08/3377142/0/en/devon-energy-announces-agreement-to-exit-the-eagle-ford-for-4-2-billion.html",
+      "relevance_score": 9,
+      "seo_eligible": true
+    },
+    {
+      "uid": "86571032d68037c6",
+      "title": "Devon Energy Corp. (DVN) Sells Eagle Ford Assets for $4.2B Cash",
+      "publisher": "tradingview.com",
+      "time_published": "2026-10-08T11:10:00Z",
+      "url": "https://www.tradingview.com/news/tradingview:a0ea842381469:0-devon-energy-corp-dvn-sells-eagle-ford-assets-for-4-2b-cash",
+      "relevance_score": 9,
+      "seo_eligible": true
+    },
+    {
+      "uid": "0512932b4cf7e224",
+      "title": "Crescent Energy to Buy Devon Eagle Ford Assets for $4.22 Billion, Secures $2.0 Billion Bridge",
+      "publisher": "tradingview.com",
+      "time_published": "2026-10-08T11:13:00Z",
+      "url": "https://www.tradingview.com/news/tradingview:343a4d6efde34:0-crescent-energy-to-buy-devon-eagle-ford-assets-for-4-22-billion-secures-2-0-billion-bridge",
+      "relevance_score": 9,
+      "seo_eligible": true
+    }
+  ],
+  "next_cursor": "MjAyNi0xMC0wOFQxMToxMzowMCswMDowMHwxMDIxNTI1"
+}

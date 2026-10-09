@@ -54,6 +54,7 @@ from .models import (
 )
 from .pagination import aiterate_pages
 from .radar import AsyncRadarResource
+from .stories import AsyncStoriesResource
 
 # Module-scope aliases so `-> list[...]` return types don't resolve to the
 # `list` *method* defined on the resource classes below.
@@ -106,6 +107,7 @@ class AsyncClient:
         self.radar = AsyncRadarResource(self)
         self.news = AsyncNewsResource(self)
         self.symbols = AsyncSymbolsResource(self)
+        self.stories = AsyncStoriesResource(self)
 
     async def request(self, method: str, path: str, params: dict[str, Any] | None = None) -> Any:
         """Issue a request with retries and return the parsed JSON body.

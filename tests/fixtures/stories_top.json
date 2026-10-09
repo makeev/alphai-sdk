@@ -1,0 +1,57 @@
+{
+  "results": [
+    {
+      "story_id": "e58bf00bbc0d44ca",
+      "title": "Devon Energy to Sell Eagle Ford Assets to Crescent Energy",
+      "summary": "Devon Energy agreed on October 8, 2026, to transfer its Eagle Ford business to Crescent Energy in a cash transaction. The package covers about 90,000 net acres in Texas and accounts for approximately 4% of Devon’s total BOE output. Devon plans to direct after-tax proceeds toward repurchases and debt reduction, with completion targeted around year-end 2026 pending approvals and customary conditions.",
+      "importance": 9,
+      "category": "mergers_acquisitions",
+      "tickers": [
+        "CRGY",
+        "DVN"
+      ],
+      "publishers": 10,
+      "materials": 15,
+      "first_published_at": "2026-10-08T11:10:00Z",
+      "last_material_at": "2026-10-08T20:23:01Z",
+      "updated_at": "2026-10-09T06:12:31.205613Z",
+      "summary_state": "published"
+    },
+    {
+      "story_id": "2e57baf2b4808584",
+      "title": "Samsung posts record Q3 operating profit above 100 trillion won",
+      "summary": "Samsung Electronics reported a third‑quarter operating profit of 107.4 trillion won, the first time a South Korean company has topped the 100 trillion‑won mark. Revenue reached 195 trillion won, driven by a surge in memory‑chip sales linked to AI data‑center demand. The operating margin rose to 55.1%, the highest in the company’s history. The results were announced on 8 October 2026.",
+      "importance": 9,
+      "category": "earnings",
+      "tickers": [
+        "005930.KS"
+      ],
+      "publishers": 9,
+      "materials": 13,
+      "first_published_at": "2026-10-06T00:59:24Z",
+      "last_material_at": "2026-10-09T05:14:00Z",
+      "updated_at": "2026-10-09T05:52:33.772636Z",
+      "summary_state": "published"
+    },
+    {
+      "story_id": "ffeeabdbe06ea284",
+      "title": "Ultragenyx agrees to sell priority review voucher for $210 million",
+      "summary": "Ultragenyx Pharmaceutical entered a definitive agreement to sell its Rare Pediatric Disease Priority Review Voucher for $210 million. The company received the voucher after the FDA approved Genglycos for glycogen storage disease type Ia. Completion remains contingent on customary conditions, including the Hart-Scott-Rodino waiting period.",
+      "importance": 9,
+      "category": "corporate_actions",
+      "tickers": [
+        "PCRX",
+        "RARE",
+        "VTRS"
+      ],
+      "publishers": 8,
+      "materials": 11,
+      "first_published_at": "2026-10-07T12:30:00Z",
+      "last_material_at": "2026-10-08T18:50:29Z",
+      "updated_at": "2026-10-09T04:11:55.074086Z",
+      "summary_state": "published"
+    }
+  ],
+  "as_of": "2026-10-09T06:41:12.391532Z",
+  "ranking_version": 1
+}

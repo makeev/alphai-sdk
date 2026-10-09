@@ -201,6 +201,50 @@ archive depth) or `None` when the file holds everything the filters select. The
 strings; parse money with `Decimal` yourself. A bad filter is the same
 `BadRequestError` as on the JSON feed, raised before any row.
 
+### Stories
+
+A story is an event that two or more publishers reported, summarised by AlphAI
+from the articles themselves: what happened, the figures with the publisher each
+came from, why it matters, a read per ticker and the questions the sources leave
+open. Every article row carries a permanent `story_id` (the uid of the story's
+first root article, unchanged when a stronger copy takes the root over or two
+stories merge); a lone article names itself.
+
+```python
+with Client() as client:
+    top = client.stories.top()  # last 48h, ranked by importance, coverage and freshness
+    for card in top.results[:5]:
+        print(card.importance, card.publishers, card.title)
+
+    for card in client.stories.iter(max_items=50):  # newest first, across pages
+        print(card.last_material_at, card.story_id, card.summary_state)
+
+    # story_id taken from any article row: most resolve to not_a_story
+    # (one publisher carried the event), a few to a summarised story.
+    lookup = client.stories.get(top.results[0].story_id)
+    if lookup.status == "found" and lookup.story is not None:
+        story = lookup.story
+        print(story.summary, story.why_it_matters)
+        for fact in story.key_facts:
+            print("-", fact.text, f"({fact.publisher})")
+        for take in story.ticker_takes:
+            print(take.ticker, take.impact, take.note)
+    elif lookup.status == "merged":
+        lookup = client.stories.get(lookup.redirect_to)  # or client.stories.get_story(...)
+    elif lookup.status == "not_a_story":
+        print("single-publisher article:", lookup.article.uid)
+
+    for material in client.stories.iter_materials(top.results[0].story_id):
+        print(material.time_published, material.publisher, material.url)
+```
+
+`summary_state` is `published`, `stale` (articles joined after the summary; a
+rewrite is queued) or `preparing` (no summary yet; `title` and `summary` are the
+lead article's). A cursor or a story past your plan's archive horizon raises
+`PermissionDeniedError` with `reason == "archive_horizon"`. Summaries are
+AI-generated financial information for research, not investment advice; article
+bodies are never returned.
+
 ### Coverage passport
 
 What each data source holds, from when, and with which caveats. Read it before a

@@ -50,6 +50,7 @@ from .models import (
 )
 from .pagination import iterate_pages
 from .radar import RadarResource
+from .stories import StoriesResource
 
 # Module-scope aliases so `-> list[...]` return types don't resolve to the
 # `list` *method* defined on the resource classes below.
@@ -113,6 +114,7 @@ class Client:
         self.radar = RadarResource(self)
         self.news = NewsResource(self)
         self.symbols = SymbolsResource(self)
+        self.stories = StoriesResource(self)
 
     def request(self, method: str, path: str, params: dict[str, Any] | None = None) -> Any:
         """Issue a request with retries and return the parsed JSON body.

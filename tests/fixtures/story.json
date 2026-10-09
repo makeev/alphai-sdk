@@ -1,0 +1,73 @@
+{
+  "status": "found",
+  "story": {
+    "story_id": "e58bf00bbc0d44ca",
+    "title": "Devon Energy to Sell Eagle Ford Assets to Crescent Energy",
+    "summary": "Devon Energy agreed on October 8, 2026, to transfer its Eagle Ford business to Crescent Energy in a cash transaction. The package covers about 90,000 net acres in Texas and accounts for approximately 4% of Devon’s total BOE output. Devon plans to direct after-tax proceeds toward repurchases and debt reduction, with completion targeted around year-end 2026 pending approvals and customary conditions.",
+    "importance": 9,
+    "category": "mergers_acquisitions",
+    "tickers": [
+      "CRGY",
+      "DVN"
+    ],
+    "publishers": 10,
+    "materials": 15,
+    "first_published_at": "2026-10-08T11:10:00Z",
+    "last_material_at": "2026-10-08T20:23:01Z",
+    "updated_at": "2026-10-09T06:12:31.205613Z",
+    "summary_state": "published",
+    "why_it_matters": "The transaction would reduce Devon’s exposure to a mature operating area while giving it cash for capital returns and balance-sheet improvement. Devon says the divestiture should extend inventory life, lower its corporate breakeven and reduce the base production decline rate.",
+    "key_facts": [
+      {
+        "text": "The assets are located in Karnes, DeWitt and Gonzales Counties, Texas, and cover approximately 90,000 net acres.",
+        "source_uid": "e58bf00bbc0d44ca",
+        "publisher": "globenewswire.com"
+      },
+      {
+        "text": "The Eagle Ford properties contribute approximately 4% of Devon’s total BOE production.",
+        "source_uid": "e58bf00bbc0d44ca",
+        "publisher": "globenewswire.com"
+      },
+      {
+        "text": "The transaction’s effective date is July 1, 2026, and Devon expects completion around year-end 2026, subject to regulatory approvals and customary closing conditions.",
+        "source_uid": "e58bf00bbc0d44ca",
+        "publisher": "globenewswire.com"
+      },
+      {
+        "text": "Devon said after-tax proceeds will be allocated to accelerated share repurchases and debt reduction.",
+        "source_uid": "e58bf00bbc0d44ca",
+        "publisher": "globenewswire.com"
+      },
+      {
+        "text": "Crescent secured a $2.0 billion bridge-loan commitment from JPMorgan Chase to help finance the purchase.",
+        "source_uid": "0512932b4cf7e224",
+        "publisher": "tradingview.com"
+      }
+    ],
+    "ticker_takes": [
+      {
+        "ticker": "DVN",
+        "impact": "positive",
+        "note": "The sale provides Devon with cash intended for share repurchases and debt reduction while concentrating its portfolio on other assets."
+      },
+      {
+        "ticker": "CRGY",
+        "impact": "neutral",
+        "note": "The acquisition expands Crescent’s Eagle Ford position, but the materials do not establish a clear net equity impact for Crescent."
+      }
+    ],
+    "uncertainties": [
+      "The reported purchase price is inconsistent: Devon’s release and several summaries cite $4.2 billion, Crescent coverage cites $4.22 billion, and one report cites $3.85 billion.",
+      "Closing timing varies across materials between around year-end 2026, late 2026 or early 2027, and the fourth quarter of 2026 or early 2027.",
+      "Reported market reactions differ across materials, including Devon share gains of 2.07%, 2.5%, 2.6% and 2.8%, while another report says Crescent shares fell 4.49%."
+    ],
+    "based_on": 15,
+    "materials_at_build": 15,
+    "new_materials": 0,
+    "revision_generated_at": "2026-10-09T06:12:31.203838Z",
+    "model": "gpt-5.6-luna",
+    "indexable": true
+  },
+  "redirect_to": null,
+  "article": null
+}

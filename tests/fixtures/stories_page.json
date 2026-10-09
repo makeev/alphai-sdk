@@ -1,0 +1,44 @@
+{
+  "results": [
+    {
+      "story_id": "79006ae7d3e2c4d9",
+      "title": "Thailand SEC finalizes rules for Bitcoin and Ether ETFs on the Stock Exchange",
+      "summary": "The Thailand Securities and Exchange Commission approved regulations that allow spot Bitcoin (BTC) and Ether (ETH) exchange‑traded funds to be listed and traded on the Stock Exchange of Thailand starting 16 Oct 2026. The ETFs must be passively managed, maintain at least 80 % net exposure to the underlying cryptocurrency, and be held with SEC‑supervised custodians. Thai brokers are barred from offering margin loans or facilitating retail investments in overseas crypto ETFs, and depositary receipts linked to foreign ETFs are prohibited in the initial phase.",
+      "importance": 8,
+      "category": "crypto",
+      "tickers": [
+        "BTC-USD",
+        "ETH-USD"
+      ],
+      "publishers": 3,
+      "materials": 3,
+      "first_published_at": "2026-10-09T03:08:51.483000Z",
+      "last_material_at": "2026-10-09T06:34:11Z",
+      "updated_at": "2026-10-09T06:04:45.427190Z",
+      "summary_state": "stale"
+    },
+    {
+      "story_id": "20dc516a91ce0872",
+      "title": "U.S. suspends Microsoft, Adobe and several IT firms from PERM green‑card program",
+      "summary": "The Trump administration announced that Microsoft and Adobe, along with major IT outsourcing firms, are barred from the Permanent Labor Certification (PERM) program that enables H‑1B workers to obtain green cards. Vice President JD Vance said Microsoft laid off 6,000 U.S. employees while receiving 6,300 H‑1B visas and about 3,000 green cards, prompting the suspension. The Labor Department will not process any new or pending PERM applications for the listed companies.",
+      "importance": 7,
+      "category": "regulation",
+      "tickers": [
+        "AAPL",
+        "ADBE",
+        "AMZN",
+        "CTSH",
+        "INFY",
+        "MSFT",
+        "WIT"
+      ],
+      "publishers": 177,
+      "materials": 217,
+      "first_published_at": "2026-10-08T10:23:22Z",
+      "last_material_at": "2026-10-09T06:15:00Z",
+      "updated_at": "2026-10-09T06:38:06.921173Z",
+      "summary_state": "published"
+    }
+  ],
+  "next_cursor": "MjAyNi0xMC0wOVQwNjoxNTowMCswMDowMHwyNTcxNg=="
+}

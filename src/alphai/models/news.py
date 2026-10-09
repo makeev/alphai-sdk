@@ -209,8 +209,12 @@ class RichNewsArticle(_Base):
     # a major ticker's earnings filing whose figures cleared the cross-check
     # against the filing text. None on every other article: guard before use.
     earnings: EarningsReport | None = None
-    # Populated only when listing with collapse_stories=True.
+    # The story this article belongs to: a permanent key (the uid of the story's
+    # first root article), filled on every row since API 1.49.0; a lone article
+    # names itself. Resolve it with ``client.stories.get(story_id)``. None only
+    # on ``/api/news/{uid}/related/``.
     story_id: str | None = None
+    # Populated only when listing with collapse_stories=True.
     sources_count: int | None = None
     sources: list[str] | None = None
 
