@@ -19,6 +19,7 @@ from .enums import (
     NewsCategory,
     SentimentLike,
 )
+from .symbols import EarningsReport
 
 
 class _Base(BaseModel):
@@ -102,6 +103,10 @@ class OriginalArticle(_Base):
     topics: list[Topic] = []
     # Loosely typed on purpose — the API declares additionalProperties here.
     tickers_sentiment: list[dict[str, Any]] = []
+    # SEC Form 4 rows only: the holding pool the trade touched (``"direct"`` /
+    # ``"indirect"``); ``None`` on other news. One filing can surface both legs
+    # as two rows with the same URL; they are separate events, so sum them.
+    ownership_form: str | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
@@ -139,6 +144,32 @@ class InsiderEvent(_Base):
     is_director: bool = False
     is_ten_percent_owner: bool = False
     transaction_date: date | None = None
+    #: When EDGAR accepted the filing (UTC); compare with ``transaction_date``.
+    filed_at: datetime | None = None
+    #: The filing missed the SEC's two-business-day deadline (Rule 16a-3(g)),
+    #: counted on Eastern dates with one weekday of slack.
+    late_filing: bool = False
+
+
+class EightKFiling(_Base):
+    """Structured SEC 8-K filing block (``filing``), on rows whose source is an 8-K.
+
+    What the filing itself says, next to the AI read of it: every ``items``
+    code in the filing's order (``["5.02", "9.01"]``; the ``item=`` filter
+    matches any of them, and the list is empty for a filing SEC served no
+    document for), the ``primary_item`` that drove the row's category, the
+    ``accession_number`` to cite, when EDGAR accepted it (``filed_at``), the
+    date of the event it reports (``event_date``, which can precede the filing
+    by up to four business days) and the press-release exhibit the summary was
+    built from (``exhibit_url``, ``None`` when the filing has none).
+    """
+
+    items: list[str] = []
+    primary_item: str | None = None
+    accession_number: str = ""
+    filed_at: datetime | None = None
+    event_date: date | None = None
+    exhibit_url: str | None = None
 
 
 class SearchMatch(_Base):
@@ -168,9 +199,16 @@ class RichNewsArticle(_Base):
     enrichment: EnrichedArticle
     # Search endpoint only; context can be absent for title/entity-only matches.
     search_match: SearchMatch | None = None
-    # Structured Form 4 event block — populated on insider-feed items only
-    # (GET /api/news/insider/); None on every other endpoint.
+    # Structured Form 4 event block — on Form 4 rows of the insider feed
+    # (GET /api/news/insider/) and of GET /api/news/{uid}/; None elsewhere.
     insider: InsiderEvent | None = None
+    # Structured 8-K filing block — on 8-K rows of GET /api/news/ and of
+    # GET /api/news/{uid}/; None on press, Form 4 and 6-K rows and elsewhere.
+    filing: EightKFiling | None = None
+    # AlphAI's structured earnings read — GET /api/news/{uid}/ only, and only on
+    # a major ticker's earnings filing whose figures cleared the cross-check
+    # against the filing text. None on every other article: guard before use.
+    earnings: EarningsReport | None = None
     # Populated only when listing with collapse_stories=True.
     story_id: str | None = None
     sources_count: int | None = None
@@ -189,12 +227,28 @@ class RichNewsArticle(_Base):
     def relevance_score(self) -> int:
         return self.enrichment.relevance_score
 
+    @property
+    def tickers(self) -> list[str]:
+        """Convenience: the validated tickers (``enrichment.tickers``)."""
+        return self.enrichment.tickers
+
+    @property
+    def category(self) -> NewsCategory | str:
+        """Convenience: the category (``enrichment.category``); a
+        :class:`NewsCategory` member, or the raw string for a value this SDK
+        version does not know yet."""
+        return self.enrichment.category
+
 
 class NewsPagination(_Base):
     """A page of the cursor-paginated feed: ``results`` + ``next_cursor``."""
 
     results: list[RichNewsArticle] = []
     next_cursor: str | None = None
+    #: Set only when ``symbol`` named a stock/ETF whose bare string also names
+    #: an active cryptocurrency (``BTC`` is a Grayscale ETF): one sentence naming
+    #: the coin ticker to request (``BTC-USD``). The page still serves the equity.
+    symbol_note: str | None = None
 
     #: Sort mode that produced this page. NOT part of the response body — the
     #: request layer stamps it (see ``_requests.parse_news_page``) because
@@ -242,12 +296,35 @@ class NewsSearchPage(NewsPagination):
     query: NewsSearchQueryInfo
 
 
+class InsiderCsvExport(_Base):
+    """An insider-feed CSV export (``news.insider_csv``): the file and how it ended.
+
+    ``text`` is the whole file (header line first; columns in the order the
+    API documents). ``rows`` counts data rows and ``row_cap`` is the plan's
+    cap. ``truncated`` says why the file stopped: ``"row_cap"`` (more rows
+    exist; pass ``next_cursor`` back as ``cursor``) or ``"archive_horizon"``
+    (the walk reached the plan's archive depth); ``None`` when the file holds
+    everything the filters select. ``next_cursor`` is the same token a JSON
+    page would return at that position, so it continues in either format.
+    """
+
+    text: str
+    rows: int | None = None
+    row_cap: int | None = None
+    truncated: str | None = None
+    next_cursor: str | None = None
+    filename: str | None = None
+
+
 __all__ = [
     "AITradingInsights",
     "AlternativePerspectives",
+    "EightKFiling",
     "EnrichedArticle",
     "ImpactAnalysis",
     "IndirectMarketEffects",
+    "InsiderCsvExport",
+    "InsiderEvent",
     "KeyEntity",
     "NewsContextEnhancement",
     "NewsPagination",

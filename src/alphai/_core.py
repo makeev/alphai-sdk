@@ -7,6 +7,7 @@ clients differ only in how they sleep and await.
 
 from __future__ import annotations
 
+import logging
 import random
 from dataclasses import dataclass
 from enum import Enum
@@ -20,11 +21,18 @@ from .errors import (
     AuthenticationError,
     BadRequestError,
     ConflictError,
+    InvalidResponseError,
     NotFoundError,
     PermissionDeniedError,
     RateLimitError,
     ServerError,
 )
+
+#: The SDK's logger. Every wait before a retry is logged here at WARNING, so even
+#: with no logging configured at all Python's last-resort handler prints it to
+#: stderr: a client sleeping on a 429 must not look hung. Route or silence it
+#: like any other logger, e.g. ``logging.getLogger("alphai").setLevel(logging.ERROR)``.
+logger = logging.getLogger("alphai")
 
 
 @dataclass(frozen=True)
@@ -91,6 +99,68 @@ def should_retry(status: int) -> bool:
 def parse_retry_after(headers: httpx.Headers) -> int | None:
     """Seconds from the ``Retry-After`` header (the API sends an integer)."""
     return _int(headers.get("retry-after"))
+
+
+def read_json_body(response: httpx.Response, method: str, path: str) -> Any:
+    """The parsed JSON body of a successful response.
+
+    ``None`` for a 204 (the documented "nothing here yet", e.g.
+    ``/earnings/latest/``); a 2xx without a JSON body is an
+    :class:`InvalidResponseError`.
+    """
+    if response.status_code == 204:
+        return None
+    data = parse_json(response)
+    if data is None:
+        raise InvalidResponseError(
+            f"Expected a JSON body from {method} {path} (status {response.status_code}), got none"
+        )
+    return data
+
+
+def log_retry_wait(
+    method: str,
+    path: str,
+    wait: float,
+    retry: int,
+    retries: int,
+    *,
+    response: httpx.Response | None = None,
+    error: BaseException | None = None,
+) -> None:
+    """Log, at WARNING, the wait the client is about to sleep before a retry.
+
+    ``retry`` is 1-based and ``retries`` is the configured maximum. On a 429
+    the line also carries ``Retry-After`` and the daily budget from the
+    ``X-RateLimit-*`` headers; those report the per-day layer only, so a 429
+    with budget left is the per-minute burst cap, which no header exposes.
+    """
+    notes: list[str] = []
+    if response is not None:
+        status = response.status_code
+        cause = f"HTTP {status} ({'rate limited' if status == 429 else 'server error'})"
+        retry_after = response.headers.get("retry-after")
+        if retry_after is not None:
+            notes.append(f"Retry-After: {retry_after}s")
+        rate = RateLimit.from_headers(response.headers)
+        if status == 429 and rate is not None and rate.remaining is not None:
+            if rate.limit is not None:
+                notes.append(f"daily budget {rate.remaining}/{rate.limit} left")
+            else:
+                notes.append(f"daily budget {rate.remaining} left")
+    else:
+        cause = f"connection error ({type(error).__name__})" if error else "connection error"
+    suffix = f" ({'; '.join(notes)})" if notes else ""
+    logger.warning(
+        "alphai: %s on %s %s; waiting %.1fs before retry %d of %d%s",
+        cause,
+        method,
+        path,
+        wait,
+        retry,
+        retries,
+        suffix,
+    )
 
 
 def build_url(base_url: str, path: str) -> str:
@@ -176,7 +246,10 @@ __all__ = [
     "clean_params",
     "compute_backoff",
     "error_from_response",
+    "log_retry_wait",
+    "logger",
     "parse_json",
     "parse_retry_after",
+    "read_json_body",
     "should_retry",
 ]

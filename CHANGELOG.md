@@ -6,6 +6,42 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.8.2] - 2026-10-09
+
+### Added
+- `news.list` / `news.iter` take `source_type` (`gdelt`, `sec_form4`,
+  `sec_form8k`, `sec_form6k`) and `item` (an 8-K item code such as `"5.02"`,
+  implies 8-Ks), the feed filters the search method already had.
+- `RichNewsArticle.filing` (`EightKFiling`): the structured 8-K block on 8-K
+  rows, with every item code, the primary item, accession number, `filed_at`,
+  `event_date` and the press-release `exhibit_url`.
+- `news.insider_csv()` (sync and async): the insider feed as one CSV file
+  (`format=csv`) with the feed's filters, returned as `InsiderCsvExport` with
+  `rows`, `row_cap`, `truncated` and `next_cursor` from the response headers.
+- `client.coverage()` (sync and async): the coverage passport, typed as
+  `Coverage` / `CoverageSource` / `CoverageChannel` / `CoverageArchiveDays`,
+  with `Coverage.by_source(name)`.
+- `news.insider` / `news.insider_iter` take `is_10b5_1` (`False` keeps
+  discretionary trades only).
+- `RichNewsArticle.tickers` and `.category` shortcuts next to `uid`, `title`
+  and `relevance_score`.
+- Typed fields the API already sent: `RichNewsArticle.earnings` (the earnings
+  read on `news.get`, `None` on most articles), `InsiderEvent.filed_at` /
+  `.late_filing`, `OriginalArticle.ownership_form` and
+  `NewsPagination.symbol_note`.
+
+### Changed
+- Every wait before a retry (429, 5xx, connection error) is logged at
+  `WARNING` on the `alphai` logger with the seconds to wait, `Retry-After` and,
+  on a 429, the daily budget left, so a client waiting out a rate limit no
+  longer looks hung. Silence it with
+  `logging.getLogger("alphai").setLevel(logging.ERROR)`.
+
+### Documentation
+- README: filings, the CSV export, the coverage passport, a `None` guard on
+  `article.earnings`, and a note that the per-minute limit is not in any
+  response header.
+
 ## [0.8.1] - 2026-10-01
 
 ### Added

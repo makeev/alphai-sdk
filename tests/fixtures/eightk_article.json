@@ -1,0 +1,100 @@
+{
+  "original": {
+    "title": "Digital Asset Acquisition Corp. (DAAQ): Entry into a Material Definitive Agreement",
+    "url": "https://www.sec.gov/Archives/edgar/data/2052162/000121390026108077/ea030808801ex99-1.htm",
+    "time_published": "2026-10-08T21:27:01Z",
+    "authors": [],
+    "summary": "Digital Asset Acquisition Corp. (DAAQ) filed an SEC Form 8-K — Entry into a Material Definitive Agreement. Exhibit 99.1 DIGITAL ASSET ACQUISITION CORP. TO COMBINE WITH TITAN STRATEGICS, EXPLORATION LICENSE HOLDER OVER RANSTAD, SWEDEN’S LARGEST PREVIOUSLY PRODUCING URANIUM MINE; COMBINED COMPANY TO BE NAMED “RENAISSANCE NUCLEAR, INC.” AND PUBLICLY LISTED ● Titan holds the exploration l",
+    "banner_image": null,
+    "source": "SEC EDGAR 8-K",
+    "source_domain": "sec.gov",
+    "topics": [
+      {
+        "topic": "8-K",
+        "relevance": 1.0
+      }
+    ],
+    "tickers_sentiment": [],
+    "ownership_form": null,
+    "id": 1991098,
+    "uid": "7f96c226789a3fc7",
+    "created_at": "2026-10-08T21:28:20.118013Z",
+    "updated_at": "2026-10-08T21:28:29.618923Z",
+    "is_backfill": false
+  },
+  "enrichment": {
+    "ai_trading_insights": {
+      "ticker_analysis": [
+        {
+          "ticker": "DAAQ",
+          "relevance_context": "SPAC DAAQ disclosed a merger agreement with Titan Strategics to form Renaissance Nuclear, including a $15M PIPE and $318M pro‑forma enterprise value.",
+          "impact_analysis": {
+            "summary": "Positive merger news likely lifts DAAQ shares as investors price in the uranium asset and capital raise.",
+            "sentiment": "positive",
+            "price_impact_prediction": "upward pressure as market values the new nuclear asset and cash infusion",
+            "confidence": "high",
+            "reasoning": "First‑report 8‑K merger with clear financial terms; micro‑cap SPACs typically rally on successful business combinations."
+          }
+        }
+      ],
+      "news_trading_value": {
+        "actionability_score": "high",
+        "information_novelty": 7,
+        "timing_relevance": "immediate, pre‑market today",
+        "market_sentiment_alignment": "bullish on SPAC merger news",
+        "estimated_read_time": "2 minutes"
+      },
+      "indirect_market_effects": {
+        "sector_implications": "Adds a new uranium exploration asset to the nuclear energy sector, potentially boosting related mining stocks.",
+        "regional_market_impact": "Swedish uranium assets may attract European investors seeking exposure to domestic nuclear fuel sources.",
+        "global_market_relevance": "Highlights EU's move toward uranium self‑sufficiency, modestly relevant to global energy security narratives."
+      },
+      "alternative_perspectives": {
+        "contrarian_view": "If the uranium project fails to deliver resources, the merger could become a financial burden for DAAQ.",
+        "overlooked_factors": "Regulatory approvals and actual resource confirmation remain uncertain, which could delay or derail the combination."
+      }
+    },
+    "news_context_enhancement": {
+      "background_context": "The filing is a standard 8‑K disclosure of a SPAC business combination, detailing the target's uranium licenses and the capital raise.",
+      "impact_analysis": "The merger creates Renaissance Nuclear, positioning the combined entity to benefit from EU's push for domestic uranium supply.",
+      "key_entities": [
+        {
+          "name": "Digital Asset Acquisition Corp.",
+          "type": "SPAC",
+          "description": "Nasdaq‑listed special purpose acquisition company seeking a merger."
+        },
+        {
+          "name": "Titan Strategics Holdings Ltd",
+          "type": "Target",
+          "description": "Holder of Swedish uranium exploration licenses."
+        }
+      ],
+      "market_relevance_summary": "First‑report merger news for a micro‑cap SPAC; likely short‑term price move and longer‑term sector implications.",
+      "estimated_read_time_minutes": 2
+    },
+    "relevance_score": 6,
+    "category": "corporate_actions",
+    "tickers": [
+      "DAAQ"
+    ],
+    "seo_eligible": false
+  },
+  "story_id": null,
+  "sources_count": null,
+  "sources": null,
+  "insider": null,
+  "filing": {
+    "items": [
+      "1.01",
+      "3.02",
+      "7.01"
+    ],
+    "primary_item": "1.01",
+    "accession_number": "0001213900-26-108077",
+    "filed_at": "2026-10-08T21:27:01Z",
+    "event_date": null,
+    "exhibit_url": "https://www.sec.gov/Archives/edgar/data/2052162/000121390026108077/ea030808801ex99-1.htm"
+  },
+  "earnings": null,
+  "search_match": null
+}

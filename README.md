@@ -7,8 +7,9 @@ agents and trading bots.
 - **Sync and async** clients (`Client` / `AsyncClient`) over `httpx`
 - **Pydantic v2** response models — autocomplete, validation, `Decimal` money
 - **Cursor auto-pagination**, automatic retry on 429/5xx, rate-limit inspection
-- **Typed errors**; covers news search, feeds, symbols, Brief and Radar.
-  Calendar, macro and insider-trades are one `Client.request()` call away.
+- **Typed errors**; covers news search, feeds (press and SEC filings), symbols,
+  Brief, Radar, the coverage passport and the insider CSV export. Calendar,
+  macro and insider-trades are one `Client.request()` call away.
 
 API reference: <https://api.alphai.io/api/schema/> · Developer guide:
 <https://alphai.io/developers>
@@ -132,8 +133,11 @@ not see it; Pro has no window.
 ```python
 with Client() as client:
     for article in client.news.iter(category="earnings", max_items=100):
-        print(article.uid, article.title)
+        print(article.uid, article.title, article.tickers, article.category)
 ```
+
+`uid`, `title`, `tickers`, `category` and `relevance_score` are shortcuts into
+the `original` / `enrichment` blocks, which keep the full article.
 
 ### Single article, trending, related, insider
 
@@ -143,6 +147,75 @@ with Client() as client:
     art = client.news.get("788e477c66f3849b")
     client.news.related(art.uid)  # up to 6 related articles
     client.news.insider(symbol="NVDA")  # SEC Form 4 feed (or .insider_iter())
+    client.news.insider(symbol="NVDA", is_10b5_1=False)  # discretionary trades only
+```
+
+### SEC filings: `source_type`, `item` and the `filing` block
+
+`source_type` picks where rows come from: `gdelt` (press coverage),
+`sec_form4`, `sec_form8k` or `sec_form6k`, OR-matched. `item` keeps 8-K filings
+that carry an item code anywhere in the filing (`"5.02"` executive changes,
+`"1.01"` material agreements, `"8.01"` other events) and implies `sec_form8k`;
+next to any other source type it is a `400`. Every 8-K row carries a structured
+`filing` block:
+
+```python
+with Client() as client:
+    page = client.news.list(item="5.02", min_relevance=6)
+    for article in page.results:
+        filing = article.filing  # EightKFiling | None (None on press, Form 4, 6-K)
+        if filing is None:
+            continue
+        print(article.tickers, filing.items, filing.primary_item, filing.accession_number)
+        print(filing.filed_at, filing.event_date, filing.exhibit_url)  # event_date may be None
+```
+
+`items` lists every item code in the filing's order and is empty for a filing SEC
+served no document for; `primary_item` is the one that set the row's category.
+With `collapse_stories=True` an 8-K that carries a press release joins that
+release's story, so read filings uncollapsed.
+
+### Insider feed as CSV
+
+`news.insider_csv()` returns the insider feed as one file with the same filters,
+walked on the server up to your plan's row cap (Free 500, Basic 2,000, Pro
+10,000) inside its archive window. The whole file counts as one request.
+
+```python
+import csv
+import io
+
+with Client() as client:
+    export = client.news.insider_csv(symbol="NVDA", is_10b5_1=False)
+    print(export.rows, "rows of", export.row_cap, "->", export.filename)
+    for row in csv.DictReader(io.StringIO(export.text)):
+        print(row["transaction_date"], row["insider_name"], row["side"], row["total_value_usd"])
+
+    if export.truncated == "row_cap":  # more rows exist: continue from the cursor
+        more = client.news.insider_csv(symbol="NVDA", is_10b5_1=False, cursor=export.next_cursor)
+```
+
+`truncated` is `"row_cap"`, `"archive_horizon"` (the walk reached your plan's
+archive depth) or `None` when the file holds everything the filters select. The
+`next_cursor` also works for `news.insider()` with the same `sort`. CSV cells are
+strings; parse money with `Decimal` yourself. A bad filter is the same
+`BadRequestError` as on the JSON feed, raised before any row.
+
+### Coverage passport
+
+What each data source holds, from when, and with which caveats. Read it before a
+backtest: `first_row_at` is the earliest row we hold, not the start of dense
+coverage, and `history_note` says which months are thin.
+
+```python
+with Client() as client:
+    cov = client.coverage()
+    print(cov.as_of)  # computed once a day
+    for source in cov.sources:
+        print(source.source, source.first_row_at, source.rows_total, source.stale)
+    eightk = cov.by_source("sec_form8k")
+    if eightk is not None:
+        print(eightk.history_note, eightk.limits, eightk.archive_days)
 ```
 
 ### Symbols & rollups
@@ -182,6 +255,9 @@ with Client() as client:
     latest = client.symbols.earnings_latest("NVDA")  # None when no read exists yet (HTTP 204)
     if latest is not None:
         article = client.news.get(latest.uid)  # full enrichment
+        read = article.earnings  # EarningsReport | None, even on an earnings article
+        if read is not None:
+            print(read.verdict, read.headline)
 ```
 
 `EarningsRead.source_type` distinguishes the filing kind (`sec_form8k` /
@@ -330,6 +406,17 @@ GET requests are automatically retried on 429 / 5xx / connection errors
 at `max_retry_after`, default 60s, so a bad value can't freeze your process). A
 2xx with a non-JSON / empty body raises `InvalidResponseError`.
 
+Every wait before a retry is logged at `WARNING` on the `alphai` logger, so a
+client sleeping on a 429 never looks hung. With no logging configured, Python
+prints it to stderr:
+
+```text
+alphai: HTTP 429 (rate limited) on GET /api/news/; waiting 12.0s before retry 1 of 2 (Retry-After: 12s; daily budget 87/100 left)
+```
+
+Route it like any logger, or silence it with
+`logging.getLogger("alphai").setLevel(logging.ERROR)`.
+
 ## Rate-limit budget
 
 Every keyed response carries the `X-RateLimit-*` trio. The last one seen is on
@@ -342,6 +429,11 @@ with Client() as client:
     if rl:
         print(f"{rl.remaining}/{rl.limit} left, resets at {rl.reset}")
 ```
+
+The trio reports the **per-day** layer. The per-minute burst cap is not in any
+header: it shows up only as a 429 with a short `Retry-After`, which the client
+waits out (and logs). A 429 while the daily budget still has room is the
+per-minute cap; pace bursts yourself if you need to avoid it.
 
 ## Configuration
 

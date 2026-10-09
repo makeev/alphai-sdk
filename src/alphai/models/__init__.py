@@ -8,6 +8,12 @@ from .brief import (
     BriefSignal,
     NewsBrief,
 )
+from .coverage import (
+    Coverage,
+    CoverageArchiveDays,
+    CoverageChannel,
+    CoverageSource,
+)
 from .enums import (
     Actionability,
     ActionabilityLike,
@@ -21,9 +27,11 @@ from .enums import (
 from .news import (
     AITradingInsights,
     AlternativePerspectives,
+    EightKFiling,
     EnrichedArticle,
     ImpactAnalysis,
     IndirectMarketEffects,
+    InsiderCsvExport,
     InsiderEvent,
     KeyEntity,
     NewsContextEnhancement,
@@ -125,6 +133,12 @@ __all__ = [
     "NewsTradingValue",
     "OriginalArticle",
     "InsiderEvent",
+    "EightKFiling",
+    "InsiderCsvExport",
+    "Coverage",
+    "CoverageSource",
+    "CoverageChannel",
+    "CoverageArchiveDays",
     "Quote",
     "RichNewsArticle",
     "Segment",

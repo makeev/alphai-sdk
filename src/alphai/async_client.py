@@ -31,14 +31,17 @@ from ._core import (
     clean_params,
     compute_backoff,
     error_from_response,
-    parse_json,
+    log_retry_wait,
     parse_retry_after,
+    read_json_body,
     should_retry,
 )
 from ._requests import CategoryArg, DateArg, SortArg, SourceTypeArg
 from ._snapshot_params import TickersArg, build_brief_params
-from .errors import APIConnectionError, InvalidResponseError
+from .errors import APIConnectionError
 from .models import (
+    Coverage,
+    InsiderCsvExport,
     LatestEarningsPointer,
     NewsBrief,
     NewsPagination,
@@ -110,18 +113,39 @@ class AsyncClient:
         Auth header and base URL are applied here, so they take effect even when
         a custom ``http_client`` was supplied.
         """
+        return read_json_body(await self._send(method, path, params), method, path)
+
+    async def coverage(self) -> Coverage:
+        """The coverage passport: what each data source holds, from when, with
+        which caveats — see :meth:`alphai.client.Client.coverage`."""
+        return rq.parse_coverage(await self.request("GET", rq.COVERAGE))
+
+    async def _send(
+        self,
+        method: str,
+        path: str,
+        params: dict[str, Any] | None = None,
+        *,
+        accept: str | None = None,
+    ) -> httpx.Response:
+        """Send with retries (each wait logged) and return the first non-error
+        response; a final error status raises its typed exception."""
         cleaned = clean_params(params or {})
         url = build_url(self._config.base_url, path)
         headers = build_headers(self._config)
+        if accept is not None:
+            headers["Accept"] = accept
         backoff = self._config.backoff_factor
         max_retry_after = self._config.max_retry_after
-        attempts = self._config.max_retries + 1
-        for attempt in range(attempts):
+        retries = self._config.max_retries
+        for attempt in range(retries + 1):
             try:
                 response = await self._http.request(method, url, params=cleaned, headers=headers)
             except httpx.HTTPError as exc:
-                if attempt + 1 < attempts:
-                    await asyncio.sleep(compute_backoff(attempt, backoff))
+                if attempt < retries:
+                    wait = compute_backoff(attempt, backoff)
+                    log_retry_wait(method, path, wait, attempt + 1, retries, error=exc)
+                    await asyncio.sleep(wait)
                     continue
                 raise APIConnectionError(str(exc), cause=exc) from exc
 
@@ -130,18 +154,12 @@ class AsyncClient:
                 self.last_rate_limit = rate
 
             if response.status_code < 400:
-                if response.status_code == 204:
-                    return None  # documented "nothing here yet" (e.g. /earnings/latest/)
-                data = parse_json(response)
-                if data is None:
-                    raise InvalidResponseError(
-                        f"Expected a JSON body from {method} {path} "
-                        f"(status {response.status_code}), got none"
-                    )
-                return data
-            if should_retry(response.status_code) and attempt + 1 < attempts:
+                return response
+            if should_retry(response.status_code) and attempt < retries:
                 retry_after = parse_retry_after(response.headers)
-                await asyncio.sleep(compute_backoff(attempt, backoff, retry_after, max_retry_after))
+                wait = compute_backoff(attempt, backoff, retry_after, max_retry_after)
+                log_retry_wait(method, path, wait, attempt + 1, retries, response=response)
+                await asyncio.sleep(wait)
                 continue
             raise error_from_response(response)
 
@@ -230,13 +248,17 @@ class AsyncNewsResource:
         sort: SortArg = None,
         from_date: DateArg = None,
         to_date: DateArg = None,
+        source_type: SourceTypeArg = None,
+        item: str | None = None,
     ) -> NewsPagination:
         """One page of the main feed. ``page_size`` is 1-20 on any key
         (default 10), 21-50 needs a Pro key.
 
-        ``sort="ingested"`` switches to delta polling, and ``from_date`` /
+        ``sort="ingested"`` switches to delta polling, ``from_date`` /
         ``to_date`` bound the publication window (inclusive; a bare date is
-        the whole day) - see :meth:`alphai.client.NewsResource.list`."""
+        the whole day), and ``source_type`` / ``item`` select press or SEC
+        filings (``item`` implies 8-Ks) - see
+        :meth:`alphai.client.NewsResource.list`."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -248,6 +270,8 @@ class AsyncNewsResource:
             sort=sort,
             from_date=from_date,
             to_date=to_date,
+            source_type=source_type,
+            item=item,
         )
         return rq.parse_news_page(await self._client.request("GET", rq.NEWS, params), sort)
 
@@ -263,6 +287,8 @@ class AsyncNewsResource:
         sort: SortArg = None,
         from_date: DateArg = None,
         to_date: DateArg = None,
+        source_type: SourceTypeArg = None,
+        item: str | None = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
@@ -284,6 +310,8 @@ class AsyncNewsResource:
                 sort=sort,
                 from_date=from_date,
                 to_date=to_date,
+                source_type=source_type,
+                item=item,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)
@@ -316,6 +344,7 @@ class AsyncNewsResource:
         sort: SortArg = None,
         from_date: DateArg = None,
         to_date: DateArg = None,
+        is_10b5_1: bool | None = None,
     ) -> NewsPagination:
         """One page of the insider (SEC Form 4) feed. ``page_size`` is 1-20 on
         any key (default 10), 21-50 needs Pro. ``min_relevance`` (1-10)
@@ -330,7 +359,10 @@ class AsyncNewsResource:
         ``from_date`` / ``to_date`` take the same window as :meth:`list`, and
         note which clock they bound: when the filing reached the feed
         (``time_published``), not the trade date the ``insider`` block
-        reports — a Form 4 is filed days after the trade."""
+        reports — a Form 4 is filed days after the trade.
+
+        ``is_10b5_1`` filters on the event's Rule 10b5-1 status: ``False``
+        keeps discretionary trades only, ``True`` plan trades only."""
         params = rq.build_news_insider_params(
             symbol=symbol,
             min_relevance=min_relevance,
@@ -339,8 +371,35 @@ class AsyncNewsResource:
             sort=sort,
             from_date=from_date,
             to_date=to_date,
+            is_10b5_1=is_10b5_1,
         )
         return rq.parse_news_page(await self._client.request("GET", rq.NEWS_INSIDER, params), sort)
+
+    async def insider_csv(
+        self,
+        *,
+        symbol: str | None = None,
+        min_relevance: int | None = None,
+        cursor: str | None = None,
+        sort: SortArg = None,
+        from_date: DateArg = None,
+        to_date: DateArg = None,
+        is_10b5_1: bool | None = None,
+    ) -> InsiderCsvExport:
+        """The insider feed as one CSV file (``format=csv``) — see
+        :meth:`alphai.client.NewsResource.insider_csv`. Check ``truncated``
+        and continue a capped file with ``next_cursor``."""
+        params = rq.build_news_insider_csv_params(
+            symbol=symbol,
+            min_relevance=min_relevance,
+            cursor=cursor,
+            sort=sort,
+            from_date=from_date,
+            to_date=to_date,
+            is_10b5_1=is_10b5_1,
+        )
+        response = await self._client._send("GET", rq.NEWS_INSIDER, params, accept=rq.CSV_ACCEPT)
+        return rq.parse_insider_csv(response)
 
     def insider_iter(
         self,
@@ -351,6 +410,7 @@ class AsyncNewsResource:
         sort: SortArg = None,
         from_date: DateArg = None,
         to_date: DateArg = None,
+        is_10b5_1: bool | None = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
@@ -365,6 +425,7 @@ class AsyncNewsResource:
                 sort=sort,
                 from_date=from_date,
                 to_date=to_date,
+                is_10b5_1=is_10b5_1,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)

@@ -11,8 +11,12 @@ from collections.abc import Iterable
 from datetime import date, datetime
 from typing import Any, Literal
 
+import httpx
+
 from .errors import InvalidResponseError
 from .models import (
+    Coverage,
+    InsiderCsvExport,
     LatestEarningsPointer,
     NewsCategory,
     NewsPagination,
@@ -30,6 +34,12 @@ NEWS = "/api/news/"
 NEWS_SEARCH = "/api/news/search/"
 NEWS_TRENDING = "/api/news/trending/"
 NEWS_INSIDER = "/api/news/insider/"
+COVERAGE = "/api/coverage/"
+
+#: ``Accept`` for ``format=csv``. The API answers ``format=csv`` together with
+#: an ``Accept: application/json`` (the SDK's default) with 406, so the CSV
+#: request asks for CSV first; error bodies stay JSON either way.
+CSV_ACCEPT = "text/csv, application/json;q=0.9"
 
 # Reject path-breaking characters fail-fast, so a malformed uid/ticker yields a
 # clear client-side error instead of a confusing server 400/404 (and can't
@@ -131,6 +141,8 @@ def build_news_list_params(
     sort: SortArg = None,
     from_date: DateArg = None,
     to_date: DateArg = None,
+    source_type: SourceTypeArg = None,
+    item: str | None = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
@@ -143,6 +155,8 @@ def build_news_list_params(
         "sort": sort,
         "from_date": _as_date_param(from_date),
         "to_date": _as_date_param(to_date),
+        "source_type": _as_str_list(source_type),
+        "item": item,
     }
 
 
@@ -184,16 +198,43 @@ def build_news_insider_params(
     sort: SortArg = None,
     from_date: DateArg = None,
     to_date: DateArg = None,
+    is_10b5_1: bool | None = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
         "min_relevance": min_relevance,
+        "is_10b5_1": is_10b5_1,
         "cursor": cursor,
         "page_size": page_size,
         "sort": sort,
         "from_date": _as_date_param(from_date),
         "to_date": _as_date_param(to_date),
     }
+
+
+def build_news_insider_csv_params(
+    *,
+    symbol: str | None = None,
+    min_relevance: int | None = None,
+    cursor: str | None = None,
+    sort: SortArg = None,
+    from_date: DateArg = None,
+    to_date: DateArg = None,
+    is_10b5_1: bool | None = None,
+) -> dict[str, Any]:
+    """The insider feed's filters plus ``format=csv``; ``page_size`` has no
+    effect on an export, so it is not offered."""
+    params = build_news_insider_params(
+        symbol=symbol,
+        min_relevance=min_relevance,
+        cursor=cursor,
+        sort=sort,
+        from_date=from_date,
+        to_date=to_date,
+        is_10b5_1=is_10b5_1,
+    )
+    params["format"] = "csv"
+    return params
 
 
 def build_symbols_list_params(
@@ -268,3 +309,42 @@ def parse_latest_earnings(data: Any) -> LatestEarningsPointer | None:
     if data is None:
         return None
     return LatestEarningsPointer.model_validate(data)
+
+
+def parse_coverage(data: Any) -> Coverage:
+    return Coverage.model_validate(data)
+
+
+_FILENAME = re.compile(r'filename="?([^";]+)"?')
+
+
+def _header_int(headers: httpx.Headers, name: str) -> int | None:
+    try:
+        return int(headers[name])
+    except (KeyError, ValueError):
+        return None
+
+
+def parse_insider_csv(response: httpx.Response) -> InsiderCsvExport:
+    """Read a ``format=csv`` response: the file body plus its ``X-Alphai-*`` headers.
+
+    ``X-Alphai-Truncated: false`` (the file holds everything the filters
+    select) becomes ``truncated=None``, so ``if export.truncated:`` reads true
+    only when there is more to fetch or the archive horizon stopped the walk.
+    """
+    content_type = response.headers.get("content-type", "")
+    if not content_type.startswith("text/csv"):
+        raise InvalidResponseError(
+            f"Expected a text/csv body from the insider export, got {content_type or 'none'!r}"
+        )
+    headers = response.headers
+    truncated = headers.get("x-alphai-truncated")
+    match = _FILENAME.search(headers.get("content-disposition", ""))
+    return InsiderCsvExport(
+        text=response.text,
+        rows=_header_int(headers, "x-alphai-rows"),
+        row_cap=_header_int(headers, "x-alphai-row-cap"),
+        truncated=None if truncated in (None, "", "false") else truncated,
+        next_cursor=headers.get("x-alphai-next-cursor") or None,
+        filename=match.group(1) if match else None,
+    )

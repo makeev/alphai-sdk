@@ -1,0 +1,166 @@
+{
+  "generated_at": "2026-10-09T03:50:15.754690Z",
+  "as_of": "2026-10-09T03:50:00.752146Z",
+  "research_only": true,
+  "sources": [
+    {
+      "source": "publisher_news",
+      "first_row_at": "2004-07-19T23:48:49Z",
+      "last_row_at": "2026-10-09T03:44:08Z",
+      "last_ingested_at": "2026-10-09T03:49:19.462787Z",
+      "rows_total": 1469704,
+      "cadence": "The GDELT GKG stream and RSS feeds are polled every 5 to 10 minutes, and each article is fetched and parsed directly from the publisher's page. A per-ticker rotation revisits the 300 most active tickers about every 2.5 hours and the rest about every 25 hours.",
+      "history_note": "The collectors expanded in June 2026, when the GKG bulk collector and the RSS feeds landed together: months before that hold far fewer articles per day, and November 2024 to March 2025 holds fragments only. first_row_at is the earliest article, not the start of dense coverage.",
+      "limits": [
+        "English-language articles only; since 2026-08-26 pages whose title or body is mostly non-Latin script are dropped before enrichment.",
+        "Only enriched articles are served: the feed applies a relevance floor (default 4) and requires a verified ticker or a market-wide macro category.",
+        "Summaries and per-ticker analysis only; the full article text is never served.",
+        "Some publishers are reached only through the per-ticker rotation, so their articles can arrive hours after publication.",
+        "created_at is when the article arrived; time_published is GDELT's first-seen time for GKG rows and the publisher's own time for RSS rows."
+      ],
+      "archive_days": {
+        "free": 30,
+        "basic": 90,
+        "pro": 180
+      },
+      "stale": false,
+      "stale_after_seconds": 1800,
+      "channels": [
+        {
+          "channel": "gkg",
+          "cadence": "Polled every 5 minutes; GDELT publishes a new GKG file every 15 minutes.",
+          "last_ingested_at": "2026-10-09T03:06:29.948234Z",
+          "stale_after_seconds": 1800,
+          "stale": true
+        },
+        {
+          "channel": "rss",
+          "cadence": "RSS feeds polled every 5 to 10 minutes; a per-ticker rotation revisits the 300 most active tickers about every 2.5 hours and the rest about every 25 hours.",
+          "last_ingested_at": "2026-10-09T03:49:19.462787Z",
+          "stale_after_seconds": 1800,
+          "stale": false
+        }
+      ]
+    },
+    {
+      "source": "sec_form4",
+      "first_row_at": "2025-08-11T16:00:00Z",
+      "last_row_at": "2026-10-09T01:59:35Z",
+      "last_ingested_at": "2026-10-09T02:02:46.980894Z",
+      "rows_total": 58219,
+      "cadence": "The SEC EDGAR Form 4 feed is polled every 5 minutes during US hours and every 30 minutes off-hours.",
+      "history_note": "Live collection since May 2026. Filings from August 2025 to May 2026 were replayed from SEC daily indexes in August 2026 without enrichment: they count here and on /api/symbols/{ticker}/insider-trades/, but have no scored article in the news feed. first_row_at is the earliest replayed filing.",
+      "limits": [
+        "Open-market transactions only: non-derivative purchases (code P), sales (S) and dispositions to the issuer (D). Grants, option exercises, tax withholding and derivative-table rows are not collected, so counts run below EDGAR's raw Form 4 total.",
+        "The issuer must map to an active symbol in our universe; filings by issuers we do not track are skipped.",
+        "One feed row per filing and (transaction code, ownership form) group: a laddered 10b5-1 sale is one event. Per-tranche detail is on /api/symbols/{ticker}/insider-trades/."
+      ],
+      "archive_days": {
+        "free": 30,
+        "basic": 90,
+        "pro": 180
+      },
+      "stale": false,
+      "stale_after_seconds": 259200,
+      "channels": null
+    },
+    {
+      "source": "sec_form8k",
+      "first_row_at": "2026-06-05T20:10:17Z",
+      "last_row_at": "2026-10-08T21:30:13Z",
+      "last_ingested_at": "2026-10-08T21:33:21.605793Z",
+      "rows_total": 13134,
+      "cadence": "The SEC EDGAR 8-K feed is polled every 5 minutes during US hours and every 30 minutes off-hours.",
+      "history_note": "Collected since June 2026; there is no 8-K history before that. Until 2026-09-17 filings carrying only items 7.01 or 8.01 (Regulation FD, Other Events — the way debt and convertible offerings are usually filed) were not collected.",
+      "limits": [
+        "The issuer must be an active symbol in our universe.",
+        "Only filings carrying at least one surfaced item: 1.01, 1.02, 2.01, 2.02, 2.03, 3.02, 5.02, 5.07, and since 2026-09-17 also 7.01 and 8.01.",
+        "The summary is built from the press-release exhibit (EX-99.1) or the cover document; a filing whose manifest lists no readable document is still recorded, header-only.",
+        "Tickers on 8-K rows are assigned by the enricher (the liquid issuer a reader follows), not copied from the security that filed."
+      ],
+      "archive_days": {
+        "free": 30,
+        "basic": 90,
+        "pro": 180
+      },
+      "stale": false,
+      "stale_after_seconds": 259200,
+      "channels": null
+    },
+    {
+      "source": "sec_form6k",
+      "first_row_at": "2026-07-28T22:27:02Z",
+      "last_row_at": "2026-10-08T10:04:38Z",
+      "last_ingested_at": "2026-10-08T10:10:01.070406Z",
+      "rows_total": 610,
+      "cadence": "Polled by the same EDGAR worker as the 8-K feed, as a second pass each cycle: every 5 minutes during US hours, every 30 minutes off-hours.",
+      "history_note": "Live since 2026-08-28; filings from 2026-07-28 to 2026-08-28 were backfilled. Nothing before 2026-07-28.",
+      "limits": [
+        "Only 6-K filings a deterministic text classifier reads as an earnings release (results for a period, at least two metric families). Interim and annual reports, dividend and buyback notices, AGM materials, transcripts and KPI updates are logged but not ingested.",
+        "The issuer must be an active symbol in our universe.",
+        "Every row carries category earnings."
+      ],
+      "archive_days": {
+        "free": 30,
+        "basic": 90,
+        "pro": 180
+      },
+      "stale": false,
+      "stale_after_seconds": 259200,
+      "channels": null
+    },
+    {
+      "source": "earnings_reads",
+      "first_row_at": "2026-06-24T20:02:01Z",
+      "last_row_at": "2026-10-08T20:30:29Z",
+      "last_ingested_at": "2026-10-08T20:33:03.883723Z",
+      "rows_total": 1940,
+      "cadence": "A standing worker claims new 8-K item 2.02 filings and classified 6-K earnings releases as they arrive; each read is attached to the filing's feed row.",
+      "history_note": "Reads exist for filings from 2026-07-28 onward. The analyzer only reads filings younger than its age window, so earlier filings will never get one.",
+      "limits": [
+        "8-K item 2.02 and classified 6-K earnings releases only, and only for tickers in the major-ticker set.",
+        "A read is published only when its numbers verify against the filing text; a filing whose numbers cannot be verified is skipped, so not every earnings filing has a read."
+      ],
+      "archive_days": null,
+      "stale": false,
+      "stale_after_seconds": 864000,
+      "channels": null
+    },
+    {
+      "source": "earnings_schedule",
+      "first_row_at": "2026-10-08T00:00:00Z",
+      "last_row_at": "2026-12-17T00:00:00Z",
+      "last_ingested_at": "2026-10-08T05:30:00.262325Z",
+      "rows_total": 657,
+      "cadence": "Polled daily from Yahoo Finance (05:30 UTC) for major tickers whose last earnings filing is at least 55 days old.",
+      "history_note": "One row per ticker holding only the next confirmed report date; there is no history of past dates here — past prints are the 8-K 2.02 and 6-K filings themselves. first_row_at and last_row_at are the earliest and latest scheduled dates currently held.",
+      "limits": [
+        "Only dates the source marks as confirmed are served; its estimates are held internally and never served, and no date is ever computed on our side.",
+        "Major tickers only.",
+        "Dates only: the source does not encode before-open or after-close timing."
+      ],
+      "archive_days": null,
+      "stale": false,
+      "stale_after_seconds": 259200,
+      "channels": null
+    },
+    {
+      "source": "economic_calendar",
+      "first_row_at": "2026-07-02T12:30:00Z",
+      "last_row_at": "2026-12-31T13:30:00Z",
+      "last_ingested_at": "2026-07-31T12:51:38.750778Z",
+      "rows_total": 77,
+      "cadence": "The committed seed is synced into the database daily at 04:50 UTC; the seed itself is regenerated from the agencies' schedule pages and checked against them before it is committed.",
+      "history_note": "Occurrences from July 2026 onward: the first seed covers the second half of 2026 (releases 2026-07-01 to 2026-12-31). There is no earlier history; later years appear as their seed files are committed.",
+      "limits": [
+        "US releases only, ten series: FOMC decisions and minutes, CPI, PPI, nonfarm payrolls, GDP, PCE, advance retail sales, weekly jobless claims and JOLTS. ISM and Conference Board releases are deliberately absent.",
+        "Dates come from the agencies' own schedule pages; jobless-claims Thursdays and FOMC minutes are inferred from cadence until the agency publishes them (schedule_basis says which).",
+        "phase says whether the scheduled moment has passed, not that the agency actually published; released_at is not populated."
+      ],
+      "archive_days": null,
+      "stale": false,
+      "stale_after_seconds": null,
+      "channels": null
+    }
+  ]
+}
