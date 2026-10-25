@@ -77,7 +77,6 @@ class Story(StoryCard):
     # Articles that joined after the summary was written (``stale`` only).
     new_materials: int = 0
     revision_generated_at: datetime | None = None
-    model: str = ""
     # Whether alphai.io lets search engines index the story's page. Informational.
     indexable: bool = False
 

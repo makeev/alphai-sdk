@@ -83,7 +83,8 @@ def test_get_found_story(client: Client) -> None:
     assert story.key_facts and story.key_facts[0].publisher and story.key_facts[0].source_uid
     assert {t.impact for t in story.ticker_takes} <= {"positive", "negative", "neutral"}
     assert story.based_on <= story.materials_at_build
-    assert story.model and story.revision_generated_at is not None
+    assert story.revision_generated_at is not None
+    assert not hasattr(story, "model")  # removed from the API on 2026-10-25
     assert "raw_text" not in story.model_dump_json()
 
 

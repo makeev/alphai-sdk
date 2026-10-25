@@ -6,6 +6,14 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-10-25
+
+### Removed
+- `Story.model`: the API no longer returns the name of the language model
+  behind a story summary (`GET /api/stories/{story_id}/`, OpenAPI 1.53.0).
+  Code that read it gets an `AttributeError` now; every other story field is
+  unchanged.
+
 ## [0.9.0] - 2026-10-09
 
 ### Added
