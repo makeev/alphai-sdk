@@ -35,6 +35,11 @@ from .models import (
     Actionability,
     AITradingInsights,
     AlternativePerspectives,
+    ClusterBuyer,
+    ClusterBuyerReason,
+    ClusterBuyerRole,
+    ClusterFiling,
+    ClusterPattern,
     Confidence,
     Coverage,
     CoverageArchiveDays,
@@ -48,6 +53,9 @@ from .models import (
     Guidance,
     ImpactAnalysis,
     IndirectMarketEffects,
+    InsiderCluster,
+    InsiderClustersMeta,
+    InsiderClustersPage,
     InsiderCsvExport,
     InsiderEvent,
     KeyEntity,
@@ -117,6 +125,15 @@ from .stories import AsyncStoriesResource, StoriesResource
 
 __all__ = [
     "TickersArg",
+    # insider clusters
+    "ClusterBuyer",
+    "ClusterBuyerReason",
+    "ClusterBuyerRole",
+    "ClusterFiling",
+    "ClusterPattern",
+    "InsiderCluster",
+    "InsiderClustersMeta",
+    "InsiderClustersPage",
     # stories
     "StoriesResource",
     "AsyncStoriesResource",

@@ -8,6 +8,16 @@ from .brief import (
     BriefSignal,
     NewsBrief,
 )
+from .clusters import (
+    ClusterBuyer,
+    ClusterBuyerReason,
+    ClusterBuyerRole,
+    ClusterFiling,
+    ClusterPattern,
+    InsiderCluster,
+    InsiderClustersMeta,
+    InsiderClustersPage,
+)
 from .coverage import (
     Coverage,
     CoverageArchiveDays,
@@ -97,6 +107,15 @@ from .symbols import (
 NewsPage = NewsPagination
 
 __all__ = [
+    # insider clusters
+    "ClusterBuyer",
+    "ClusterBuyerReason",
+    "ClusterBuyerRole",
+    "ClusterFiling",
+    "ClusterPattern",
+    "InsiderCluster",
+    "InsiderClustersMeta",
+    "InsiderClustersPage",
     # stories
     "StoriesPage",
     "Story",

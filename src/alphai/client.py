@@ -32,11 +32,20 @@ from ._core import (
     read_json_body,
     should_retry,
 )
-from ._requests import CategoryArg, DateArg, SortArg, SourceTypeArg
+from ._requests import (
+    CategoryArg,
+    ClusterPatternArg,
+    ClusterSortArg,
+    DateArg,
+    SortArg,
+    SourceTypeArg,
+)
 from ._snapshot_params import TickersArg, build_brief_params
 from .errors import APIConnectionError
 from .models import (
     Coverage,
+    InsiderCluster,
+    InsiderClustersPage,
     InsiderCsvExport,
     LatestEarningsPointer,
     NewsBrief,
@@ -481,6 +490,97 @@ class NewsResource:
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)
+
+    def insider_clusters(
+        self,
+        *,
+        days: int | None = None,
+        min_buyers: int | None = None,
+        min_usd: int | None = None,
+        pattern: ClusterPatternArg = None,
+        symbol: str | None = None,
+        sort: ClusterSortArg = None,
+        cursor: str | None = None,
+        page_size: int | None = None,
+    ) -> InsiderClustersPage:
+        """One page of insider cluster buys (``GET /api/news/insider/clusters/``):
+        episodes in which several different insiders of one issuer bought on
+        the open market together. An issuer's Form 4 purchase dates are chained
+        into one episode while consecutive purchases are at most 10 days apart
+        (cut at 30 days), and every purchase inside it is examined before a
+        buyer counts: IPO or PIPE allocations, ESPP / DRIP / director-plan lots,
+        unpriced units and the same trade reported through two owners are
+        labeled per buyer (``role``) rather than counted. The episode's
+        ``pattern`` is ``open_market`` when at least two independent buyers
+        remain and one is an officer or director; the default lists only
+        those — ask ``pattern="plan_or_offering"``, ``"holders_only"`` or
+        ``"all"`` for the rest.
+
+        ``days`` (1-90, default 30) is measured on ``known_at``, when the
+        episode's latest filing reached EDGAR, so "what became known this
+        month" is one call; deeper than the key's archive horizon (Free 30,
+        Basic 90) raises ``PermissionDeniedError`` (``archive_horizon``).
+        ``min_buyers`` (2-10) counts independent buyers for ``open_market`` /
+        ``holders_only`` episodes and everyone who bought for
+        ``plan_or_offering`` ones; ``min_usd`` drops episodes whose known
+        ``total_usd`` is below it (an unknown total is kept). ``symbol`` names
+        one ticker (former names and share-class siblings match). ``sort`` is
+        ``recent`` (default), ``buyers`` or ``value``; cursors are
+        sort-specific. ``page_size`` is 1-20 on every key, 21-50 with Pro.
+
+        A descriptive screen, not point-in-time and with no returns attached
+        (``meta.research_only``); coverage starts at ``meta.coverage_since``.
+        Ranges are checked locally (``ValueError``) before any request."""
+        params = rq.build_insider_clusters_params(
+            days=days,
+            min_buyers=min_buyers,
+            min_usd=min_usd,
+            pattern=pattern,
+            symbol=symbol,
+            sort=sort,
+            cursor=cursor,
+            page_size=page_size,
+        )
+        data = self._client.request("GET", rq.NEWS_INSIDER_CLUSTERS, params)
+        return rq.parse_insider_clusters_page(data)
+
+    def insider_clusters_iter(
+        self,
+        *,
+        days: int | None = None,
+        min_buyers: int | None = None,
+        min_usd: int | None = None,
+        pattern: ClusterPatternArg = None,
+        symbol: str | None = None,
+        sort: ClusterSortArg = None,
+        page_size: int | None = None,
+        max_items: int | None = None,
+        max_pages: int | None = None,
+    ) -> Iterator[InsiderCluster]:
+        """Auto-paginate :meth:`insider_clusters`, following ``next_cursor``
+        with the same filters and ``sort`` on every page."""
+        cursor: str | None = None
+        count = pages = 0
+        while True:
+            page = self.insider_clusters(
+                days=days,
+                min_buyers=min_buyers,
+                min_usd=min_usd,
+                pattern=pattern,
+                symbol=symbol,
+                sort=sort,
+                cursor=cursor,
+                page_size=page_size,
+            )
+            for cluster in page.results:
+                yield cluster
+                count += 1
+                if max_items is not None and count >= max_items:
+                    return
+            pages += 1
+            if page.next_cursor is None or (max_pages is not None and pages >= max_pages):
+                return
+            cursor = page.next_cursor
 
     def get(self, uid: str) -> RichNewsArticle:
         """Fetch a single article by its 16-char hex uid."""

@@ -6,6 +6,19 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-02
+
+### Added
+- `client.news.insider_clusters()` / `insider_clusters_iter()` (sync and async):
+  insider cluster buys — episodes in which several different insiders of one
+  issuer bought on the open market together (`GET /api/news/insider/clusters/`,
+  API 1.38.0). Filters `days` (1–90, measured on `known_at`), `min_buyers`,
+  `min_usd`, `pattern` (`open_market` by default; `plan_or_offering`,
+  `holders_only`, `all`), `symbol`, `sort` (`recent`, `buyers`, `value`),
+  `cursor`, `page_size`; ranges and enums are checked locally. Models
+  `InsiderClustersPage`, `InsiderCluster`, `ClusterBuyer` (with `role` and
+  `reason`), `ClusterFiling`, `InsiderClustersMeta`; money as `Decimal`.
+
 ## [0.10.0] - 2026-10-25
 
 ### Removed

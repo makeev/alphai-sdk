@@ -16,6 +16,7 @@ import httpx
 from .errors import InvalidResponseError
 from .models import (
     Coverage,
+    InsiderClustersPage,
     InsiderCsvExport,
     LatestEarningsPointer,
     NewsCategory,
@@ -34,6 +35,7 @@ NEWS = "/api/news/"
 NEWS_SEARCH = "/api/news/search/"
 NEWS_TRENDING = "/api/news/trending/"
 NEWS_INSIDER = "/api/news/insider/"
+NEWS_INSIDER_CLUSTERS = "/api/news/insider/clusters/"
 COVERAGE = "/api/coverage/"
 
 #: ``Accept`` for ``format=csv``. The API answers ``format=csv`` together with
@@ -103,6 +105,19 @@ SortArg = Literal["published", "ingested"] | None
 #: read as UTC). Strings pass through untouched, so any server-accepted ISO
 #: form works verbatim.
 DateArg = str | date | datetime | None
+
+#: Which cluster verdicts to list. ``open_market`` (the default) is the
+#: cluster proper; ``plan_or_offering`` and ``holders_only`` are the labeled
+#: look-alikes; ``all`` returns everything.
+ClusterPatternArg = Literal["open_market", "plan_or_offering", "holders_only", "all"] | None
+
+#: Cluster ordering. ``recent`` (the default) — newest ``known_at`` first;
+#: ``buyers`` — most independent buyers first, ties by value; ``value`` —
+#: largest ``total_usd`` first, unknown totals last. Cursors are sort-specific.
+ClusterSortArg = Literal["recent", "buyers", "value"] | None
+
+_CLUSTER_PATTERNS = ("open_market", "plan_or_offering", "holders_only", "all")
+_CLUSTER_SORTS = ("recent", "buyers", "value")
 
 
 def _as_date_param(value: DateArg) -> str | None:
@@ -237,6 +252,47 @@ def build_news_insider_csv_params(
     return params
 
 
+def _check_range(name: str, value: int | None, low: int, high: int | None = None) -> None:
+    if value is None:
+        return
+    if value < low or (high is not None and value > high):
+        bound = f"between {low} and {high}" if high is not None else f"at least {low}"
+        raise ValueError(f"{name} must be {bound}")
+
+
+def build_insider_clusters_params(
+    *,
+    days: int | None = None,
+    min_buyers: int | None = None,
+    min_usd: int | None = None,
+    pattern: ClusterPatternArg = None,
+    symbol: str | None = None,
+    sort: ClusterSortArg = None,
+    cursor: str | None = None,
+    page_size: int | None = None,
+) -> dict[str, Any]:
+    """The cluster screen's filters, range-checked locally so a typo is a
+    ``ValueError`` here rather than a 400 that costs a request."""
+    _check_range("days", days, 1, 90)
+    _check_range("min_buyers", min_buyers, 2, 10)
+    _check_range("min_usd", min_usd, 0)
+    _check_range("page_size", page_size, 1, 50)
+    if pattern is not None and pattern not in _CLUSTER_PATTERNS:
+        raise ValueError(f"pattern must be one of {', '.join(_CLUSTER_PATTERNS)}")
+    if sort is not None and sort not in _CLUSTER_SORTS:
+        raise ValueError(f"sort must be one of {', '.join(_CLUSTER_SORTS)}")
+    return {
+        "days": days,
+        "min_buyers": min_buyers,
+        "min_usd": min_usd,
+        "pattern": pattern,
+        "symbol": symbol,
+        "sort": sort,
+        "cursor": cursor,
+        "page_size": page_size,
+    }
+
+
 def build_symbols_list_params(
     *,
     limit: int | None = None,
@@ -298,6 +354,10 @@ def parse_sentiment_summary(data: Any) -> TickerSentimentSummary:
 
 def parse_insider_summary(data: Any) -> TickerInsiderSummary:
     return TickerInsiderSummary.model_validate(data)
+
+
+def parse_insider_clusters_page(data: Any) -> InsiderClustersPage:
+    return InsiderClustersPage.model_validate(data)
 
 
 def parse_earnings(data: Any) -> TickerEarningsHistory:

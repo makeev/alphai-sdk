@@ -1,0 +1,331 @@
+{
+  "results": [
+    {
+      "ticker": "RAPP",
+      "name": "Rapport Therapeutics, Inc.",
+      "cik": 2012593,
+      "window_start": "2026-10-21",
+      "window_end": "2026-10-28",
+      "known_at": "2026-10-30T23:32:45Z",
+      "buyers": 7,
+      "buyers_total": 7,
+      "officer_director_buyers": 7,
+      "ten_percent_owner_buyers": 0,
+      "fills": 11,
+      "filings": 7,
+      "total_usd": "22023904.35",
+      "value_partial": false,
+      "distinct_dates": 4,
+      "distinct_prices": 8,
+      "pattern": "open_market",
+      "pattern_reasons": [],
+      "buyers_detail": [
+        {
+          "name": "HEALY JAMES",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "independent",
+          "reason": null,
+          "duplicate_of": null,
+          "fills": 4,
+          "usd": "20359080.00",
+          "first_date": "2026-10-28",
+          "last_date": "2026-10-28",
+          "news_uids": [
+            "f84212f3b1e73cd0"
+          ]
+        },
+        {
+          "name": "PAUL STEVEN M",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "independent",
+          "reason": null,
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "974277.92",
+          "first_date": "2026-10-22",
+          "last_date": "2026-10-22",
+          "news_uids": [
+            "d087290cd5783a85"
+          ]
+        },
+        {
+          "name": "MARAGANORE JOHN",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "independent",
+          "reason": null,
+          "duplicate_of": null,
+          "fills": 2,
+          "usd": "248891.08",
+          "first_date": "2026-10-22",
+          "last_date": "2026-10-22",
+          "news_uids": [
+            "bd890f9b7e054a80"
+          ]
+        },
+        {
+          "name": "Ignelzi Troy A.",
+          "title": "Chief Financial Officer",
+          "is_officer": true,
+          "is_director": false,
+          "is_ten_percent_owner": false,
+          "role": "independent",
+          "reason": null,
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "143550.00",
+          "first_date": "2026-10-21",
+          "last_date": "2026-10-21",
+          "news_uids": [
+            "b9c3ac5a95c1c917"
+          ]
+        },
+        {
+          "name": "Young Wendy B.",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "independent",
+          "reason": null,
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "99991.71",
+          "first_date": "2026-10-22",
+          "last_date": "2026-10-22",
+          "news_uids": [
+            "d7f470b0445a17f1"
+          ]
+        },
+        {
+          "name": "Silva Paul M",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "independent",
+          "reason": null,
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "99636.00",
+          "first_date": "2026-10-22",
+          "last_date": "2026-10-22",
+          "news_uids": [
+            "e99d3a804c677e3d"
+          ]
+        },
+        {
+          "name": "Sanchez Ramiro",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "independent",
+          "reason": null,
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "98477.64",
+          "first_date": "2026-10-23",
+          "last_date": "2026-10-23",
+          "news_uids": [
+            "48e33705ed49b6ae"
+          ]
+        }
+      ],
+      "filings_detail": [
+        {
+          "accession_number": "0001193125-26-428018",
+          "filed_at": "2026-10-21T21:46:54Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2012593/000119312526428018/0001193125-26-428018-index.htm"
+        },
+        {
+          "accession_number": "0001193125-26-429071",
+          "filed_at": "2026-10-22T20:56:25Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2012593/000119312526429071/0001193125-26-429071-index.htm"
+        },
+        {
+          "accession_number": "0001193125-26-429073",
+          "filed_at": "2026-10-22T20:56:38Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2012593/000119312526429073/0001193125-26-429073-index.htm"
+        },
+        {
+          "accession_number": "0001193125-26-429074",
+          "filed_at": "2026-10-22T20:56:54Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2012593/000119312526429074/0001193125-26-429074-index.htm"
+        },
+        {
+          "accession_number": "0001193125-26-429075",
+          "filed_at": "2026-10-22T20:57:07Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2012593/000119312526429075/0001193125-26-429075-index.htm"
+        },
+        {
+          "accession_number": "0001193125-26-430397",
+          "filed_at": "2026-10-23T20:01:03Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2012593/000119312526430397/0001193125-26-430397-index.htm"
+        },
+        {
+          "accession_number": "0001104659-26-120789",
+          "filed_at": "2026-10-30T23:32:45Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2012593/000110465926120789/0001104659-26-120789-index.htm"
+        }
+      ]
+    },
+    {
+      "ticker": "ACCV",
+      "name": "Accelevation Holdings Corp.",
+      "cik": 2141406,
+      "window_start": "2026-10-01",
+      "window_end": "2026-10-01",
+      "known_at": "2026-10-06T01:45:03Z",
+      "buyers": 0,
+      "buyers_total": 5,
+      "officer_director_buyers": 0,
+      "ten_percent_owner_buyers": 0,
+      "fills": 6,
+      "filings": 5,
+      "total_usd": "4098600.00",
+      "value_partial": false,
+      "distinct_dates": 1,
+      "distinct_prices": 1,
+      "pattern": "plan_or_offering",
+      "pattern_reasons": [
+        "mass_uniform_date_price",
+        "same_price_across_dates",
+        "plan_like_buyers",
+        "off_market_buyers"
+      ],
+      "buyers_detail": [
+        {
+          "name": "Rubiera Michael",
+          "title": "Chief Executive Officer",
+          "is_officer": true,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "plan_like",
+          "reason": "offering",
+          "duplicate_of": null,
+          "fills": 2,
+          "usd": "3657600.00",
+          "first_date": "2026-10-01",
+          "last_date": "2026-10-01",
+          "news_uids": [
+            "a4503fee772237dc",
+            "be23b692a370667b"
+          ]
+        },
+        {
+          "name": "JONES GINGER M",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "plan_like",
+          "reason": "offering",
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "180000.00",
+          "first_date": "2026-10-01",
+          "last_date": "2026-10-01",
+          "news_uids": [
+            "42c3d6fe5d064814"
+          ]
+        },
+        {
+          "name": "Donahue Paul D",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "plan_like",
+          "reason": "offering",
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "126000.00",
+          "first_date": "2026-10-01",
+          "last_date": "2026-10-01",
+          "news_uids": [
+            "a6ba1f16c4e4e7bc"
+          ]
+        },
+        {
+          "name": "HECKES HOWARD C",
+          "title": "",
+          "is_officer": false,
+          "is_director": true,
+          "is_ten_percent_owner": false,
+          "role": "plan_like",
+          "reason": "offering",
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "90000.00",
+          "first_date": "2026-10-01",
+          "last_date": "2026-10-01",
+          "news_uids": [
+            "f5bae5ffa65d1807"
+          ]
+        },
+        {
+          "name": "Jewell Brent C",
+          "title": "Chief Operating Officer",
+          "is_officer": true,
+          "is_director": false,
+          "is_ten_percent_owner": false,
+          "role": "plan_like",
+          "reason": "offering",
+          "duplicate_of": null,
+          "fills": 1,
+          "usd": "45000.00",
+          "first_date": "2026-10-01",
+          "last_date": "2026-10-01",
+          "news_uids": [
+            "54e4eec5640b0cbb"
+          ]
+        }
+      ],
+      "filings_detail": [
+        {
+          "accession_number": "0001628280-26-065154",
+          "filed_at": "2026-10-06T01:27:25Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2141406/000162828026065154/0001628280-26-065154-index.htm"
+        },
+        {
+          "accession_number": "0001628280-26-065155",
+          "filed_at": "2026-10-06T01:27:32Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2141406/000162828026065155/0001628280-26-065155-index.htm"
+        },
+        {
+          "accession_number": "0001628280-26-065156",
+          "filed_at": "2026-10-06T01:27:40Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2141406/000162828026065156/0001628280-26-065156-index.htm"
+        },
+        {
+          "accession_number": "0001628280-26-065157",
+          "filed_at": "2026-10-06T01:27:48Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2141406/000162828026065157/0001628280-26-065157-index.htm"
+        },
+        {
+          "accession_number": "0001628280-26-065167",
+          "filed_at": "2026-10-06T01:45:03Z",
+          "sec_url": "https://www.sec.gov/Archives/edgar/data/2141406/000162828026065167/0001628280-26-065167-index.htm"
+        }
+      ]
+    }
+  ],
+  "next_cursor": "eyJ2IjoxLCJzIjoicmVjZW50IiwiYyI6MjE0MTQwNiwidyI6IjIwMjYtMTAtMDEiLCJrIjoiMjAyNi0xMC0wNlQwMTo0NTowMyswMDowMCIsImIiOjAsInUiOiI0MDk4NjAwLjAwIn0",
+  "meta": {
+    "as_of": "2026-11-02T06:32:47.806644Z",
+    "coverage_since": "2025-08-11",
+    "episode_gap_days": 10,
+    "episode_max_days": 30,
+    "research_only": true,
+    "point_in_time": false
+  }
+}

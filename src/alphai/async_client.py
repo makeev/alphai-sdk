@@ -36,11 +36,20 @@ from ._core import (
     read_json_body,
     should_retry,
 )
-from ._requests import CategoryArg, DateArg, SortArg, SourceTypeArg
+from ._requests import (
+    CategoryArg,
+    ClusterPatternArg,
+    ClusterSortArg,
+    DateArg,
+    SortArg,
+    SourceTypeArg,
+)
 from ._snapshot_params import TickersArg, build_brief_params
 from .errors import APIConnectionError
 from .models import (
     Coverage,
+    InsiderCluster,
+    InsiderClustersPage,
     InsiderCsvExport,
     LatestEarningsPointer,
     NewsBrief,
@@ -431,6 +440,70 @@ class AsyncNewsResource:
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)
+
+    async def insider_clusters(
+        self,
+        *,
+        days: int | None = None,
+        min_buyers: int | None = None,
+        min_usd: int | None = None,
+        pattern: ClusterPatternArg = None,
+        symbol: str | None = None,
+        sort: ClusterSortArg = None,
+        cursor: str | None = None,
+        page_size: int | None = None,
+    ) -> InsiderClustersPage:
+        """One page of insider cluster buys — see
+        :meth:`alphai.NewsResource.insider_clusters` for the semantics."""
+        params = rq.build_insider_clusters_params(
+            days=days,
+            min_buyers=min_buyers,
+            min_usd=min_usd,
+            pattern=pattern,
+            symbol=symbol,
+            sort=sort,
+            cursor=cursor,
+            page_size=page_size,
+        )
+        data = await self._client.request("GET", rq.NEWS_INSIDER_CLUSTERS, params)
+        return rq.parse_insider_clusters_page(data)
+
+    async def insider_clusters_iter(
+        self,
+        *,
+        days: int | None = None,
+        min_buyers: int | None = None,
+        min_usd: int | None = None,
+        pattern: ClusterPatternArg = None,
+        symbol: str | None = None,
+        sort: ClusterSortArg = None,
+        page_size: int | None = None,
+        max_items: int | None = None,
+        max_pages: int | None = None,
+    ) -> AsyncIterator[InsiderCluster]:
+        """Auto-paginate :meth:`insider_clusters`."""
+        cursor: str | None = None
+        count = pages = 0
+        while True:
+            page = await self.insider_clusters(
+                days=days,
+                min_buyers=min_buyers,
+                min_usd=min_usd,
+                pattern=pattern,
+                symbol=symbol,
+                sort=sort,
+                cursor=cursor,
+                page_size=page_size,
+            )
+            for cluster in page.results:
+                yield cluster
+                count += 1
+                if max_items is not None and count >= max_items:
+                    return
+            pages += 1
+            if page.next_cursor is None or (max_pages is not None and pages >= max_pages):
+                return
+            cursor = page.next_cursor
 
     async def get(self, uid: str) -> RichNewsArticle:
         """Fetch a single article by its 16-char hex uid."""
