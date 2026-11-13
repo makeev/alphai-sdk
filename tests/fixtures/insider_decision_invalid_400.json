@@ -1,0 +1,35 @@
+{
+  "status": 400,
+  "body": {
+    "message": "Validation error",
+    "extra": {
+      "fields": [
+        {
+          "type": "literal_error",
+          "loc": [
+            "decision"
+          ],
+          "msg": "Input should be 'discretionary', 'plan_like' or 'unknown'",
+          "input": "bogus",
+          "ctx": {
+            "expected": "'discretionary', 'plan_like' or 'unknown'"
+          },
+          "url": "https://errors.pydantic.dev/2.11/v/literal_error"
+        }
+      ],
+      "allowed_params": [
+        "cursor",
+        "decision",
+        "format",
+        "from_date",
+        "is_10b5_1",
+        "min_relevance",
+        "page_size",
+        "sort",
+        "symbol",
+        "to_date"
+      ],
+      "docs": "https://alphai.io/developers"
+    }
+  }
+}

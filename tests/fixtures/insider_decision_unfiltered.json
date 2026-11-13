@@ -1,0 +1,333 @@
+{
+  "results": [
+    {
+      "original": {
+        "title": "Elsztain Alejandro Gustavo purchased $89K of CRESY",
+        "url": "https://www.sec.gov/Archives/edgar/data/2119764/000211976426000036/0002119764-26-000036-index.htm",
+        "time_published": "2026-11-13T18:45:08Z",
+        "authors": [
+          "Elsztain Alejandro Gustavo"
+        ],
+        "summary": "Elsztain Alejandro Gustavo purchased 100,000 shares of CRESUD INC (CRESY) at $0.89 on 2026-11-12.",
+        "banner_image": null,
+        "source": "SEC EDGAR",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "insider",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": "direct",
+        "id": 2719863,
+        "uid": "18e6b58beb5258b9",
+        "created_at": "2026-11-13T18:48:31.550223Z",
+        "updated_at": "2026-11-13T18:48:32.619579Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "CRESY",
+              "relevance_context": "Director Alejandro Gustavo Elsztain bought 100,000 shares of CRESY at $0.89, a $89K purchase disclosed on Form 4.",
+              "impact_analysis": {
+                "summary": "Small insider purchase may signal confidence but size is modest relative to float.",
+                "sentiment": "neutral",
+                "price_impact_prediction": "modest upward pressure as market digests insider buying",
+                "confidence": "medium",
+                "reasoning": "The $89K purchase is a primary disclosure but the amount is small, limiting market impact."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "low",
+            "information_novelty": 4,
+            "timing_relevance": "after-hours filing today",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "1 minute"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "Minimal effect on Argentine agribusiness sector; insider activity unlikely to shift sector sentiment.",
+            "regional_market_impact": "Negligible impact on broader Latin American markets.",
+            "global_market_relevance": "Limited to investors tracking CRESY ADR; no broader global relevance."
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "The purchase could be routine portfolio rebalancing rather than a bullish signal.",
+            "overlooked_factors": "Potential upcoming corporate actions or market conditions not disclosed may influence the insider's decision."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "Form 4 filings disclose insider transactions; directors' purchases are monitored for potential signals.",
+          "impact_analysis": "The filing provides the first public record of this insider purchase, offering a fresh data point for traders.",
+          "key_entities": [
+            {
+              "name": "CRESUD Inc.",
+              "type": "company",
+              "description": "Argentine agribusiness firm listed on NYSE as CRESY."
+            },
+            {
+              "name": "Alejandro Gustavo Elsztain",
+              "type": "person",
+              "description": "Director of CRESUD Inc. who made the purchase."
+            }
+          ],
+          "market_relevance_summary": "A modest insider buy that may slightly influence short-term sentiment but unlikely to drive significant price movement.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 4,
+        "category": "insider",
+        "tickers": [
+          "CRESY"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "18e6b58beb5258b9",
+      "sources_count": null,
+      "sources": null,
+      "insider": {
+        "side": "buy",
+        "transaction_code": "P",
+        "shares": "100000",
+        "avg_price_usd": "0.89",
+        "total_value_usd": "89000",
+        "is_10b5_1": false,
+        "insider_name": "Elsztain Alejandro Gustavo",
+        "insider_title": "",
+        "is_officer": false,
+        "is_director": true,
+        "is_ten_percent_owner": false,
+        "transaction_date": "2026-11-12",
+        "filed_at": "2026-11-13T18:45:08Z",
+        "late_filing": false,
+        "decision": null,
+        "decision_reason": null
+      },
+      "filing": null,
+      "event": null,
+      "earnings": null,
+      "search_match": null
+    },
+    {
+      "original": {
+        "title": "Elsztain Alejandro Gustavo sold $124K of IRS",
+        "url": "https://www.sec.gov/Archives/edgar/data/2119764/000211976426000034/0002119764-26-000034-index.htm",
+        "time_published": "2026-11-13T18:39:03Z",
+        "authors": [
+          "Elsztain Alejandro Gustavo"
+        ],
+        "summary": "Elsztain Alejandro Gustavo sold 98,971 shares of IRSA INVESTMENTS & REPRESENTATIONS INC (IRS) at an average of $1.25 ($1.23–$1.26, $0.12M total) across 2 trades over 2026-11-06 to 2026-11-12.",
+        "banner_image": null,
+        "source": "SEC EDGAR",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "insider",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": "direct",
+        "id": 2719856,
+        "uid": "48772becdc0fe827",
+        "created_at": "2026-11-13T18:47:34.148812Z",
+        "updated_at": "2026-11-13T18:47:34.705979Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "IRS",
+              "relevance_context": "Director Alejandro Gustavo Elsztain sold 98,971 shares of IRSA for $124K via open-market transactions, reducing his stake.",
+              "impact_analysis": {
+                "summary": "The insider sale may signal modest negative sentiment, but the amount is small relative to holdings.",
+                "sentiment": "neutral",
+                "price_impact_prediction": "likely slight pressure as the market prices in the insider sell",
+                "confidence": "high",
+                "reasoning": "A $124K sale by a director represents a minor dilution of ownership (5.07M shares remain) and is unlikely to move the stock significantly."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "low",
+            "information_novelty": 4,
+            "timing_relevance": "filing date 2026-11-13",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "1 minute"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "Minimal impact on the Argentine real estate sector; insider sales are routine.",
+            "regional_market_impact": "Negligible effect on broader Latin American markets.",
+            "global_market_relevance": "None"
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "The sale could be unrelated to fundamentals; investors may ignore it.",
+            "overlooked_factors": "Potential tax planning or liquidity needs for the director, not necessarily a lack of confidence."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "IRSA Investments & Representations Inc. (ticker IRS) is a leading Argentine real estate company. The filing is a standard Form 4 disclosure of an insider transaction.",
+          "impact_analysis": "The disclosed sale is modest in size and unlikely to affect the stock price materially.",
+          "key_entities": [
+            {
+              "name": "IRSA Investments & Representations Inc.",
+              "type": "Company",
+              "description": "Argentine real estate firm, ticker IRS."
+            },
+            {
+              "name": "Alejandro Gustavo Elsztain",
+              "type": "Person",
+              "description": "Director of IRSA who sold shares."
+            }
+          ],
+          "market_relevance_summary": "A routine insider sale with limited market impact; primarily of interest to shareholders monitoring insider activity.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 4,
+        "category": "insider",
+        "tickers": [
+          "IRS"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "48772becdc0fe827",
+      "sources_count": null,
+      "sources": null,
+      "insider": {
+        "side": "sell",
+        "transaction_code": "S",
+        "shares": "98971",
+        "avg_price_usd": "1.25",
+        "total_value_usd": "124103.46",
+        "is_10b5_1": false,
+        "insider_name": "Elsztain Alejandro Gustavo",
+        "insider_title": "",
+        "is_officer": false,
+        "is_director": true,
+        "is_ten_percent_owner": false,
+        "transaction_date": "2026-11-12",
+        "filed_at": "2026-11-13T18:39:03Z",
+        "late_filing": false,
+        "decision": "discretionary",
+        "decision_reason": "open_market"
+      },
+      "filing": null,
+      "event": null,
+      "earnings": null,
+      "search_match": null
+    },
+    {
+      "original": {
+        "title": "Michael Seth Isaac purchased $3K of OVBC",
+        "url": "https://www.sec.gov/Archives/edgar/data/2016694/000089467126000069/0000894671-26-000069-index.htm",
+        "time_published": "2026-11-13T18:37:50Z",
+        "authors": [
+          "Michael Seth Isaac"
+        ],
+        "summary": "Michael Seth Isaac purchased 61 shares of OHIO VALLEY BANC CORP (OVBC) at $49.46 on 2026-11-13.",
+        "banner_image": null,
+        "source": "SEC EDGAR",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "insider",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": "direct",
+        "id": 2719855,
+        "uid": "7afa7d3b945ea6fe",
+        "created_at": "2026-11-13T18:47:12.817829Z",
+        "updated_at": "2026-11-13T18:47:13.065652Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "OVBC",
+              "relevance_context": "Director Michael Seth Isaac bought 61 shares for $3,000, increasing his stake to 891 shares.",
+              "impact_analysis": {
+                "summary": "Small insider purchase by a director.",
+                "sentiment": "neutral",
+                "price_impact_prediction": "minimal upward pressure as the market prices the insider confidence",
+                "confidence": "high",
+                "reasoning": "The purchase is modest ($3K) and unlikely to move the stock materially, but it signals director confidence."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "negligible",
+            "information_novelty": 5,
+            "timing_relevance": "today",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "less than 1 minute"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "None significant; typical insider activity for a regional bank.",
+            "regional_market_impact": "No broader impact.",
+            "global_market_relevance": "None."
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "The purchase is too small to matter; traders should ignore.",
+            "overlooked_factors": "If the director is accumulating ahead of undisclosed material news, the signal could become more relevant."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "SEC Form 4 filing discloses insider transactions. Ohio Valley Banc Corp (OVBC) is a regional bank listed on NASDAQ.",
+          "impact_analysis": "The filing provides a primary source of insider activity but the transaction size is trivial, offering limited trading insight.",
+          "key_entities": [
+            {
+              "name": "Ohio Valley Banc Corp",
+              "type": "company",
+              "description": "US-listed regional bank (ticker OVBC)."
+            },
+            {
+              "name": "Michael Seth Isaac",
+              "type": "person",
+              "description": "Director of OVBC who made the purchase."
+            }
+          ],
+          "market_relevance_summary": "Minor insider purchase with negligible market impact.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 4,
+        "category": "insider",
+        "tickers": [
+          "OVBC"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "7afa7d3b945ea6fe",
+      "sources_count": null,
+      "sources": null,
+      "insider": {
+        "side": "buy",
+        "transaction_code": "P",
+        "shares": "60.652",
+        "avg_price_usd": "49.46",
+        "total_value_usd": "3000",
+        "is_10b5_1": false,
+        "insider_name": "Michael Seth Isaac",
+        "insider_title": "",
+        "is_officer": false,
+        "is_director": true,
+        "is_ten_percent_owner": false,
+        "transaction_date": "2026-11-13",
+        "filed_at": "2026-11-13T18:37:50Z",
+        "late_filing": false,
+        "decision": null,
+        "decision_reason": null
+      },
+      "filing": null,
+      "event": null,
+      "earnings": null,
+      "search_match": null
+    }
+  ],
+  "next_cursor": "MjAyNi0xMS0xM1QxODoyOToyNCswMDowMHwxMzY0OTQy",
+  "symbol_note": null
+}

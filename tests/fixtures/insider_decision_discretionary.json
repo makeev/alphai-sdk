@@ -1,0 +1,224 @@
+{
+  "results": [
+    {
+      "original": {
+        "title": "Elsztain Alejandro Gustavo sold $124K of IRS",
+        "url": "https://www.sec.gov/Archives/edgar/data/2119764/000211976426000034/0002119764-26-000034-index.htm",
+        "time_published": "2026-11-13T18:39:03Z",
+        "authors": [
+          "Elsztain Alejandro Gustavo"
+        ],
+        "summary": "Elsztain Alejandro Gustavo sold 98,971 shares of IRSA INVESTMENTS & REPRESENTATIONS INC (IRS) at an average of $1.25 ($1.23–$1.26, $0.12M total) across 2 trades over 2026-11-06 to 2026-11-12.",
+        "banner_image": null,
+        "source": "SEC EDGAR",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "insider",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": "direct",
+        "id": 2719856,
+        "uid": "48772becdc0fe827",
+        "created_at": "2026-11-13T18:47:34.148812Z",
+        "updated_at": "2026-11-13T18:47:34.705979Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "IRS",
+              "relevance_context": "Director Alejandro Gustavo Elsztain sold 98,971 shares of IRSA for $124K via open-market transactions, reducing his stake.",
+              "impact_analysis": {
+                "summary": "The insider sale may signal modest negative sentiment, but the amount is small relative to holdings.",
+                "sentiment": "neutral",
+                "price_impact_prediction": "likely slight pressure as the market prices in the insider sell",
+                "confidence": "high",
+                "reasoning": "A $124K sale by a director represents a minor dilution of ownership (5.07M shares remain) and is unlikely to move the stock significantly."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "low",
+            "information_novelty": 4,
+            "timing_relevance": "filing date 2026-11-13",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "1 minute"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "Minimal impact on the Argentine real estate sector; insider sales are routine.",
+            "regional_market_impact": "Negligible effect on broader Latin American markets.",
+            "global_market_relevance": "None"
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "The sale could be unrelated to fundamentals; investors may ignore it.",
+            "overlooked_factors": "Potential tax planning or liquidity needs for the director, not necessarily a lack of confidence."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "IRSA Investments & Representations Inc. (ticker IRS) is a leading Argentine real estate company. The filing is a standard Form 4 disclosure of an insider transaction.",
+          "impact_analysis": "The disclosed sale is modest in size and unlikely to affect the stock price materially.",
+          "key_entities": [
+            {
+              "name": "IRSA Investments & Representations Inc.",
+              "type": "Company",
+              "description": "Argentine real estate firm, ticker IRS."
+            },
+            {
+              "name": "Alejandro Gustavo Elsztain",
+              "type": "Person",
+              "description": "Director of IRSA who sold shares."
+            }
+          ],
+          "market_relevance_summary": "A routine insider sale with limited market impact; primarily of interest to shareholders monitoring insider activity.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 4,
+        "category": "insider",
+        "tickers": [
+          "IRS"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "48772becdc0fe827",
+      "sources_count": null,
+      "sources": null,
+      "insider": {
+        "side": "sell",
+        "transaction_code": "S",
+        "shares": "98971",
+        "avg_price_usd": "1.25",
+        "total_value_usd": "124103.46",
+        "is_10b5_1": false,
+        "insider_name": "Elsztain Alejandro Gustavo",
+        "insider_title": "",
+        "is_officer": false,
+        "is_director": true,
+        "is_ten_percent_owner": false,
+        "transaction_date": "2026-11-12",
+        "filed_at": "2026-11-13T18:39:03Z",
+        "late_filing": false,
+        "decision": "discretionary",
+        "decision_reason": "open_market"
+      },
+      "filing": null,
+      "event": null,
+      "earnings": null,
+      "search_match": null
+    },
+    {
+      "original": {
+        "title": "HAMERSLAG STEVEN J sold $924K of CRVL",
+        "url": "https://www.sec.gov/Archives/edgar/data/1056168/000105616826000006/0001056168-26-000006-index.htm",
+        "time_published": "2026-11-13T18:32:40Z",
+        "authors": [
+          "HAMERSLAG STEVEN J"
+        ],
+        "summary": "HAMERSLAG STEVEN J sold 11,000 shares of CORVEL CORP (CRVL) at $84.04 ($0.92M total) on 2026-11-11.",
+        "banner_image": null,
+        "source": "SEC EDGAR",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "insider",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": "direct",
+        "id": 2719766,
+        "uid": "a54e06dbce20fb0a",
+        "created_at": "2026-11-13T18:35:58.258021Z",
+        "updated_at": "2026-11-13T18:36:05.173404Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "CRVL",
+              "relevance_context": "Director Steven J. Hamerslag sold 11,000 shares of Corvel Corp for $924,470, reducing his stake to 276,000 shares.",
+              "impact_analysis": {
+                "summary": "The insider sale may signal reduced confidence or liquidity needs, potentially pressuring the stock.",
+                "sentiment": "negative",
+                "price_impact_prediction": "likely downward pressure as the market prices in the insider sell",
+                "confidence": "medium",
+                "reasoning": "Director-level insider sold nearly $1M worth of shares; such sales often lead to short-term price weakness."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "low",
+            "information_novelty": 4,
+            "timing_relevance": "filing disclosed after market close on 2026-11-13",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "1 minute"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "Minimal impact on the broader sector; only relevant to Corvel Corp investors.",
+            "regional_market_impact": "No significant regional effect.",
+            "global_market_relevance": "Limited to the specific stock; not globally material."
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "The sale could be a routine liquidity event unrelated to company fundamentals, so the stock may remain stable.",
+            "overlooked_factors": "Potential upcoming corporate actions or market conditions that prompted the sale are not disclosed."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "SEC Form 4 filing reporting an insider's open-market sale of shares.",
+          "impact_analysis": "The disclosed sale provides new information on insider holdings and may influence short-term trading sentiment.",
+          "key_entities": [
+            {
+              "name": "Corvel Corp",
+              "type": "Company",
+              "description": "Issuer of the securities sold."
+            },
+            {
+              "name": "Steven J. Hamerslag",
+              "type": "Individual",
+              "description": "Director of Corvel Corp who sold shares."
+            }
+          ],
+          "market_relevance_summary": "Primary disclosure of a director-level insider sale, modest in size, offering limited trading impetus.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 5,
+        "category": "insider",
+        "tickers": [
+          "CRVL"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "a54e06dbce20fb0a",
+      "sources_count": null,
+      "sources": null,
+      "insider": {
+        "side": "sell",
+        "transaction_code": "S",
+        "shares": "11000",
+        "avg_price_usd": "84.04",
+        "total_value_usd": "924470.8",
+        "is_10b5_1": false,
+        "insider_name": "HAMERSLAG STEVEN J",
+        "insider_title": "",
+        "is_officer": false,
+        "is_director": true,
+        "is_ten_percent_owner": false,
+        "transaction_date": "2026-11-11",
+        "filed_at": "2026-11-13T18:32:40Z",
+        "late_filing": false,
+        "decision": "discretionary",
+        "decision_reason": "open_market"
+      },
+      "filing": null,
+      "event": null,
+      "earnings": null,
+      "search_match": null
+    }
+  ],
+  "next_cursor": "MjAyNi0xMS0xM1QxODoyOToyNCswMDowMHwxMzY0OTQy",
+  "symbol_note": null
+}

@@ -17,6 +17,8 @@ from .enums import (
     CategoryLike,
     ConfidenceLike,
     EventTypeLike,
+    InsiderDecisionLike,
+    InsiderDecisionReasonLike,
     NewsCategory,
     SentimentLike,
 )
@@ -131,6 +133,10 @@ class InsiderEvent(_Base):
     no tranche). ``side`` is ``"buy"`` (P) / ``"sell"`` (S) / ``"other"`` (incl.
     D, sale to issuer); the raw ``transaction_code`` rides along. The API sends
     money fields as decimal strings; pydantic parses them to ``Decimal``.
+
+    ``decision`` / ``decision_reason`` label a sale by intent: whether the
+    insider chose to sell, and what in the filing says so. Only sales
+    (``transaction_code`` ``"S"``) are labelled, so guard for ``None``.
     """
 
     side: str = "other"
@@ -150,6 +156,24 @@ class InsiderEvent(_Base):
     #: The filing missed the SEC's two-business-day deadline (Rule 16a-3(g)),
     #: counted on Eastern dates with one weekday of slack.
     late_filing: bool = False
+    #: Was the sale the insider's own decision. Read from the whole filing: the
+    #: 10b5-1 checkbox, then a footnote that names the mechanism, then the
+    #: filing's own share arithmetic. ``discretionary``: the insider chose to
+    #: sell. ``plan_like``: the sale follows from a plan or from paperwork (a
+    #: tax sale on vesting, an exercise cover). ``unknown``: the filing does
+    #: not let us tell. An event with several sales is ``discretionary`` if any
+    #: of them is, else ``unknown`` if any of them is, else ``plan_like``.
+    #: An :class:`~alphai.InsiderDecision` member, or the raw string for a
+    #: value this SDK version does not know yet. ``None`` when the event holds
+    #: no sale (purchases, a sale to the issuer and other codes are not
+    #: labelled). The label can be revised when the reading rules improve.
+    decision: InsiderDecisionLike | None = None
+    #: Why the event got its ``decision``, taken from the largest sale that
+    #: set it: an :class:`~alphai.InsiderDecisionReason` member, or the raw
+    #: string for a value this SDK version does not know yet. ``None`` when
+    #: ``decision`` is ``None``, and for an ``unknown`` sale with no reason
+    #: recorded.
+    decision_reason: InsiderDecisionReasonLike | None = None
 
 
 class EightKFiling(_Base):
@@ -404,6 +428,10 @@ class InsiderCsvExport(_Base):
     (the walk reached the plan's archive depth); ``None`` when the file holds
     everything the filters select. ``next_cursor`` is the same token a JSON
     page would return at that position, so it continues in either format.
+
+    New columns are only ever appended after the last one, so read cells by
+    name rather than by position. The sale label is the last two columns,
+    ``decision`` and ``decision_reason``, empty for an event without a sale.
     """
 
     text: str

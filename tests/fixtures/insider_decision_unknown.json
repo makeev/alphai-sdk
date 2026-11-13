@@ -1,0 +1,219 @@
+{
+  "results": [
+    {
+      "original": {
+        "title": "Boyle Robert E sold $339K of PRU",
+        "url": "https://www.sec.gov/Archives/edgar/data/2061395/000113777426000228/0001137774-26-000228-index.htm",
+        "time_published": "2026-11-10T22:58:41Z",
+        "authors": [
+          "Boyle Robert E"
+        ],
+        "summary": "Boyle Robert E (Senior Vice President) sold 2,794 shares of PRUDENTIAL FINANCIAL INC (PRU) at $121.24 ($0.34M total) across 2 trades on 2026-11-06.",
+        "banner_image": null,
+        "source": "SEC EDGAR",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "insider",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": "direct",
+        "id": 2654532,
+        "uid": "afc05775c04822a8",
+        "created_at": "2026-11-10T23:03:47.972645Z",
+        "updated_at": "2026-11-10T23:03:48.978354Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "PRU",
+              "relevance_context": "Senior Vice President Robert E. Boyle sold 2,794 shares of Prudential Financial (PRU) for $338,744 in a Form 4 filing dated 2026‑11‑06.",
+              "impact_analysis": {
+                "summary": "The insider sale may create modest short‑term selling pressure on PRU.",
+                "sentiment": "negative",
+                "price_impact_prediction": "likely slight downward pressure as the market prices the insider sell",
+                "confidence": "medium",
+                "reasoning": "C‑level insider sold ~0.05% of holdings; while the amount is modest, such sales are often interpreted as a weak signal."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "low",
+            "information_novelty": 4,
+            "timing_relevance": "after‑hours filing on Nov 6",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "1 minute"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "Minimal impact on the financial services sector; insider sales are routine and unlikely to shift sector sentiment.",
+            "regional_market_impact": "U.S. market only; no broader regional effect.",
+            "global_market_relevance": "Low; the filing is specific to Prudential and does not affect global markets."
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "The sale could be unrelated to company fundamentals and merely portfolio rebalancing, so price may remain stable.",
+            "overlooked_factors": "Potential tax‑loss harvesting or pre‑planned diversification under a 10b5‑1 plan (though the filing states no pre‑arranged plan)."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "Form 4 filings disclose insider transactions; investors monitor them for signals about management confidence.",
+          "impact_analysis": "The disclosed sale is modest in size and may cause a brief dip in PRU's share price, but the overall impact is limited.",
+          "key_entities": [
+            {
+              "name": "Prudential Financial Inc.",
+              "type": "Company",
+              "description": "U.S. insurance and financial services firm (ticker PRU)."
+            },
+            {
+              "name": "Robert E. Boyle",
+              "type": "Individual",
+              "description": "Senior Vice President at Prudential Financial, reporting an insider sale."
+            }
+          ],
+          "market_relevance_summary": "A routine insider sale with limited material effect; useful for short‑term traders monitoring insider activity.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 4,
+        "category": "insider",
+        "tickers": [
+          "PRU"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "afc05775c04822a8",
+      "sources_count": null,
+      "sources": null,
+      "insider": {
+        "side": "sell",
+        "transaction_code": "S",
+        "shares": "2794",
+        "avg_price_usd": "121.24",
+        "total_value_usd": "338744.56",
+        "is_10b5_1": false,
+        "insider_name": "Boyle Robert E",
+        "insider_title": "Senior Vice President",
+        "is_officer": true,
+        "is_director": false,
+        "is_ten_percent_owner": false,
+        "transaction_date": "2026-11-06",
+        "filed_at": "2026-11-10T22:58:41Z",
+        "late_filing": false,
+        "decision": "unknown",
+        "decision_reason": "cover_ambiguous"
+      },
+      "filing": null,
+      "event": null,
+      "earnings": null,
+      "search_match": null
+    },
+    {
+      "original": {
+        "title": "Rudolph Jacob T. sold $116K of TREX",
+        "url": "https://www.sec.gov/Archives/edgar/data/2013330/000106987826000089/0001069878-26-000089-index.htm",
+        "time_published": "2026-11-10T01:03:48Z",
+        "authors": [
+          "Rudolph Jacob T."
+        ],
+        "summary": "Rudolph Jacob T. (SVP, CHRO) sold 1,969 shares of TREX CO INC (TREX) at $59.07 ($0.12M total) on 2026-11-09.",
+        "banner_image": null,
+        "source": "SEC EDGAR",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "insider",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": "direct",
+        "id": 2632196,
+        "uid": "27b33069bd127a63",
+        "created_at": "2026-11-10T01:33:34.301872Z",
+        "updated_at": "2026-11-10T01:33:35.479257Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "TREX",
+              "relevance_context": "Form 4 filing shows SVP CHRO sold 1,969 shares at $59.07, reducing his stake to 37,462 shares.",
+              "impact_analysis": {
+                "summary": "Insider sale may signal slight negative sentiment but size is modest.",
+                "sentiment": "neutral",
+                "price_impact_prediction": "likely slight pressure as market prices in the insider sell",
+                "confidence": "high",
+                "reasoning": "The transaction is a routine 10b5‑1‑free sale of $116K, typical for insiders and unlikely to move the stock materially."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "negligible",
+            "information_novelty": 4,
+            "timing_relevance": "after‑hours filing on 2026‑11‑09",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "1 min"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "",
+            "regional_market_impact": "",
+            "global_market_relevance": ""
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "",
+            "overlooked_factors": ""
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "SEC Form 4 disclosure of an insider transaction for TREX Co Inc.",
+          "impact_analysis": "The sale is modest and does not suggest a material shift in insider confidence.",
+          "key_entities": [
+            {
+              "name": "Rudolph Jacob T.",
+              "type": "Insider",
+              "description": "SVP, CHRO of TREX Co Inc."
+            }
+          ],
+          "market_relevance_summary": "Routine insider sale with limited trading relevance.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 4,
+        "category": "insider",
+        "tickers": [
+          "TREX"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "27b33069bd127a63",
+      "sources_count": null,
+      "sources": null,
+      "insider": {
+        "side": "sell",
+        "transaction_code": "S",
+        "shares": "1969",
+        "avg_price_usd": "59.07",
+        "total_value_usd": "116302.92",
+        "is_10b5_1": false,
+        "insider_name": "Rudolph Jacob T.",
+        "insider_title": "SVP, CHRO",
+        "is_officer": true,
+        "is_director": false,
+        "is_ten_percent_owner": false,
+        "transaction_date": "2026-11-09",
+        "filed_at": "2026-11-10T01:03:48Z",
+        "late_filing": false,
+        "decision": "unknown",
+        "decision_reason": "partial_vest_sale"
+      },
+      "filing": null,
+      "event": null,
+      "earnings": null,
+      "search_match": null
+    }
+  ],
+  "next_cursor": "MjAyNi0xMS0wNVQyMjo0ODo1NiswMDowMHwxMjg2MjUy",
+  "symbol_note": null
+}

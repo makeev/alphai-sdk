@@ -42,6 +42,7 @@ from ._requests import (
     ClusterSortArg,
     DateArg,
     EventTypeArg,
+    InsiderDecisionArg,
     SortArg,
     SourceTypeArg,
 )
@@ -362,13 +363,15 @@ class AsyncNewsResource:
         from_date: DateArg = None,
         to_date: DateArg = None,
         is_10b5_1: bool | None = None,
+        decision: InsiderDecisionArg = None,
     ) -> NewsPagination:
         """One page of the insider (SEC Form 4) feed. ``page_size`` is 1-20 on
         any key (default 10), 21-50 needs Pro. ``min_relevance`` (1-10)
         overrides the default relevance floor — insider rows score
         deterministically from the event's summed value, so this is the
         "only large trades" dial. Items carry a structured ``insider`` block
-        (side / shares / avg price / value / who).
+        (side / shares / avg price / value / who, and for a sale the
+        ``decision`` label with its ``decision_reason``).
 
         ``sort="ingested"`` delta-polls this feed under the same contract as
         :meth:`list`, with its own cursor family.
@@ -379,7 +382,12 @@ class AsyncNewsResource:
         reports — a Form 4 is filed days after the trade.
 
         ``is_10b5_1`` filters on the event's Rule 10b5-1 status: ``False``
-        keeps discretionary trades only, ``True`` plan trades only."""
+        keeps events not under a 10b5-1 plan, ``True`` plan events only.
+        ``decision`` filters on the sale label (``"discretionary"``,
+        ``"plan_like"``, ``"unknown"``, or an
+        :class:`~alphai.InsiderDecision` member): pass ``"discretionary"`` for
+        sales the insider chose to make, which ``is_10b5_1=False`` alone does
+        not give - see :meth:`alphai.client.NewsResource.insider`."""
         params = rq.build_news_insider_params(
             symbol=symbol,
             min_relevance=min_relevance,
@@ -389,6 +397,7 @@ class AsyncNewsResource:
             from_date=from_date,
             to_date=to_date,
             is_10b5_1=is_10b5_1,
+            decision=decision,
         )
         return rq.parse_news_page(await self._client.request("GET", rq.NEWS_INSIDER, params), sort)
 
@@ -402,10 +411,12 @@ class AsyncNewsResource:
         from_date: DateArg = None,
         to_date: DateArg = None,
         is_10b5_1: bool | None = None,
+        decision: InsiderDecisionArg = None,
     ) -> InsiderCsvExport:
         """The insider feed as one CSV file (``format=csv``) — see
         :meth:`alphai.client.NewsResource.insider_csv`. Check ``truncated``
-        and continue a capped file with ``next_cursor``."""
+        and continue a capped file with ``next_cursor``. ``decision`` and
+        ``decision_reason`` are the last two columns."""
         params = rq.build_news_insider_csv_params(
             symbol=symbol,
             min_relevance=min_relevance,
@@ -414,6 +425,7 @@ class AsyncNewsResource:
             from_date=from_date,
             to_date=to_date,
             is_10b5_1=is_10b5_1,
+            decision=decision,
         )
         response = await self._client._send("GET", rq.NEWS_INSIDER, params, accept=rq.CSV_ACCEPT)
         return rq.parse_insider_csv(response)
@@ -428,10 +440,11 @@ class AsyncNewsResource:
         from_date: DateArg = None,
         to_date: DateArg = None,
         is_10b5_1: bool | None = None,
+        decision: InsiderDecisionArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
-        """Auto-paginate the insider feed."""
+        """Auto-paginate the insider feed, with the filters of :meth:`insider`."""
 
         async def fetch(cursor: str | None) -> NewsPagination:
             return await self.insider(
@@ -443,6 +456,7 @@ class AsyncNewsResource:
                 from_date=from_date,
                 to_date=to_date,
                 is_10b5_1=is_10b5_1,
+                decision=decision,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)

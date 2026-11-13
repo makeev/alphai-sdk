@@ -61,6 +61,8 @@ from .models import (
     InsiderClustersMeta,
     InsiderClustersPage,
     InsiderCsvExport,
+    InsiderDecision,
+    InsiderDecisionReason,
     InsiderEvent,
     KeyEntity,
     KeyMetric,
@@ -206,6 +208,8 @@ __all__ = [
     "Confidence",
     "Actionability",
     "CorporateEventType",
+    "InsiderDecision",
+    "InsiderDecisionReason",
     # news models
     "Topic",
     "ImpactAnalysis",

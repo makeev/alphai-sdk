@@ -38,6 +38,7 @@ from ._requests import (
     ClusterSortArg,
     DateArg,
     EventTypeArg,
+    InsiderDecisionArg,
     SortArg,
     SourceTypeArg,
 )
@@ -421,13 +422,15 @@ class NewsResource:
         from_date: DateArg = None,
         to_date: DateArg = None,
         is_10b5_1: bool | None = None,
+        decision: InsiderDecisionArg = None,
     ) -> NewsPagination:
         """One page of the insider (SEC Form 4) feed. ``page_size`` is 1-20 on
         any key (default 10), 21-50 needs Pro. ``min_relevance`` (1-10)
         overrides the default relevance floor — insider rows score
         deterministically from the event's summed value, so this is the
         "only large trades" dial. Items carry a structured ``insider`` block
-        (side / shares / avg price / value / who).
+        (side / shares / avg price / value / who, and for a sale the
+        ``decision`` label with its ``decision_reason``).
 
         ``sort="ingested"`` delta-polls this feed under the same contract as
         :meth:`list`, with its own cursor family.
@@ -438,8 +441,25 @@ class NewsResource:
         reports — a Form 4 is filed days after the trade.
 
         ``is_10b5_1`` filters on the event's Rule 10b5-1 status, the same field
-        the ``insider`` block reports: ``False`` keeps discretionary trades
-        only, ``True`` plan trades only, ``None`` (default) both."""
+        the ``insider`` block reports: ``False`` keeps events not under a
+        10b5-1 plan, ``True`` plan events only, ``None`` (default) both. "Not
+        under a plan" is not the same as "the insider's own decision": a sale
+        outside a plan can still be paperwork, such as shares sold to pay the
+        tax on vesting. For sales the insider chose to make, use ``decision``.
+
+        ``decision`` filters on the sale label the ``insider`` block reports,
+        given as an :class:`~alphai.InsiderDecision` member or its string:
+        ``"discretionary"`` keeps sales the insider chose to make,
+        ``"plan_like"`` sales that follow from a 10b5-1 plan or from paperwork
+        (a tax sale on vesting, a sale covering an option exercise) and
+        ``"unknown"`` sales the filing does not let us read. Only sales
+        (``transaction_code`` ``"S"``) are labelled. Purchases and other codes
+        carry ``decision=None`` and match none of the values, so the three
+        filtered feeds plus the events without a sale add up to the unfiltered
+        one. It combines with ``is_10b5_1``, ``sort="ingested"`` and every
+        other filter of this method; any other value is a 400
+        (``BadRequestError``). The filter exists on this feed only:
+        :meth:`list` does not take it."""
         params = rq.build_news_insider_params(
             symbol=symbol,
             min_relevance=min_relevance,
@@ -449,6 +469,7 @@ class NewsResource:
             from_date=from_date,
             to_date=to_date,
             is_10b5_1=is_10b5_1,
+            decision=decision,
         )
         return rq.parse_news_page(self._client.request("GET", rq.NEWS_INSIDER, params), sort)
 
@@ -462,8 +483,10 @@ class NewsResource:
         from_date: DateArg = None,
         to_date: DateArg = None,
         is_10b5_1: bool | None = None,
+        decision: InsiderDecisionArg = None,
     ) -> InsiderCsvExport:
-        """The insider feed as one CSV file (``format=csv``), with the same filters.
+        """The insider feed as one CSV file (``format=csv``), with the same
+        filters, ``decision`` included.
 
         One row per insider event, walked on the server up to the plan's row
         cap (Free 500, Basic 2 000, Pro 10 000) inside its archive horizon. The
@@ -472,7 +495,11 @@ class NewsResource:
         ``"archive_horizon"``; ``None`` when the file holds everything the
         filters select) and continue a capped file with ``next_cursor``, which
         is also valid for :meth:`insider` with the same ``sort``. Validation
-        errors are the same 400s as the JSON feed, raised before any row."""
+        errors are the same 400s as the JSON feed, raised before any row.
+
+        The sale label is the file's last two columns, ``decision`` and
+        ``decision_reason``, empty for an event without a sale. New columns
+        are only ever appended after the last one, so read cells by name."""
         params = rq.build_news_insider_csv_params(
             symbol=symbol,
             min_relevance=min_relevance,
@@ -481,6 +508,7 @@ class NewsResource:
             from_date=from_date,
             to_date=to_date,
             is_10b5_1=is_10b5_1,
+            decision=decision,
         )
         response = self._client._send("GET", rq.NEWS_INSIDER, params, accept=rq.CSV_ACCEPT)
         return rq.parse_insider_csv(response)
@@ -495,10 +523,11 @@ class NewsResource:
         from_date: DateArg = None,
         to_date: DateArg = None,
         is_10b5_1: bool | None = None,
+        decision: InsiderDecisionArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
-        """Auto-paginate the insider feed."""
+        """Auto-paginate the insider feed, with the filters of :meth:`insider`."""
 
         def fetch(cursor: str | None) -> NewsPagination:
             return self.insider(
@@ -510,6 +539,7 @@ class NewsResource:
                 from_date=from_date,
                 to_date=to_date,
                 is_10b5_1=is_10b5_1,
+                decision=decision,
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)

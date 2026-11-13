@@ -99,9 +99,75 @@ class CorporateEventType(str, Enum):
     OTHER = "other"
 
 
+class InsiderDecision(str, Enum):
+    """Was a Form 4 sale the insider's own decision (``insider.decision``).
+
+    Read from the whole filing, not only from the 10b5-1 checkbox. Only sales
+    (``transaction_code`` ``"S"``) are labelled: purchases, a sale to the
+    issuer (``"D"``) and other codes carry ``None``. Also the vocabulary of the
+    insider feed's ``decision`` filter.
+    """
+
+    #: The insider chose to sell: no plan or paperwork explains the sale.
+    DISCRETIONARY = "discretionary"
+    #: The sale follows from a 10b5-1 plan or from paperwork, such as shares
+    #: sold to pay the tax on vesting or to cover an option exercise.
+    PLAN_LIKE = "plan_like"
+    #: The filing does not let the two be told apart.
+    UNKNOWN = "unknown"
+
+
+class InsiderDecisionReason(str, Enum):
+    """Why a Form 4 sale got its ``decision`` (``insider.decision_reason``).
+
+    Each reason belongs to one :class:`InsiderDecision` value; the members are
+    grouped by it below.
+    """
+
+    # --- with ``plan_like`` ---
+    #: The 10b5-1 checkbox, or a footnote that places the sale under a
+    #: pre-arranged plan, so it can appear with ``is_10b5_1=False``.
+    PLAN_10B5_1 = "plan_10b5_1"
+    #: Shares sold to pay the tax on vesting.
+    TAX_WITHHOLDING = "tax_withholding"
+    #: The sale covers the cost of an option exercise and its tax.
+    EXERCISE_COVER = "exercise_cover"
+    #: A footnote says the sale was automatic or outside the insider's
+    #: discretion.
+    STATED_NON_DISCRETIONARY = "stated_non_discretionary"
+
+    # --- with ``discretionary`` ---
+    #: No plan or paperwork explains the sale: nothing in the filing points to
+    #: one, or the sale is far larger than what vested or was exercised.
+    OPEN_MARKET = "open_market"
+    #: Options exercised and the exercised shares sold, beyond what covering
+    #: the exercise needs.
+    EXERCISE_AND_SELL = "exercise_and_sell"
+    #: The shares sold plus those withheld for tax cover everything that vested.
+    SOLD_ALL_VESTED = "sold_all_vested"
+
+    # --- with ``unknown`` ---
+    #: Part of the newly vested shares sold, more than the tax alone would
+    #: need, or on top of tax already withheld.
+    PARTIAL_VEST_SALE = "partial_vest_sale"
+    #: The sale could be an exercise cover at a high tax rate or a choice.
+    COVER_AMBIGUOUS = "cover_ambiguous"
+    #: The filing both vests shares and exercises options, so the sale cannot
+    #: be tied to either.
+    MIXED_ACQUISITIONS = "mixed_acquisitions"
+    #: The filed price failed a price check, so the arithmetic is not trusted.
+    PRICE_DISPUTED = "price_disputed"
+    #: The rest of the filing is not held.
+    NO_LINES = "no_lines"
+
+
 # Forward-compatible aliases: try the enum first, fall back to a raw string.
 CategoryLike = Annotated[NewsCategory | str, Field(union_mode="left_to_right")]
 EventTypeLike = Annotated[CorporateEventType | str, Field(union_mode="left_to_right")]
+InsiderDecisionLike = Annotated[InsiderDecision | str, Field(union_mode="left_to_right")]
+InsiderDecisionReasonLike = Annotated[
+    InsiderDecisionReason | str, Field(union_mode="left_to_right")
+]
 SentimentLike = Annotated[Sentiment | str, Field(union_mode="left_to_right")]
 ConfidenceLike = Annotated[Confidence | str, Field(union_mode="left_to_right")]
 ActionabilityLike = Annotated[Actionability | str, Field(union_mode="left_to_right")]
@@ -115,6 +181,10 @@ __all__ = [
     "ConfidenceLike",
     "CorporateEventType",
     "EventTypeLike",
+    "InsiderDecision",
+    "InsiderDecisionLike",
+    "InsiderDecisionReason",
+    "InsiderDecisionReasonLike",
     "NewsCategory",
     "Sentiment",
     "SentimentLike",

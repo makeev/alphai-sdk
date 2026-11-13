@@ -20,6 +20,7 @@ from .models import (
     Coverage,
     InsiderClustersPage,
     InsiderCsvExport,
+    InsiderDecision,
     LatestEarningsPointer,
     NewsCategory,
     NewsPagination,
@@ -97,6 +98,12 @@ SourceTypeArg = str | Iterable[str] | None
 #: several (OR-matched), as :class:`CorporateEventType` members or strings.
 EventTypeArg = str | CorporateEventType | Iterable[str | CorporateEventType] | None
 
+#: The insider feed's ``decision`` filter: one sale label, as an
+#: :class:`InsiderDecision` member or a string. ``discretionary`` keeps sales
+#: the insider chose to make, ``plan_like`` sales that follow from a 10b5-1
+#: plan or from paperwork, ``unknown`` sales the filing does not let us read.
+InsiderDecisionArg = str | InsiderDecision | None
+
 #: Feed ordering. ``published`` (the default) is the reverse-chronological feed
 #: and pages into older history. ``ingested`` is delta polling: rows in the
 #: order they became available, ascending, so a poller cannot miss a late
@@ -145,6 +152,13 @@ def _as_str_list(value: str | Enum | Iterable[str | Enum] | None) -> list[str] |
     items: Iterable[str | Enum] = [value] if isinstance(value, (str, Enum)) else value
     out = [str(v.value) if isinstance(v, Enum) else str(v) for v in items]
     return out or None
+
+
+def _as_str(value: str | Enum | None) -> str | None:
+    """Normalize a single-value arg (string or enum member) to a string."""
+    if value is None:
+        return None
+    return str(value.value) if isinstance(value, Enum) else str(value)
 
 
 def build_news_list_params(
@@ -219,11 +233,13 @@ def build_news_insider_params(
     from_date: DateArg = None,
     to_date: DateArg = None,
     is_10b5_1: bool | None = None,
+    decision: InsiderDecisionArg = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
         "min_relevance": min_relevance,
         "is_10b5_1": is_10b5_1,
+        "decision": _as_str(decision),
         "cursor": cursor,
         "page_size": page_size,
         "sort": sort,
@@ -241,6 +257,7 @@ def build_news_insider_csv_params(
     from_date: DateArg = None,
     to_date: DateArg = None,
     is_10b5_1: bool | None = None,
+    decision: InsiderDecisionArg = None,
 ) -> dict[str, Any]:
     """The insider feed's filters plus ``format=csv``; ``page_size`` has no
     effect on an export, so it is not offered."""
@@ -252,6 +269,7 @@ def build_news_insider_csv_params(
         from_date=from_date,
         to_date=to_date,
         is_10b5_1=is_10b5_1,
+        decision=decision,
     )
     params["format"] = "csv"
     return params

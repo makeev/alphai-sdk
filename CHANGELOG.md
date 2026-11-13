@@ -27,6 +27,23 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `CorporateEventType`: the 17 event types as an enum. A type this SDK version
   does not know yet arrives as a plain string, the same way a new
   `NewsCategory` does.
+- `news.insider`, `news.insider_iter` and `news.insider_csv` (sync and async)
+  take `decision`: keep Form 4 sales by intent (`GET /api/news/insider/`).
+  `discretionary` is a sale the insider chose to make, `plan_like` one that
+  follows from a 10b5-1 plan or from paperwork (a tax sale on vesting, a sale
+  covering an option exercise), `unknown` one the filing does not let us read.
+  An `InsiderDecision` member or its string. It combines with `is_10b5_1`,
+  `sort="ingested"` and the other filters of the insider feed, and any other
+  value is a 400 with the allowed values in
+  `BadRequestError.fields["decision"]`. The general feed has no such filter, so
+  `news.list` does not take it.
+- `InsiderEvent.decision` and `InsiderEvent.decision_reason`: the sale label
+  on the `insider` block of `news.insider` and `news.get` rows. Only sales
+  (`transaction_code` `S`) are labelled: purchases, a sale to the issuer (`D`)
+  and other codes carry `None`. `decision_reason` is also `None` for an
+  `unknown` sale with no reason recorded.
+- `InsiderDecision` (3 values) and `InsiderDecisionReason` (12 values) enums.
+  A value this SDK version does not know yet arrives as a plain string.
 
 ### Documentation
 - The two 400s the filter can answer with are covered by tests and the README:
@@ -35,6 +52,18 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   (`fields["_"]`: a rule that spans several parameters has no single
   parameter to be filed under). To follow new events, poll the default order
   with `from_date` and de-duplicate by `uid`.
+- README: a section on the sale label (the three values, the twelve reasons,
+  the `decision` filter and how it differs from `is_10b5_1`).
+- `is_10b5_1=False` is described as "not under a 10b5-1 plan", no longer as
+  "discretionary trades only": a sale outside a plan can still be paperwork,
+  such as shares sold to pay the tax on vesting. The filter itself is
+  unchanged; use `decision="discretionary"` for sales the insider chose to
+  make.
+- The insider CSV export now ends with two more columns, `decision` and
+  `decision_reason`, after `summary`, both empty for an event without a sale.
+  This comes from the API, whatever the SDK version: `news.insider_csv`
+  returns the file as text, and the API only ever appends columns, so read
+  cells by name.
 
 ## [0.11.0] - 2026-11-02
 

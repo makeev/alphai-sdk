@@ -148,7 +148,8 @@ with Client() as client:
     art = client.news.get("788e477c66f3849b")
     client.news.related(art.uid)  # up to 6 related articles
     client.news.insider(symbol="NVDA")  # SEC Form 4 feed (or .insider_iter())
-    client.news.insider(symbol="NVDA", is_10b5_1=False)  # discretionary trades only
+    client.news.insider(symbol="NVDA", is_10b5_1=False)  # not under a 10b5-1 plan
+    client.news.insider(symbol="NVDA", decision="discretionary")  # sales the insider chose
 ```
 
 ### SEC filings: `source_type`, `item` and the `filing` block
@@ -264,6 +265,73 @@ its story is matched, so leave it off for the complete list. `news.get()` and
 `news.search()` rows carry the same `event` block; the filter itself is on
 `news.list` / `news.iter`.
 
+### Insider sales by intent: `decision` and `decision_reason`
+
+A Form 4 sale is not always the insider's choice. Every sale in the `insider`
+block carries `decision`, read from the whole filing and not only from the
+10b5-1 checkbox, and `decision_reason`, which names what decided it:
+
+- `discretionary`: the insider chose to sell. Reasons: `open_market` (nothing in
+  the filing explains the sale, or it is far larger than what vested or was
+  exercised), `exercise_and_sell` (options exercised and the shares sold, beyond
+  what covering the exercise needs), `sold_all_vested` (the shares sold plus
+  those withheld for tax cover everything that vested).
+- `plan_like`: the sale follows from a plan or from paperwork. Reasons:
+  `plan_10b5_1` (the checkbox, or a footnote that places the sale under a
+  pre-arranged plan, so it can come with `is_10b5_1=False`), `tax_withholding`
+  (shares sold to pay the tax on vesting), `exercise_cover` (the sale covers the
+  cost of an option exercise and its tax), `stated_non_discretionary` (a
+  footnote says the sale was automatic or outside the insider's discretion).
+- `unknown`: the filing does not let us tell. Reasons: `partial_vest_sale`,
+  `cover_ambiguous`, `mixed_acquisitions`, `price_disputed`, `no_lines`, or
+  `None` when no reason was recorded.
+
+`is_10b5_1=False` keeps every event that is not under a plan, tax sales
+included. To keep only the sales an insider chose to make, filter by `decision`:
+
+```python
+from alphai import Client, InsiderDecision
+
+with Client() as client:
+    page = client.news.insider(decision=InsiderDecision.DISCRETIONARY, min_relevance=6)
+    for article in page.results:
+        ins = article.insider  # InsiderEvent | None
+        if ins is None:
+            continue
+        print(article.tickers, ins.insider_name, ins.total_value_usd, ins.decision_reason)
+
+    # Unfiltered: purchases and other codes carry no label, so guard for None.
+    for article in client.news.insider_iter(symbol="NVDA", max_items=50):
+        ins = article.insider
+        if ins is None or ins.decision is None:
+            continue
+        if ins.decision is InsiderDecision.PLAN_LIKE:
+            print("routine sale:", ins.decision_reason)  # plan_10b5_1, tax_withholding, ...
+```
+
+`decision` takes an `InsiderDecision` member or its string on `news.insider`,
+`news.insider_iter` and `news.insider_csv`, and combines with `is_10b5_1`,
+`sort="ingested"`, `symbol` and the date window. Any other value is a `400` with
+the allowed values in `e.fields["decision"]`. The filter belongs to the insider
+feed: `news.list` does not take it.
+
+Only sales (`transaction_code` `"S"`) are labelled. Purchases, a sale to the
+issuer (`"D"`) and other codes carry `decision=None` and match none of the
+values, so the three filtered feeds plus the events without a sale add up to the
+unfiltered one. An event with several sales is `discretionary` if any of them
+is, else `unknown` if any of them is, else `plan_like`, and `decision_reason`
+comes from the largest sale that set it. On the model both fields are enum
+members (`InsiderDecision`, `InsiderDecisionReason`) that compare equal to their
+strings, and a value this SDK version does not know yet arrives as a plain
+string.
+
+A label can be revised when the reading rules improve. The feed always carries
+the current one, and `sort="ingested"` does not send a revised event again.
+`news.get()` returns the same block, but the server caches it for long, so it
+can show an older label. The per-ticker page data at
+`/api/symbols/{ticker}/insider-trades/`, one `Client.request()` call away,
+carries the same two fields on its events.
+
 ### Insider feed as CSV
 
 `news.insider_csv()` returns the insider feed as one file with the same filters,
@@ -279,6 +347,7 @@ with Client() as client:
     print(export.rows, "rows of", export.row_cap, "->", export.filename)
     for row in csv.DictReader(io.StringIO(export.text)):
         print(row["transaction_date"], row["insider_name"], row["side"], row["total_value_usd"])
+        print("  ", row.get("decision"), row.get("decision_reason"))  # empty unless a sale
 
     if export.truncated == "row_cap":  # more rows exist: continue from the cursor
         more = client.news.insider_csv(symbol="NVDA", is_10b5_1=False, cursor=export.next_cursor)
@@ -289,6 +358,11 @@ archive depth) or `None` when the file holds everything the filters select. The
 `next_cursor` also works for `news.insider()` with the same `sort`. CSV cells are
 strings; parse money with `Decimal` yourself. A bad filter is the same
 `BadRequestError` as on the JSON feed, raised before any row.
+
+The sale label is the last two columns, `decision` and `decision_reason`, after
+`summary`, and both cells are empty for an event without a sale. New columns are
+only ever appended after the last one, so read cells by name, not by position.
+`decision="discretionary"` filters the file the same way it filters the feed.
 
 ### Insider cluster buys
 
