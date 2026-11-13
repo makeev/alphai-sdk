@@ -7,9 +7,10 @@ agents and trading bots.
 - **Sync and async** clients (`Client` / `AsyncClient`) over `httpx`
 - **Pydantic v2** response models — autocomplete, validation, `Decimal` money
 - **Cursor auto-pagination**, automatic retry on 429/5xx, rate-limit inspection
-- **Typed errors**; covers news search, feeds (press and SEC filings), symbols,
-  Brief, Radar, the coverage passport and the insider CSV export. Calendar,
-  macro and insider-trades are one `Client.request()` call away.
+- **Typed errors**; covers news search, feeds (press and SEC filings), typed
+  corporate events, symbols, Brief, Radar, the coverage passport and the
+  insider CSV export. Calendar, macro and insider-trades are one
+  `Client.request()` call away.
 
 API reference: <https://api.alphai.io/api/schema/> · Developer guide:
 <https://alphai.io/developers>
@@ -174,6 +175,94 @@ with Client() as client:
 served no document for; `primary_item` is the one that set the row's category.
 With `collapse_stories=True` an 8-K that carries a press release joins that
 release's story, so read filings uncollapsed.
+
+### Corporate events: `event_type` and the `event` block
+
+SEC 8-K filings, 6-K earnings releases and PR Newswire releases carry a typed
+`event` block: what the document is about, the company's side of it and facts
+quoted from its text. `event_type` keeps the rows of one type or of several
+(OR-matched), given as `CorporateEventType` members or plain strings:
+
+```python
+from alphai import Client, CorporateEventType
+
+with Client() as client:
+    page = client.news.list(
+        event_type=[CorporateEventType.BUYBACK, "dividend"],  # every capital return
+        from_date="2026-11-01",
+        page_size=20,
+    )
+    for article in page.results:
+        event = article.event  # CorporateEvent | None (None on press and Form 4 rows)
+        if event is None:
+            continue
+        print(article.tickers, event.type, event.role, event.stage, event.counterparty)
+        for fact in event.facts:
+            print("  ", fact.name, "=", fact.value, fact.number, fact.unit, fact.scale)
+        for other in event.also:  # other events the same document reports
+            print("   also:", other.type, [f.name for f in other.facts])
+        if not event.verified:
+            print("   a fact was withheld, or the facts are still being read")
+```
+
+The types are `earnings`, `earnings_date`, `exec_change`, `m_and_a`,
+`offering`, `debt_financing`, `dividend`, `buyback`, `contract_award`,
+`guidance_update`, `stock_split`, `listing_notice`, `shareholder_vote`,
+`bankruptcy`, `restructuring`, `clinical_regulatory` and `other`. A type this
+SDK version does not know yet arrives as a plain string. The filter also matches
+the events in `event.also`, so `event_type="buyback"` finds a buyback announced
+inside an earnings release, where `event.type` is `earnings`. Only these three
+kinds of documents can match: press coverage of the same event has no `event`,
+and a row gets its block once the document has been read, usually within
+minutes of appearing.
+
+`role` is the reporting company's side (`issuer`, `acquirer`, `target`,
+`customer`, `supplier`, `other`) and `counterparty` names the other party.
+`stage` says how far an `m_and_a` (`announced`, `definitive`, `completed`,
+`terminated`) or an `offering` (`proposed`, `priced`, `closed`, `terminated`)
+has gone. All three are `None` when the document does not establish them.
+
+Each fact keeps `value` as the document words it and adds what could be parsed
+from it: `"$340 million"` is `number=340.0`, `unit="USD"`, `scale="millions"`. A
+range fills `number_high` as well, and `scale=None` means the number is the full
+figure. `number` and `number_high` are `float`, like `KeyMetric.numeric`, and
+`None` for text, dates and enumerated facts. Every quoted value is searched for
+in the document before it is published. `verified` is `True` when nothing was
+withheld; when it is `False`, a fact was dropped or the facts are still being
+read, and the ones that are present have passed the check either way. The block
+is AI-generated from the document, so check the filing before acting on a
+number.
+
+`event_type` works in the default `sort="published"` order. A row gets its event
+after it enters the feed, so next to `sort="ingested"` the filter is a `400`
+rather than a stream with holes in it. To follow new events, poll with
+`from_date` and de-duplicate by `uid`:
+
+```python
+from datetime import datetime, timedelta, timezone
+
+from alphai import BadRequestError, Client
+
+seen: set[str] = set()
+
+with Client() as client:
+    since = datetime.now(timezone.utc) - timedelta(hours=2)
+    for article in client.news.iter(event_type="m_and_a", from_date=since):
+        if article.uid not in seen:
+            seen.add(article.uid)
+            handle(article)
+
+    try:
+        client.news.list(event_type="buyback", sort="ingested")
+    except BadRequestError as e:
+        print(e.fields["_"])  # the rule spans two parameters, so it is filed under "_"
+```
+
+An unknown type is a `400` as well, with the allowed values in
+`e.fields["event_type"]`. With `collapse_stories=True` only the row that leads
+its story is matched, so leave it off for the complete list. `news.get()` and
+`news.search()` rows carry the same `event` block; the filter itself is on
+`news.list` / `news.iter`.
 
 ### Insider feed as CSV
 
@@ -471,7 +560,7 @@ with Client() as client:
 
 | Status | Exception |
 |--------|-----------|
-| 400 | `BadRequestError` (`.fields` for validation errors; `.allowed_params` lists the endpoint's real parameter names when you sent an unknown one) |
+| 400 | `BadRequestError` (`.fields` for validation errors, keyed by parameter, or `"_"` for a rule across several; `.allowed_params` lists the endpoint's real parameter names when you sent an unknown one) |
 | 401 | `AuthenticationError` |
 | 403 | `PermissionDeniedError` |
 | 404 | `NotFoundError` |

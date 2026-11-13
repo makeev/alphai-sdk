@@ -1,0 +1,39 @@
+{
+  "status": 400,
+  "body": {
+    "message": "Validation error",
+    "extra": {
+      "fields": [
+        {
+          "type": "value_error",
+          "loc": [],
+          "msg": "Value error, event_type cannot be combined with sort=ingested: a row gets its event after it enters the feed, so a delta cursor would already be past it. Poll sort=published with from_date and de-duplicate by uid.",
+          "input": {
+            "event_type": "buyback",
+            "sort": "ingested"
+          },
+          "ctx": {
+            "error": "event_type cannot be combined with sort=ingested: a row gets its event after it enters the feed, so a delta cursor would already be past it. Poll sort=published with from_date and de-duplicate by uid."
+          },
+          "url": "https://errors.pydantic.dev/2.11/v/value_error"
+        }
+      ],
+      "allowed_params": [
+        "category",
+        "collapse",
+        "cursor",
+        "event_type",
+        "exclude_categories",
+        "from_date",
+        "item",
+        "min_relevance",
+        "page_size",
+        "sort",
+        "source_type",
+        "symbol",
+        "to_date"
+      ],
+      "docs": "https://alphai.io/developers"
+    }
+  }
+}

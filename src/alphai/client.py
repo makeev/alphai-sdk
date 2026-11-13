@@ -37,6 +37,7 @@ from ._requests import (
     ClusterPatternArg,
     ClusterSortArg,
     DateArg,
+    EventTypeArg,
     SortArg,
     SourceTypeArg,
 )
@@ -280,6 +281,7 @@ class NewsResource:
         to_date: DateArg = None,
         source_type: SourceTypeArg = None,
         item: str | None = None,
+        event_type: EventTypeArg = None,
     ) -> NewsPagination:
         """One page of the main feed. ``page_size`` is 1-20 on any key and
         defaults to 10; 21-50 needs a Pro key, and anything outside 1-50 is a
@@ -312,7 +314,25 @@ class NewsResource:
         ``item`` (an 8-K item code such as ``"5.02"``) keeps 8-K filings that
         carry it anywhere in the filing and implies ``sec_form8k``; next to any
         other ``source_type`` it is a 400. 8-K rows carry the structured
-        ``filing`` block (items, accession number, filing and event dates)."""
+        ``filing`` block (items, accession number, filing and event dates).
+
+        ``event_type`` keeps rows whose ``event`` block is of that corporate
+        event type (:class:`~alphai.CorporateEventType` members or strings such
+        as ``"buyback"``, ``"m_and_a"``, ``"exec_change"``; several are
+        OR-matched), as the main event or as one of the events in
+        ``event.also``, so ``event_type="buyback"`` also finds a buyback
+        announced inside an earnings release. Events are read from SEC 8-K
+        filings, 6-K earnings releases and PR Newswire releases, so only those
+        rows can match; press coverage of the same event carries no ``event``.
+        It composes with the other filters in the default ``sort="published"``
+        order. Next to ``sort="ingested"`` it is a 400: a row gets its event
+        after it enters the feed, so a delta cursor would already be past it.
+        To follow new events, poll ``sort="published"`` with ``from_date`` and
+        de-duplicate by ``uid``. With ``collapse_stories=True`` only the row
+        that leads its story is matched; leave it off for the complete list.
+        An unknown type is a 400 that lists the allowed values, and so is
+        ``event_type`` next to a ``source_type`` that names only
+        ``sec_form4``."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -326,6 +346,7 @@ class NewsResource:
             to_date=to_date,
             source_type=source_type,
             item=item,
+            event_type=event_type,
         )
         return rq.parse_news_page(self._client.request("GET", rq.NEWS, params), sort)
 
@@ -343,6 +364,7 @@ class NewsResource:
         to_date: DateArg = None,
         source_type: SourceTypeArg = None,
         item: str | None = None,
+        event_type: EventTypeArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> Iterator[RichNewsArticle]:
@@ -367,6 +389,7 @@ class NewsResource:
                 to_date=to_date,
                 source_type=source_type,
                 item=item,
+                event_type=event_type,
             )
 
         return iterate_pages(fetch, max_items=max_items, max_pages=max_pages)

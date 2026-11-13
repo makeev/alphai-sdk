@@ -1,0 +1,38 @@
+{
+  "status": 400,
+  "body": {
+    "message": "Validation error",
+    "extra": {
+      "fields": [
+        {
+          "type": "value_error",
+          "loc": [
+            "event_type"
+          ],
+          "msg": "Value error, unknown event_type: bogus. Allowed: earnings, earnings_date, exec_change, m_and_a, offering, debt_financing, dividend, buyback, contract_award, guidance_update, stock_split, listing_notice, shareholder_vote, bankruptcy, restructuring, clinical_regulatory, other",
+          "input": "bogus",
+          "ctx": {
+            "error": "unknown event_type: bogus. Allowed: earnings, earnings_date, exec_change, m_and_a, offering, debt_financing, dividend, buyback, contract_award, guidance_update, stock_split, listing_notice, shareholder_vote, bankruptcy, restructuring, clinical_regulatory, other"
+          },
+          "url": "https://errors.pydantic.dev/2.11/v/value_error"
+        }
+      ],
+      "allowed_params": [
+        "category",
+        "collapse",
+        "cursor",
+        "event_type",
+        "exclude_categories",
+        "from_date",
+        "item",
+        "min_relevance",
+        "page_size",
+        "sort",
+        "source_type",
+        "symbol",
+        "to_date"
+      ],
+      "docs": "https://alphai.io/developers"
+    }
+  }
+}

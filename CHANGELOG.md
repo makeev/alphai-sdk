@@ -6,6 +6,36 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-11-13
+
+### Added
+- `news.list` / `news.iter` (sync and async) take `event_type`: keep rows whose
+  corporate event is of that type (`GET /api/news/`, API 1.61.0). One value or
+  several, OR-matched, as `CorporateEventType` members or strings, sent the
+  same way as `category`. The filter also matches the events listed in
+  `event.also`, so `event_type="buyback"` finds a buyback announced inside an
+  earnings release.
+- `RichNewsArticle.event` (`CorporateEvent`): the typed corporate event on SEC
+  8-K rows, 6-K earnings releases and PR Newswire releases, on `news.list`,
+  `news.search` and `news.get`. It carries `type`, `role`, `stage`,
+  `counterparty`, `facts` (`CorporateEventFact`: `name`, the verbatim `value`,
+  and the parsed `number`, `number_high`, `unit`, `scale`), `also`
+  (`CorporateSecondaryEvent`: other events the same document reports) and
+  `verified`. `None` on press and Form 4 rows and until the document has been
+  read. `number` / `number_high` are `float`, like `KeyMetric.numeric`: the API
+  sends them as JSON numbers, and `value` keeps the exact wording.
+- `CorporateEventType`: the 17 event types as an enum. A type this SDK version
+  does not know yet arrives as a plain string, the same way a new
+  `NewsCategory` does.
+
+### Documentation
+- The two 400s the filter can answer with are covered by tests and the README:
+  an unknown type (`BadRequestError.fields["event_type"]`, with the allowed
+  values in the message) and `event_type` next to `sort="ingested"`
+  (`fields["_"]`: a rule that spans several parameters has no single
+  parameter to be filed under). To follow new events, poll the default order
+  with `from_date` and de-duplicate by `uid`.
+
 ## [0.11.0] - 2026-11-02
 
 ### Added

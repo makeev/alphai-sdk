@@ -16,6 +16,7 @@ from .enums import (
     ActionabilityLike,
     CategoryLike,
     ConfidenceLike,
+    EventTypeLike,
     NewsCategory,
     SentimentLike,
 )
@@ -172,6 +173,93 @@ class EightKFiling(_Base):
     exhibit_url: str | None = None
 
 
+class CorporateEventFact(_Base):
+    """One fact of a corporate event, quoted from the document.
+
+    ``name`` says what the fact is; which names can appear depends on the
+    event type (``deal_value`` and ``counterparty`` on ``m_and_a``,
+    ``amount_per_share`` and ``record_date`` on ``dividend``,
+    ``authorization_amount`` on ``buyback``, ``person_name`` and ``action`` on
+    ``exec_change``; the API reference lists them all). ``value`` is the
+    document's own wording (``"$340 million"``, ``"Dec. 21, 2026"``), or the
+    normalized value for an enumerated fact (``action`` ``"appointed"``,
+    ``consideration`` ``"mixed"``, ``is_increase`` ``"true"``).
+
+    ``number`` is parsed from ``value`` at the stated ``scale``
+    (``"$340 million"`` is ``340.0`` with ``scale="millions"``; ``"$0.21"`` is
+    ``0.21``) and is the low end when ``value`` is a range, with
+    ``number_high`` the high end (``None`` for a single value). ``unit`` is an
+    ISO 4217 currency code, ``"percent"`` or ``"bps"``; ``None`` when the
+    value states none, as for a share count. ``scale`` is ``"thousands"``,
+    ``"millions"``, ``"billions"`` or ``"trillions"``; ``None`` means
+    ``number`` is the full figure. All four are ``None`` for text, dates and
+    enumerated facts, and when the figure cannot be read without a guess.
+
+    The API sends ``number`` / ``number_high`` as JSON numbers, so they are
+    ``float`` here, like ``KeyMetric.numeric``; ``value`` is the exact quote.
+    """
+
+    name: str
+    value: str
+    number: float | None = None
+    number_high: float | None = None
+    unit: str | None = None
+    scale: str | None = None
+
+
+class CorporateSecondaryEvent(_Base):
+    """Another event reported in the same document as the main one (``event.also``)."""
+
+    type: EventTypeLike
+    facts: list[CorporateEventFact] = []
+
+
+class CorporateEvent(_Base):
+    """The typed corporate event a filing or release reports (``event``).
+
+    On SEC 8-K rows, 6-K earnings releases and PR Newswire releases: what the
+    document is about (``type``), the reporting company's side of it
+    (``role``) and ``facts`` quoted from its text. Every quoted value is
+    searched for in the document before it is published and a value that is
+    not found there is withheld. A type settled by the 8-K item alone
+    (``shareholder_vote``, ``bankruptcy``, ``restructuring``,
+    ``listing_notice``) has no facts. AI-generated from the document: check
+    the filing before acting on a number.
+
+    ``type`` is a :class:`CorporateEventType` member, or the raw string for a
+    value this SDK version does not know yet. ``also`` lists the other events
+    the same document reports, typically a dividend, a buyback or a guidance
+    change inside an earnings release; the ``event_type`` filter matches
+    those too.
+    """
+
+    type: EventTypeLike
+    #: How far the event has gone, for ``m_and_a`` (``announced``,
+    #: ``definitive``, ``completed``, ``terminated``) and ``offering``
+    #: (``proposed``, ``priced``, ``closed``, ``terminated``). A copy of the
+    #: ``stage`` fact; ``None`` for the other types or when the document does
+    #: not say.
+    stage: str | None = None
+    #: The reporting company's side: ``acquirer`` or ``target`` in a deal,
+    #: ``customer`` or ``supplier`` in a contract, ``issuer`` for its own
+    #: securities and corporate actions, or ``other``. ``None`` when not
+    #: established.
+    role: str | None = None
+    #: The other party as the document names it: the target when ``role`` is
+    #: ``acquirer``, the buyer when it is ``target``, the customer or supplier
+    #: of a contract. A copy of the ``counterparty`` fact; ``None`` when there
+    #: is none or the name was not found in the text.
+    counterparty: str | None = None
+    #: May be empty: the type is published even when no fact could be quoted.
+    facts: list[CorporateEventFact] = []
+    #: ``True`` when nothing was withheld. ``False`` when at least one fact
+    #: was dropped by the check against the document, or while the facts are
+    #: still being read (the row then carries the type and no facts). The
+    #: facts that are present have all passed the check either way.
+    verified: bool = False
+    also: list[CorporateSecondaryEvent] = []
+
+
 class SearchMatch(_Base):
     """Why a search result matched. Scores are comparable within one response only."""
 
@@ -205,6 +293,12 @@ class RichNewsArticle(_Base):
     # Structured 8-K filing block — on 8-K rows of GET /api/news/ and of
     # GET /api/news/{uid}/; None on press, Form 4 and 6-K rows and elsewhere.
     filing: EightKFiling | None = None
+    # Typed corporate event with facts quoted from the document: on 8-K rows,
+    # 6-K earnings releases and PR Newswire releases of GET /api/news/,
+    # GET /api/news/search/ and GET /api/news/{uid}/, once the document has
+    # been read (usually within minutes of the row appearing). None until
+    # then, on press and Form 4 rows and elsewhere, so guard before use.
+    event: CorporateEvent | None = None
     # AlphAI's structured earnings read — GET /api/news/{uid}/ only, and only on
     # a major ticker's earnings filing whose figures cleared the cross-check
     # against the filing text. None on every other article: guard before use.
@@ -323,6 +417,9 @@ class InsiderCsvExport(_Base):
 __all__ = [
     "AITradingInsights",
     "AlternativePerspectives",
+    "CorporateEvent",
+    "CorporateEventFact",
+    "CorporateSecondaryEvent",
     "EightKFiling",
     "EnrichedArticle",
     "ImpactAnalysis",

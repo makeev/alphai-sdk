@@ -73,7 +73,9 @@ class BadRequestError(APIStatusError):
 
         - a **list** of validator entries (``{"loc": ["skip"], "msg": …}``) —
           what an unknown or ill-typed *query parameter* produces, i.e. the
-          common case;
+          common case. A rule that spans several parameters (``event_type``
+          next to ``sort="ingested"``) has an empty ``loc`` and is filed
+          under ``"_"``;
         - a **dict** of ``{field: messages}`` — what a field rejected inside a
           view produces (a malformed ``cursor``, for one).
 

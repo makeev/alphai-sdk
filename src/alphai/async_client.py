@@ -41,6 +41,7 @@ from ._requests import (
     ClusterPatternArg,
     ClusterSortArg,
     DateArg,
+    EventTypeArg,
     SortArg,
     SourceTypeArg,
 )
@@ -261,15 +262,17 @@ class AsyncNewsResource:
         to_date: DateArg = None,
         source_type: SourceTypeArg = None,
         item: str | None = None,
+        event_type: EventTypeArg = None,
     ) -> NewsPagination:
         """One page of the main feed. ``page_size`` is 1-20 on any key
         (default 10), 21-50 needs a Pro key.
 
         ``sort="ingested"`` switches to delta polling, ``from_date`` /
         ``to_date`` bound the publication window (inclusive; a bare date is
-        the whole day), and ``source_type`` / ``item`` select press or SEC
-        filings (``item`` implies 8-Ks) - see
-        :meth:`alphai.client.NewsResource.list`."""
+        the whole day), ``source_type`` / ``item`` select press or SEC
+        filings (``item`` implies 8-Ks), and ``event_type`` keeps rows whose
+        ``event`` block is of that corporate event type (not together with
+        ``sort="ingested"``) - see :meth:`alphai.client.NewsResource.list`."""
         params = rq.build_news_list_params(
             symbol=symbol,
             category=category,
@@ -283,6 +286,7 @@ class AsyncNewsResource:
             to_date=to_date,
             source_type=source_type,
             item=item,
+            event_type=event_type,
         )
         return rq.parse_news_page(await self._client.request("GET", rq.NEWS, params), sort)
 
@@ -300,6 +304,7 @@ class AsyncNewsResource:
         to_date: DateArg = None,
         source_type: SourceTypeArg = None,
         item: str | None = None,
+        event_type: EventTypeArg = None,
         max_items: int | None = None,
         max_pages: int | None = None,
     ) -> AsyncIterator[RichNewsArticle]:
@@ -323,6 +328,7 @@ class AsyncNewsResource:
                 to_date=to_date,
                 source_type=source_type,
                 item=item,
+                event_type=event_type,
             )
 
         return aiterate_pages(fetch, max_items=max_items, max_pages=max_pages)

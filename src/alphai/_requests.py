@@ -9,12 +9,14 @@ from __future__ import annotations
 import re
 from collections.abc import Iterable
 from datetime import date, datetime
+from enum import Enum
 from typing import Any, Literal
 
 import httpx
 
 from .errors import InvalidResponseError
 from .models import (
+    CorporateEventType,
     Coverage,
     InsiderClustersPage,
     InsiderCsvExport,
@@ -91,6 +93,10 @@ def symbol_earnings_latest_path(ticker: str) -> str:
 CategoryArg = str | NewsCategory | Iterable[str | NewsCategory] | None
 SourceTypeArg = str | Iterable[str] | None
 
+#: Corporate event type(s) for the feed's ``event_type`` filter: one value or
+#: several (OR-matched), as :class:`CorporateEventType` members or strings.
+EventTypeArg = str | CorporateEventType | Iterable[str | CorporateEventType] | None
+
 #: Feed ordering. ``published`` (the default) is the reverse-chronological feed
 #: and pages into older history. ``ingested`` is delta polling: rows in the
 #: order they became available, ascending, so a poller cannot miss a late
@@ -132,15 +138,12 @@ def _as_date_param(value: DateArg) -> str | None:
     return value.isoformat()
 
 
-def _as_str_list(value: CategoryArg) -> list[str] | None:
-    """Normalize a category arg (single / enum / iterable) to a list of strings."""
+def _as_str_list(value: str | Enum | Iterable[str | Enum] | None) -> list[str] | None:
+    """Normalize a multi-value arg (single / enum / iterable) to a list of strings."""
     if value is None:
         return None
-    if isinstance(value, (str, NewsCategory)):
-        items: Iterable[str | NewsCategory] = [value]
-    else:
-        items = value
-    out = [v.value if isinstance(v, NewsCategory) else str(v) for v in items]
+    items: Iterable[str | Enum] = [value] if isinstance(value, (str, Enum)) else value
+    out = [str(v.value) if isinstance(v, Enum) else str(v) for v in items]
     return out or None
 
 
@@ -158,6 +161,7 @@ def build_news_list_params(
     to_date: DateArg = None,
     source_type: SourceTypeArg = None,
     item: str | None = None,
+    event_type: EventTypeArg = None,
 ) -> dict[str, Any]:
     return {
         "symbol": symbol,
@@ -172,6 +176,7 @@ def build_news_list_params(
         "to_date": _as_date_param(to_date),
         "source_type": _as_str_list(source_type),
         "item": item,
+        "event_type": _as_str_list(event_type),
     }
 
 

@@ -1,0 +1,140 @@
+{
+  "original": {
+    "title": "Cincinnati Financial Corporation Declares Regular Quarterly Cash Dividend",
+    "url": "https://www.sec.gov/Archives/edgar/data/20286/000002028626000064/exhibit99111-13x26.htm",
+    "time_published": "2026-11-13T18:01:26Z",
+    "authors": [],
+    "summary": "CINCINNATI FINANCIAL CORP (CINF) filed an SEC Form 8-K — Regulation FD Disclosure. The Cincinnati Insurance Company n The Cincinnati Indemnity Company The Cincinnati Casualty Company n The Cincinnati Specialty Underwriters Insurance Company The Cincinnati Life Insurance Company n CFC Investment Company n CSU Producer Resources Inc. Cincinnati Global Underwritin",
+    "banner_image": null,
+    "source": "SEC EDGAR 8-K",
+    "source_domain": "sec.gov",
+    "topics": [
+      {
+        "topic": "8-K",
+        "relevance": 1.0
+      }
+    ],
+    "tickers_sentiment": [],
+    "ownership_form": null,
+    "id": 2719214,
+    "uid": "a3bec214ddb5205c",
+    "created_at": "2026-11-13T18:05:57.295019Z",
+    "updated_at": "2026-11-13T18:05:57.526747Z",
+    "is_backfill": false
+  },
+  "enrichment": {
+    "ai_trading_insights": {
+      "ticker_analysis": [
+        {
+          "ticker": "CINF",
+          "relevance_context": "Cincinnati Financial declared a regular quarterly cash dividend of $0.94 per share, payable Jan. 15, 2027, with a Dec. 23, 2026 record date.",
+          "impact_analysis": {
+            "summary": "Dividend declaration is a capital-return update that can support near-term sentiment but is typically not a major earnings or guidance catalyst.",
+            "sentiment": "positive",
+            "price_impact_prediction": "Likely mild support or stabilization as the market prices in continued shareholder returns; limited upside/downside versus broader underwriting and investment drivers.",
+            "confidence": "high",
+            "reasoning": "The filing discloses a routine, board-declared dividend amount and payment schedule, with no change to guidance, buybacks, or balance-sheet risk described."
+          }
+        }
+      ],
+      "news_trading_value": {
+        "actionability_score": "low",
+        "information_novelty": 5,
+        "timing_relevance": "dividend payable Jan. 15, 2027; record date Dec. 23, 2026",
+        "market_sentiment_alignment": "neutral to positive",
+        "estimated_read_time": "3 min"
+      },
+      "indirect_market_effects": {
+        "sector_implications": "Routine dividend declarations can modestly reinforce the insurance sector’s capital-return narrative, but this specific filing does not signal underwriting or reserve changes.",
+        "regional_market_impact": "No direct regional spillover beyond US-listed insurance sentiment.",
+        "global_market_relevance": "Limited global relevance; the event is company-specific and not tied to international operations or regulation in the text."
+      },
+      "alternative_perspectives": {
+        "contrarian_view": "Because the dividend is described as regular and long-standing, the market may treat it as largely expected, reducing incremental trading impact.",
+        "overlooked_factors": "Traders may instead focus on any concurrent capital actions not mentioned here (e.g., buybacks, debt issuance) and on underwriting/investment drivers that typically move insurance stocks more than dividend declarations."
+      }
+    },
+    "news_context_enhancement": {
+      "background_context": "The SEC 8-K (Item 7.01, Regulation FD) reports the board’s declaration of a quarterly cash dividend for Cincinnati Financial Corporation.",
+      "impact_analysis": "The declaration updates the cash return to shareholders and sets key dates (record and payment), which can influence dividend-related positioning around the record date.",
+      "key_entities": [
+        {
+          "name": "Cincinnati Financial Corporation",
+          "type": "issuer",
+          "description": "Nasdaq-listed insurer that declared the quarterly cash dividend."
+        },
+        {
+          "name": "Cincinnati Financial Corporation board of directors",
+          "type": "governance",
+          "description": "Declared the $0.94 per share regular quarterly cash dividend."
+        }
+      ],
+      "market_relevance_summary": "This is a routine shareholder-return disclosure with modest potential for sentiment support, but it does not introduce new operating or financial guidance in the provided text.",
+      "estimated_read_time_minutes": 2
+    },
+    "relevance_score": 5,
+    "category": "corporate_actions",
+    "tickers": [
+      "CINF"
+    ],
+    "seo_eligible": false
+  },
+  "story_id": "fbf3f945625f6f47",
+  "sources_count": null,
+  "sources": null,
+  "insider": null,
+  "filing": {
+    "items": [
+      "7.01"
+    ],
+    "primary_item": "7.01",
+    "accession_number": "0000020286-26-000064",
+    "filed_at": "2026-11-13T18:01:26Z",
+    "event_date": null,
+    "exhibit_url": "https://www.sec.gov/Archives/edgar/data/20286/000002028626000064/exhibit99111-13x26.htm"
+  },
+  "event": {
+    "type": "dividend",
+    "stage": null,
+    "role": "issuer",
+    "counterparty": null,
+    "facts": [
+      {
+        "name": "frequency",
+        "value": "quarterly",
+        "number": null,
+        "number_high": null,
+        "unit": null,
+        "scale": null
+      },
+      {
+        "name": "kind",
+        "value": "regular",
+        "number": null,
+        "number_high": null,
+        "unit": null,
+        "scale": null
+      },
+      {
+        "name": "payable_date",
+        "value": "January 15, 2027",
+        "number": null,
+        "number_high": null,
+        "unit": null,
+        "scale": null
+      },
+      {
+        "name": "record_date",
+        "value": "December 23, 2026",
+        "number": null,
+        "number_high": null,
+        "unit": null,
+        "scale": null
+      }
+    ],
+    "verified": false,
+    "also": []
+  },
+  "earnings": null,
+  "search_match": null
+}

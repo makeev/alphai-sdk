@@ -1,0 +1,456 @@
+{
+  "results": [
+    {
+      "original": {
+        "title": "UWHARRIE CAPITAL CORP (UWHR): Results of Operations and Financial Condition",
+        "url": "https://www.sec.gov/Archives/edgar/data/898171/000119312526459525/uwhr-ex99_1.htm",
+        "time_published": "2026-11-13T15:02:13Z",
+        "authors": [],
+        "summary": "UWHARRIE CAPITAL CORP (UWHR) filed an SEC Form 8-K — Results of Operations and Financial Condition. Exhibit 99.1 November 13, 2026 Dear Shareholder: As we approach the holiday season and the end of another year, we are grateful for the trust and support of our shareholders, customers, associates, and communities. That support has sustained Uwharrie through both good times and c",
+        "banner_image": null,
+        "source": "SEC EDGAR 8-K",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "8-K",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": null,
+        "id": 2715118,
+        "uid": "c3c3d64971cd6263",
+        "created_at": "2026-11-13T15:04:20.994161Z",
+        "updated_at": "2026-11-13T15:04:23.471903Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "UWHR",
+              "relevance_context": "Uwharrie Capital Corp reported September 30 earnings with net income up 21% YoY and declared a 3% stock dividend.",
+              "impact_analysis": {
+                "summary": "Earnings beat and dividend suggest modest upside potential.",
+                "sentiment": "positive",
+                "price_impact_prediction": "potential modest upside as investors price in higher earnings and dividend",
+                "confidence": "high",
+                "reasoning": "The 21% income increase and dividend announcement are new, material information for a small‑cap bank."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "medium",
+            "information_novelty": 8,
+            "timing_relevance": "after-hours release on Nov 13",
+            "market_sentiment_alignment": "positive",
+            "estimated_read_time": "2 minutes"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "May lift sentiment for regional banks reporting earnings in a higher‑rate environment.",
+            "regional_market_impact": "Limited to Uwharrie's operating markets; no broad regional effect.",
+            "global_market_relevance": "Low; the filing is a small‑cap US bank with minimal global impact."
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "Higher borrowing costs could pressure net interest margin despite earnings growth.",
+            "overlooked_factors": "Potential slowdown in mortgage banking income may offset loan growth."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "Uwharrie Capital Corp filed a Form 8‑K Item 2.02 reporting its Q3 2026 results and a 3% stock dividend.",
+          "impact_analysis": "The earnings beat and dividend could attract income‑focused investors, but rising funding costs remain a risk.",
+          "key_entities": [
+            {
+              "name": "Uwharrie Capital Corp",
+              "type": "company",
+              "description": "US regional bank reporting Q3 2026 results."
+            }
+          ],
+          "market_relevance_summary": "Provides fresh earnings data for a small‑cap bank, useful for traders monitoring regional banking sector performance.",
+          "estimated_read_time_minutes": 2
+        },
+        "relevance_score": 7,
+        "category": "earnings",
+        "tickers": [
+          "UWHR"
+        ],
+        "seo_eligible": true
+      },
+      "story_id": "c3c3d64971cd6263",
+      "sources_count": null,
+      "sources": null,
+      "insider": null,
+      "filing": {
+        "items": [
+          "2.02"
+        ],
+        "primary_item": "2.02",
+        "accession_number": "0001193125-26-459525",
+        "filed_at": "2026-11-13T15:02:13Z",
+        "event_date": null,
+        "exhibit_url": "https://www.sec.gov/Archives/edgar/data/898171/000119312526459525/uwhr-ex99_1.htm"
+      },
+      "event": {
+        "type": "earnings",
+        "stage": null,
+        "role": "issuer",
+        "counterparty": null,
+        "facts": [],
+        "verified": true,
+        "also": [
+          {
+            "type": "dividend",
+            "facts": [
+              {
+                "name": "record_date",
+                "value": "November 5, 2026",
+                "number": null,
+                "number_high": null,
+                "unit": null,
+                "scale": null
+              },
+              {
+                "name": "payable_date",
+                "value": "November 23, 2026",
+                "number": null,
+                "number_high": null,
+                "unit": null,
+                "scale": null
+              }
+            ]
+          }
+        ]
+      },
+      "earnings": null,
+      "search_match": null
+    },
+    {
+      "original": {
+        "title": "FIRST NATIONAL CORPORATION ANNOUNCES 11.8% INCREASE IN QUARTERLY CASH DIVIDENDS",
+        "url": "https://www.sec.gov/Archives/edgar/data/719402/000143774926036686/ex_1041164.htm",
+        "time_published": "2026-11-13T14:48:36Z",
+        "authors": [],
+        "summary": "FIRST NATIONAL CORP /VA/ (FXNC) filed an SEC Form 8-K — Other Events. Exhibit 99.1 FIRST NATIONAL CORPORATION ANNOUNCES 11.8% INCREASE IN QUARTERLY CASH DIVIDENDS STRASBURG, Va., November 12, 2026 (GLOBE NEWSWIRE) -- First National Corporation (the “Company” or “First National”) (NASDAQ: FXNC), the bank holding company of First Bank (the “Bank”), a",
+        "banner_image": null,
+        "source": "SEC EDGAR 8-K",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "8-K",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": null,
+        "id": 2714968,
+        "uid": "ba0b19a96bdac78f",
+        "created_at": "2026-11-13T14:49:11.437679Z",
+        "updated_at": "2026-11-13T14:49:14.871537Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "FXNC",
+              "relevance_context": "FXNC announced an 11.8% increase in its quarterly cash dividend to $0.19 per share.",
+              "impact_analysis": {
+                "summary": "The dividend hike signals strong cash flow and may provide modest price support.",
+                "sentiment": "positive",
+                "price_impact_prediction": "potential slight upside as investors seek yield",
+                "confidence": "medium",
+                "reasoning": "Dividend increases are generally viewed positively, but the modest amount limits the impact."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "low",
+            "information_novelty": 5,
+            "timing_relevance": "record date Nov 27, payment Dec 11",
+            "market_sentiment_alignment": "positive",
+            "estimated_read_time": "1 minute"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "May boost sentiment in regional community banking sector.",
+            "regional_market_impact": "Limited to Virginia banking market.",
+            "global_market_relevance": "Minimal global impact."
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "Dividend increase could mask underlying growth concerns.",
+            "overlooked_factors": "Potential future rate hikes could affect dividend attractiveness."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "First National Corporation is a community bank holding company listed on NASDAQ.",
+          "impact_analysis": "The dividend raise reflects strong financial performance and may attract income-focused investors.",
+          "key_entities": [
+            {
+              "name": "First National Corporation",
+              "type": "company",
+              "description": "Bank holding company announcing dividend increase."
+            },
+            {
+              "name": "Scott Harvard",
+              "type": "executive",
+              "description": "President and CEO who commented on the dividend."
+            }
+          ],
+          "market_relevance_summary": "A modest dividend hike provides a small positive catalyst for FXNC stock.",
+          "estimated_read_time_minutes": 1
+        },
+        "relevance_score": 5,
+        "category": "corporate_actions",
+        "tickers": [
+          "FXNC"
+        ],
+        "seo_eligible": false
+      },
+      "story_id": "ba0b19a96bdac78f",
+      "sources_count": null,
+      "sources": null,
+      "insider": null,
+      "filing": {
+        "items": [
+          "8.01"
+        ],
+        "primary_item": "8.01",
+        "accession_number": "0001437749-26-036686",
+        "filed_at": "2026-11-13T14:48:36Z",
+        "event_date": null,
+        "exhibit_url": "https://www.sec.gov/Archives/edgar/data/719402/000143774926036686/ex_1041164.htm"
+      },
+      "event": {
+        "type": "dividend",
+        "stage": null,
+        "role": "issuer",
+        "counterparty": null,
+        "facts": [
+          {
+            "name": "amount_per_share",
+            "value": "$0.19 per share",
+            "number": 0.19,
+            "number_high": null,
+            "unit": "USD",
+            "scale": null
+          },
+          {
+            "name": "frequency",
+            "value": "quarterly",
+            "number": null,
+            "number_high": null,
+            "unit": null,
+            "scale": null
+          },
+          {
+            "name": "kind",
+            "value": "increase",
+            "number": null,
+            "number_high": null,
+            "unit": null,
+            "scale": null
+          },
+          {
+            "name": "prior_amount_per_share",
+            "value": "$0.17 per share",
+            "number": 0.17,
+            "number_high": null,
+            "unit": "USD",
+            "scale": null
+          },
+          {
+            "name": "change_pct",
+            "value": "11.8%",
+            "number": 11.8,
+            "number_high": null,
+            "unit": "percent",
+            "scale": null
+          },
+          {
+            "name": "record_date",
+            "value": "November 27, 2026",
+            "number": null,
+            "number_high": null,
+            "unit": null,
+            "scale": null
+          },
+          {
+            "name": "payable_date",
+            "value": "December 11, 2026",
+            "number": null,
+            "number_high": null,
+            "unit": null,
+            "scale": null
+          }
+        ],
+        "verified": true,
+        "also": []
+      },
+      "earnings": null,
+      "search_match": null
+    },
+    {
+      "original": {
+        "title": "Greenland Energy Company Announces Recommended All-Share Acquisition of 80 Mile plc",
+        "url": "https://www.sec.gov/Archives/edgar/data/2093507/000182912626012345/greenlandenergyco_ex99-1.htm",
+        "time_published": "2026-11-13T14:24:18Z",
+        "authors": [],
+        "summary": "Greenland Energy Co (GLND) filed an SEC Form 8-K — Regulation FD Disclosure. Exhibit 99.1 Greenland Energy Company Announces Recommended All-Share Acquisition of 80 Mile plc Combination to consolidate 100% ownership of the Jameson Land Basin licenses in Greenland in a single Nasdaq-listed energy and critical minerals company DENVER, November 12, 2026 /PRN",
+        "banner_image": null,
+        "source": "SEC EDGAR 8-K",
+        "source_domain": "sec.gov",
+        "topics": [
+          {
+            "topic": "8-K",
+            "relevance": 1.0
+          }
+        ],
+        "tickers_sentiment": [],
+        "ownership_form": null,
+        "id": 2714555,
+        "uid": "8b1165fae4820af9",
+        "created_at": "2026-11-13T14:29:05.272673Z",
+        "updated_at": "2026-11-13T14:29:09.688498Z",
+        "is_backfill": false
+      },
+      "enrichment": {
+        "ai_trading_insights": {
+          "ticker_analysis": [
+            {
+              "ticker": "GLND",
+              "relevance_context": "Greenland Energy announced a recommended all‑share acquisition of 80 Mile plc, creating a new combined company and issuing new shares.",
+              "impact_analysis": {
+                "summary": "The deal may lift GLND as the market prices in a larger, diversified energy entity, but dilution from new shares could temper upside.",
+                "sentiment": "neutral",
+                "price_impact_prediction": "potential modest upside with some dilution pressure",
+                "confidence": "high",
+                "reasoning": "First‑report M&A disclosure with a premium to 80 Mile; market will assess combined asset value versus share dilution."
+              }
+            }
+          ],
+          "news_trading_value": {
+            "actionability_score": "high",
+            "information_novelty": 8,
+            "timing_relevance": "today",
+            "market_sentiment_alignment": "neutral",
+            "estimated_read_time": "2 min"
+          },
+          "indirect_market_effects": {
+            "sector_implications": "Consolidates Jameson Land Basin assets, potentially strengthening the Arctic energy and critical minerals sector.",
+            "regional_market_impact": "May boost investor interest in Greenland‑focused energy stocks.",
+            "global_market_relevance": "Limited to niche energy and mineral exploration investors."
+          },
+          "alternative_perspectives": {
+            "contrarian_view": "Dilution from new share issuance could outweigh synergies, leading to short‑term pressure on GLND.",
+            "overlooked_factors": "Regulatory approvals and Greenlandic government consents remain uncertain, adding execution risk."
+          }
+        },
+        "news_context_enhancement": {
+          "background_context": "Greenland Energy (NASDAQ: GLND) is an exploration‑stage oil company focused on East Greenland's Jameson Land Basin.",
+          "impact_analysis": "The all‑share merger creates a single listed vehicle, potentially improving financing access and operational efficiency.",
+          "key_entities": [
+            {
+              "name": "Greenland Energy Company",
+              "type": "company",
+              "description": "US‑listed Nasdaq energy explorer announcing the acquisition."
+            },
+            {
+              "name": "80 Mile plc",
+              "type": "company",
+              "description": "UK‑listed partner being acquired in an all‑share deal."
+            }
+          ],
+          "market_relevance_summary": "First‑report M&A news that could move GLND shares as investors price the combined entity.",
+          "estimated_read_time_minutes": 2
+        },
+        "relevance_score": 8,
+        "category": "mergers_acquisitions",
+        "tickers": [
+          "GLND"
+        ],
+        "seo_eligible": true
+      },
+      "story_id": "8b1165fae4820af9",
+      "sources_count": null,
+      "sources": null,
+      "insider": null,
+      "filing": {
+        "items": [
+          "7.01"
+        ],
+        "primary_item": "7.01",
+        "accession_number": "0001829126-26-012345",
+        "filed_at": "2026-11-13T14:24:18Z",
+        "event_date": null,
+        "exhibit_url": "https://www.sec.gov/Archives/edgar/data/2093507/000182912626012345/greenlandenergyco_ex99-1.htm"
+      },
+      "event": {
+        "type": "m_and_a",
+        "stage": "announced",
+        "role": "acquirer",
+        "counterparty": "80 Mile plc",
+        "facts": [
+          {
+            "name": "counterparty",
+            "value": "80 Mile plc",
+            "number": null,
+            "number_high": null,
+            "unit": null,
+            "scale": null
+          },
+          {
+            "name": "consideration",
+            "value": "stock",
+            "number": null,
+            "number_high": null,
+            "unit": null,
+            "scale": null
+          },
+          {
+            "name": "premium_pct",
+            "value": "approximately 71%",
+            "number": 71.0,
+            "number_high": null,
+            "unit": "percent",
+            "scale": null
+          },
+          {
+            "name": "stage",
+            "value": "announced",
+            "number": null,
+            "number_high": null,
+            "unit": null,
+            "scale": null
+          }
+        ],
+        "verified": true,
+        "also": [
+          {
+            "type": "debt_financing",
+            "facts": [
+              {
+                "name": "instrument",
+                "value": "convertible loan agreement",
+                "number": null,
+                "number_high": null,
+                "unit": null,
+                "scale": null
+              },
+              {
+                "name": "amount",
+                "value": "£3 million",
+                "number": 3.0,
+                "number_high": null,
+                "unit": "GBP",
+                "scale": "millions"
+              }
+            ]
+          }
+        ]
+      },
+      "earnings": null,
+      "search_match": null
+    }
+  ],
+  "next_cursor": "MjAyNi0xMS0xM1QxNDoxOTo0NyswMDowMHwxMzYyMjc2",
+  "symbol_note": null
+}
